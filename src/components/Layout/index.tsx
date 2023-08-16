@@ -1,16 +1,18 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export default function Layout(props: LayoutProps) {
-  const { children } = props;
+  const { children, ...rest } = props;
 
   return (
-    <div>
+    <div {...rest}>
       <Navbar />
       {children}
+      <Footer />
     </div>
   );
 }

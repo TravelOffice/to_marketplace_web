@@ -6,7 +6,10 @@ const postRoutes: RouteObject = {
   children: [
     {
       index: true,
-      element: <div>Posts</div>,
+      async lazy() {
+        const Component = await import('@/pages/Posts/List');
+        return { Component: Component.default };
+      },
     },
     {
       path: ':postId',
