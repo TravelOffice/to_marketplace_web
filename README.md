@@ -12,12 +12,12 @@ yarn install
 
 Then, run the app:
 ```bash
-yarn start
+yarn dev
 ```
 
-To fix lint errors:
+To run lint:
 ```bash
-yarn lint:fix
+yarn lint
 ```
 
 ## Project Structure

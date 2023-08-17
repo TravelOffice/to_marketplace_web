@@ -6,7 +6,7 @@ import logo from '@/assets/react.svg';
 
 export default function Navbar() {
   return (
-    <nav className="sticky top-0 z-50 bg-white px-0 mx-0 py-2 shadow">
+    <nav className="sticky top-0 z-20 bg-white px-0 mx-0 py-2 shadow">
       <div className="mx-auto max-w-6xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
