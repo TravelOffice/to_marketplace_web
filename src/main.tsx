@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import App from './pages/App';
 import './index.css';
+import './styles/extended/ckeditor.css';
 
 const queryClient = new QueryClient();
 

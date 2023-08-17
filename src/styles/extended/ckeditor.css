@@ -1,0 +1,11 @@
+.ck.ck-editor__main {
+  @apply text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none;
+}
+
+.ck.ck-editor__editable {
+  @apply h-96;
+}
+
+.ck.ck-editor__editable.ck-focused:not(.ck-editor__nested-editable) {
+  @apply border-primary !important;
+}

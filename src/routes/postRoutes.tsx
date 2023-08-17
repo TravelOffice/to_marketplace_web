@@ -11,6 +11,13 @@ const postRoutes: RouteObject = {
       },
     },
     {
+      path: 'create',
+      async lazy() {
+        const Component = await import('@/pages/Posts/Create');
+        return { Component: Component.default };
+      },
+    },
+    {
       path: ':postId',
       async lazy() {
         const Component = await import('@/pages/Posts/Detail');

@@ -1,0 +1,7 @@
+.react-select__control {
+  @apply border-[1px] text-gray-900 text-sm rounded ;
+}
+
+.react-select__control--is-focused {
+  @apply border-primary shadow !important;
+}
