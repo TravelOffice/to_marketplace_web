@@ -17,7 +17,7 @@ const tabs = [
 export default function PostList() {
   return (
     <Layout>
-      <div className="container mx-auto pt-24">
+      <div className="container px-6 mx-auto pt-24">
         <div className="grid grid-cols-12">
           <div className="col-span-3 border-r-[1px] pe-6">
             <h6 className="font-bold mb-6">Filter</h6>

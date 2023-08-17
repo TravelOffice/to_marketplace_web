@@ -1,4 +1,3 @@
-import React from 'react';
 import { RouteObject } from 'react-router-dom';
 
 const postRoutes: RouteObject = {
@@ -13,7 +12,10 @@ const postRoutes: RouteObject = {
     },
     {
       path: ':postId',
-      element: <div>Post</div>,
+      async lazy() {
+        const Component = await import('@/pages/Posts/Detail');
+        return { Component: Component.default };
+      },
     },
   ],
 };

@@ -1,13 +1,16 @@
 import React from 'react';
 import { LiaBell, LiaBookmarkSolid, LiaHandshake } from 'react-icons/lia';
+import { Link } from 'react-router-dom';
 import RatingBar from '@/components/RatingBar';
+import { Post } from '@/models/Post';
 
 export interface TourListItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  post: Post,
   onMakeOffer: () => void,
 }
 
 export default function TourListItem(props: TourListItemProps) {
-  const { onMakeOffer, ...rest } = props;
+  const { onMakeOffer, post, ...rest } = props;
   return (
     <div className="bg-white flex w-full pt-4 pb-4 border-b" {...rest}>
       <div className="h-full">
@@ -21,7 +24,7 @@ export default function TourListItem(props: TourListItemProps) {
         </button>
       </div>
       <div className="flex flex-col flex-1 text-left ps-5">
-        <h6 className="font-bold text-lg mb-1">Paris, France</h6>
+        <Link to={`/posts/${post.id}`} className="font-bold text-lg mb-1">Paris, France</Link>
         <RatingBar rating={3.5} />
         <p className="flex-1 text-sm text-gray-500 mb-2 text-justify">
           Lorem Ipsum is simply dummy text of the printing

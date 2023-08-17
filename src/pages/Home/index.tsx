@@ -172,7 +172,7 @@ export default function HomePage() {
       </section>
 
       {/*  Decore section */}
-      <section className="container mx-auto mt-32 grid grid-cols-12">
+      <section className="container mx-auto px-6 mt-32 grid grid-cols-12">
         <div className="col-span-8">
           <h5 className="text-secondary">Easy and fast</h5>
           <h6 className="font-volkhov text-3xl">Book your next tour in 3 easy steps</h6>

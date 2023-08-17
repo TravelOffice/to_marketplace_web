@@ -19,6 +19,7 @@ export default function TourList() {
           <TourListItem
             key={tour.id}
             onMakeOffer={() => setSelectedTour(tour)}
+            post={tour}
           />
         ))
       }
