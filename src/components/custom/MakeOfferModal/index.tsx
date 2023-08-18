@@ -1,8 +1,8 @@
 import React from 'react';
-import Modal, { ModalProps } from '@/components/Modal';
-import ModalHeader from '@/components/Modal/ModalHeader';
-import ModalBody from '@/components/Modal/ModalBody';
-import Input from '@/components/Input';
+import Modal, { ModalProps } from '@/components/base/Modal';
+import Input from '@/components/base/Input';
+import ModalHeader from '@/components/base/Modal/ModalHeader';
+import ModalBody from '@/components/base/Modal/ModalBody';
 
 export interface MakeOfferModalProps extends ModalProps {}
 

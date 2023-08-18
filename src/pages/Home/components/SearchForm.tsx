@@ -1,12 +1,11 @@
 import React from 'react';
-import Dropdown, { DropdownMenu, DropdownToggle } from '@/components/Dropdown';
-import DropdownMenuItem from '@/components/Dropdown/DropdownMenuItem.tsx';
+import Dropdown, { DropdownMenu, DropdownToggle, DropdownMenuItem } from '@/components/base/Dropdown';
 
 export default function SearchForm() {
   const [category, setCategory] = React.useState<'tour' | 'lead'>('tour');
   return (
-    <form className="w-3/4 mx-auto mt-24">
-      <div className="flex">
+    <form className="container mx-auto mt-24">
+      <div className="flex px-32">
         <label htmlFor="search-dropdown" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
           Search
         </label>

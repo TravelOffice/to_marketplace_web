@@ -1,10 +1,10 @@
 import React from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import Layout from '@/components/Layout';
-import '@/styles/extended/ckeditor.css';
-import Label from '@/components/Label';
 import Select from 'react-select';
+import Layout from '@/components/base/Layout';
+import '@/styles/extended/ckeditor.css';
+import Label from '@/components/base/Label';
 import '@/styles/extended/react-select.css';
 
 export interface CreatePostProps {}

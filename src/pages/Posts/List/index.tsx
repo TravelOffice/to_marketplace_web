@@ -1,7 +1,7 @@
 import React from 'react';
-import Layout from '@/components/Layout';
-import Input from '@/components/Input';
-import Tabs from '@/components/Tabs';
+import Layout from '@/components/base/Layout';
+import Input from '@/components/base/Input';
+import Tabs from '@/components/base/Tabs';
 import TourList from '@/pages/Posts/List/components/TourList';
 
 const tabs = [

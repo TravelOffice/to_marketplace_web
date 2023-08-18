@@ -1,7 +1,7 @@
 import React from 'react';
 import { LiaBell, LiaBookmarkSolid, LiaHandshake } from 'react-icons/lia';
 import { Link } from 'react-router-dom';
-import RatingBar from '@/components/RatingBar';
+import RatingBar from '@/components/base/RatingBar';
 import { Post } from '@/models/Post';
 
 export interface TourListItemProps extends React.HTMLAttributes<HTMLDivElement> {

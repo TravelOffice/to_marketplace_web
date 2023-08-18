@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import ReactPortal from '@/components/ReactPortal';
-import { DropdownContext } from '@/components/Dropdown/DropdownContext';
+import ReactPortal from '@/components/base/ReactPortal';
+import { DropdownContext } from '@/components/base/Dropdown/DropdownContext';
 
 export interface DropdownMenuProps extends React.HTMLAttributes<HTMLDivElement> {
 }

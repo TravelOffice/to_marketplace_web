@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteObject } from 'react-router-dom';
+import meRoutes from '@/routes/meRoutes';
 import postRoutes from './postRoutes';
 import rootRoutes from './rootRoutes';
 
@@ -10,6 +11,7 @@ const routes: RouteObject[] = [
     children: [
       rootRoutes,
       postRoutes,
+      meRoutes,
     ],
   },
 ];

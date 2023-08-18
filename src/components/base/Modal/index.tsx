@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { FaXmark } from 'react-icons/fa6';
 import { CSSTransition } from 'react-transition-group';
-import ReactPortal from '@/components/ReactPortal';
+import ReactPortal from '@/components/base/ReactPortal';
 import '@/styles/extended/modal.css';
 
 export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {

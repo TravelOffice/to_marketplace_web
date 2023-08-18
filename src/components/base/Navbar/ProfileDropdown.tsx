@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import logo from '@/assets/react.svg';
 
 export default function ProfileDropdown() {
@@ -25,7 +26,8 @@ export default function ProfileDropdown() {
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
-            <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
+            <Link to="/me/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Profile</Link>
+            <Link to="/me/organization" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Organization</Link>
             <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
             <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
           </div>

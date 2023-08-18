@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { DropdownContext } from '@/components/Dropdown/DropdownContext';
+import { DropdownContext } from '@/components/base/Dropdown/DropdownContext';
 
 export interface DropdownMenuItemProps extends React.HTMLAttributes<HTMLLIElement> {
   onClick: () => void,

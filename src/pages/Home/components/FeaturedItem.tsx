@@ -8,7 +8,7 @@ export interface FeaturedItemProps extends React.HTMLAttributes<HTMLAnchorElemen
 export default function FeaturedItem(props: FeaturedItemProps) {
   const { className, ...rest } = props;
   return (
-    <Link to="/" className={classNames('shadow bg-white hover:shadow-md rounded-lg flex w-full', className)} {...rest}>
+    <Link to="/posts/1" className={classNames('shadow bg-white hover:shadow-md rounded-lg flex w-full', className)} {...rest}>
       <div className="h-full aspect-square">
         <img src="https://picsum.photos/200/300" alt="" className="rounded-tl-lg rounded-bl-lg w-full h-full" />
       </div>

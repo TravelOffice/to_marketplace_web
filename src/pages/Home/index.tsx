@@ -1,7 +1,7 @@
 import React from 'react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/base/Layout';
 import '@/styles/HomePage.scss';
-import Carousel2 from '@/components/Carousel2';
+import Carousel2 from '@/components/base/Carousel2';
 import FeaturedItem from '@/pages/Home/components/FeaturedItem';
 import TopDestinationItem from '@/pages/Home/components/TopDestinationItem';
 import image1 from '@/assets/images/decore/image1.png';

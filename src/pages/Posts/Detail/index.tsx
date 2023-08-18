@@ -1,11 +1,13 @@
 import React from 'react';
 import { LiaBell, LiaBookmarkSolid, LiaHandshake } from 'react-icons/lia';
-import Layout from '@/components/Layout';
+import Layout from '@/components/base/Layout';
+import RatingBar from '@/components/base/RatingBar';
 import { numberArrayOf } from '@/utils/arrays';
 import Comment from '@/pages/Posts/Detail/components/Comment';
-import RatingBar from '@/components/RatingBar';
+import MakeOfferModal from '@/components/custom/MakeOfferModal';
 
 export default function PostDetail() {
+  const [showMakeOfferModal, setShowMakeOfferModal] = React.useState(false);
   return (
     <Layout>
       <div className="container mx-auto px-6 mt-10 grid grid-cols-7 gap-6">
@@ -93,6 +95,7 @@ export default function PostDetail() {
             <button
               type="button"
               className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"
+              onClick={() => setShowMakeOfferModal(true)}
             >
               Make offer
             </button>
@@ -106,6 +109,7 @@ export default function PostDetail() {
           </div>
         </div>
       </div>
+      <MakeOfferModal isOpen={showMakeOfferModal} toggle={() => setShowMakeOfferModal(false)} />
     </Layout>
   );
 }

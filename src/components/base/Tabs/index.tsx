@@ -7,19 +7,32 @@ export interface Tab {
 }
 export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
   tabs: Tab[],
+  sticky?: boolean,
+  divider?: boolean,
+  itemClassName?: string,
 }
 
 export default function Tabs(props: TabsProps) {
-  const { tabs, ...rest } = props;
+  const {
+    tabs,
+    sticky = false,
+    divider = true,
+    itemClassName,
+    ...rest
+  } = props;
   const [activeTab, setActiveTab] = React.useState(0);
   return (
     <div {...rest}>
       <ul
-        className="border-b border-gray-200 text-sm font-medium text-center text-gray-500 divide-x divide-gray-200 rounded-lg sm:flex dark:divide-gray-700 dark:text-gray-400"
+        className={classNames(
+          'border-b border-gray-200 text-sm font-medium text-center text-gray-500 sm:flex dark:text-gray-400',
+          sticky ? 'sticky top-20 bg-white dark:bg-gray-800' : '',
+          divider ? 'divide-x divide-gray-200 dark:divide-gray-700' : '',
+        )}
       >
         {
           tabs.map((tab, index) => (
-            <li className="w-full" key={tab.title}>
+            <li className={classNames('w-full', itemClassName)} key={tab.title}>
               <button
                 type="button"
                 onClick={() => setActiveTab(index)}

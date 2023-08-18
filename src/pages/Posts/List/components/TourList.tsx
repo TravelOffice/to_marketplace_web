@@ -2,7 +2,7 @@ import React from 'react';
 import TourListItem from '@/pages/Posts/List/components/TourListItem';
 import { numberArrayOf } from '@/utils/arrays';
 import { Post } from '@/models/Post';
-import MakeOfferModal from '@/pages/Posts/List/components/MakeOfferModal';
+import MakeOfferModal from '@/components/custom/MakeOfferModal';
 
 export interface TourListProps {
 

@@ -1,4 +1,4 @@
-import { Post } from '@/models/Post.ts';
+import { Post } from '@/models/Post';
 
 const postService = {
   getPosts: async (): Promise<Post[]> => {

@@ -1,13 +1,13 @@
 import React from 'react';
-import NavbarNotification from '@/components/Navbar/NavbarNotification';
-import ProfileDropdown from '@/components/Navbar/ProfileDropdown';
-import NavLink from '@/components/Navbar/NavLink';
+import NavbarNotification from '@/components/base/Navbar/NavbarNotification';
+import ProfileDropdown from '@/components/base/Navbar/ProfileDropdown';
+import NavLink from '@/components/base/Navbar/NavLink';
 import logo from '@/assets/images/logo/horizontal-logo.svg';
 
 export default function Navbar() {
   return (
     <nav className="sticky top-0 z-20 bg-white px-0 mx-0 py-2 shadow">
-      <div className="mx-auto max-w-6xl px-2 sm:px-6 lg:px-8">
+      <div className="mx-auto container px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
             <div className="relative flex-shrink-0 flex items-center">
