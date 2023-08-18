@@ -1,5 +1,6 @@
 import React from 'react';
-import logo from '@/assets/react.svg';
+import { Link } from 'react-router-dom';
+import logo from '@/assets/images/logo/full-logo.svg';
 import bgFooter from '@/assets/images/decore/bg-footer.svg';
 
 export default function Footer() {
@@ -9,13 +10,9 @@ export default function Footer() {
       <div className="container mx-auto px-6 py-3 md:flex md:justify-between">
         <div className="flex flex-col col-6">
           <div className="flex flex-col gap-0.5">
-            <a href="/" className="mb-1">
+            <Link to="/" className="mb-1">
               <img src={logo} alt="" />
-            </a>
-            <p className="text-sm">
-              Book your trip in minute, get full
-              Control for much longer.
-            </p>
+            </Link>
           </div>
         </div>
         <div className="flex flex-col col-6">

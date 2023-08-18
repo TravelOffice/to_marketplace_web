@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
 export interface FeaturedItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
 }
@@ -7,7 +8,7 @@ export interface FeaturedItemProps extends React.HTMLAttributes<HTMLAnchorElemen
 export default function FeaturedItem(props: FeaturedItemProps) {
   const { className, ...rest } = props;
   return (
-    <a href="/" className={classNames('shadow bg-white hover:shadow-md rounded-lg flex w-full', className)} {...rest}>
+    <Link to="/" className={classNames('shadow bg-white hover:shadow-md rounded-lg flex w-full', className)} {...rest}>
       <div className="h-full aspect-square">
         <img src="https://picsum.photos/200/300" alt="" className="rounded-tl-lg rounded-bl-lg w-full h-full" />
       </div>
@@ -78,8 +79,6 @@ export default function FeaturedItem(props: FeaturedItemProps) {
           it to make a type specimen book. It has survived not only
           five centuries, but also the leap into electronic typesetting,
           remaining essentially unchanged.
-          {' '}
-          <a href="/" className="text-blue-600">Read more</a>
         </p>
         <div className="flex justify-between items-center mt-4">
           <div className="flex items-center gap-2">
@@ -99,6 +98,6 @@ export default function FeaturedItem(props: FeaturedItemProps) {
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
