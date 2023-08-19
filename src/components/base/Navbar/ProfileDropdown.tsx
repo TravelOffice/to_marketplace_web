@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '@/assets/react.svg';
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +14,7 @@ export default function ProfileDropdown() {
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className="sr-only">Open user menu</span>
-          <img className="h-8 w-8 rounded-full" src={logo} alt="" />
+          <img src="https://picsum.photos/400/400" alt="" className="w-10 h-10 rounded-full" />
         </button>
       </div>
       {
@@ -26,8 +25,8 @@ export default function ProfileDropdown() {
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
-            <Link to="/me/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Profile</Link>
-            <Link to="/me/organization" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Organization</Link>
+            <Link to="/me/profile" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Profile</Link>
+            <Link to="/me/organization" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Organization</Link>
             <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
             <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
           </div>

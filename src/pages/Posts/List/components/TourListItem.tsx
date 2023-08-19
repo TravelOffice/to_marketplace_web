@@ -12,7 +12,7 @@ export interface TourListItemProps extends React.HTMLAttributes<HTMLDivElement> 
 export default function TourListItem(props: TourListItemProps) {
   const { onMakeOffer, post, ...rest } = props;
   return (
-    <div className="bg-white flex w-full pt-4 pb-4 border-b" {...rest}>
+    <div className="bg-white flex w-full pt-4 pb-4 border-b last:border-b-0" {...rest}>
       <div className="h-full">
         <img src="https://picsum.photos/200/300" alt="" className="rounded-lg w-48 h-48 mb-2" />
         <button

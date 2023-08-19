@@ -25,8 +25,8 @@ const tabs = [
 export default function MyOrganization() {
   return (
     <Layout>
-      <div className="container mx-auto">
-        <div className="flex items-center border-[1px] mt-10 rounded px-5 py-5 mb-10">
+      <div className="mx-8 pt-32">
+        <div className="flex items-center shadow-2xl rounded px-5 py-5 mb-10 bg-white">
           <img
             src="https://picsum.photos/800/800"
             alt=""
@@ -67,8 +67,8 @@ export default function MyOrganization() {
           </div>
         </div>
 
-        <div className="mt-10">
-          <Tabs tabs={tabs} sticky divider={false} itemClassName="w-fit" />
+        <div className="mt-10 bg-white rounded">
+          <Tabs tabs={tabs} sticky divider={false} itemClassName="w-fit" stickyClassName="top-32 bg-white rounded-t" />
         </div>
       </div>
     </Layout>

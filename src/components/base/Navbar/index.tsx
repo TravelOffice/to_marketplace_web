@@ -1,33 +1,22 @@
 import React from 'react';
+import { FiBookmark } from 'react-icons/fi';
 import NavbarNotification from '@/components/base/Navbar/NavbarNotification';
 import ProfileDropdown from '@/components/base/Navbar/ProfileDropdown';
-import NavLink from '@/components/base/Navbar/NavLink';
-import logo from '@/assets/images/logo/horizontal-logo.svg';
 
 export default function Navbar() {
   return (
-    <nav className="sticky top-0 z-20 bg-white px-0 mx-0 py-2 shadow">
-      <div className="mx-auto container px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="relative flex-shrink-0 flex items-center">
-              <a href="/">
-                <img src={logo} alt="" className="h-16" />
-              </a>
-            </div>
+    <nav className="fixed top-0 left-64 right-0 z-20 bg-gray-100">
+      <div className="flex justify-between items-center mx-8 mt-5 mb-10 px-4 py-3.5 rounded-lg bg-white shadow-lg z-20">
+        <div className="flex items-center gap-2">
+          <NavbarNotification />
+          <FiBookmark className="h-6 w-6 text-gray-400 cursor-pointer" />
+        </div>
+        <div className="flex items-center">
+          <div className="flex flex-col items-end me-5">
+            <h6 className="text-gray-800 font-semibold">Hi, John Doe</h6>
+            <p className="text-gray-600 text-sm">Welcome back to Dashboard</p>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <div className="hidden sm:block sm:ml-6 pe-3">
-              <div className="flex space-x-4">
-                <NavLink href="/">Home</NavLink>
-                <NavLink href="/posts?type=tour">Tours</NavLink>
-                <NavLink href="/posts?type=lead">Leads</NavLink>
-                <NavLink href="/posts/create">Create a post</NavLink>
-              </div>
-            </div>
-            <NavbarNotification />
-            <ProfileDropdown />
-          </div>
+          <ProfileDropdown />
         </div>
       </div>
     </nav>
