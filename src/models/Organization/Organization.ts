@@ -18,3 +18,19 @@ export interface Organization {
   createdAt: number,
   updatedAt: number,
 }
+
+export type CreateOrganizationPayload = Pick<Organization,
+'name'
+| 'email'
+| 'phoneNumber'
+| 'profilePicture'
+| 'address'
+| 'employeesCount'
+| 'foundedYear'
+| 'website'
+| 'socialMedia'
+>;
+
+export type CreateOrganizationFormData = Omit<CreateOrganizationPayload, 'profilePicture'> & {
+  profilePictureFile?: File
+};
