@@ -12,7 +12,7 @@ export interface PostListItemProps {
 export default function PostListItem(props: PostListItemProps) {
   const { post, renderAction } = props;
   return (
-    <div className="bg-white flex w-full pt-4 pb-4 border-b">
+    <div className="flex px-6 py-4 border-b last:border-b-0">
       <div className="h-full">
         <img src="https://picsum.photos/200/300" alt="" className="rounded-lg w-48 h-48 mb-2" />
         {renderAction(post)}

@@ -10,6 +10,7 @@ export interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
   sticky?: boolean,
   divider?: boolean,
   itemClassName?: string,
+  stickyClassName?: string,
 }
 
 export default function Tabs(props: TabsProps) {
@@ -18,6 +19,7 @@ export default function Tabs(props: TabsProps) {
     sticky = false,
     divider = true,
     itemClassName,
+    stickyClassName = 'top-0 bg-white z-10',
     ...rest
   } = props;
   const [activeTab, setActiveTab] = React.useState(0);
@@ -26,13 +28,13 @@ export default function Tabs(props: TabsProps) {
       <ul
         className={classNames(
           'border-b border-gray-200 text-sm font-medium text-center text-gray-500 sm:flex dark:text-gray-400',
-          sticky ? 'sticky top-20 bg-white dark:bg-gray-800' : '',
+          sticky ? `sticky ${stickyClassName}` : '',
           divider ? 'divide-x divide-gray-200 dark:divide-gray-700' : '',
         )}
       >
         {
           tabs.map((tab, index) => (
-            <li className={classNames('w-full', itemClassName)} key={tab.title}>
+            <li className={itemClassName} key={tab.title}>
               <button
                 type="button"
                 onClick={() => setActiveTab(index)}

@@ -1,18 +1,15 @@
 import React from 'react';
-import Navbar from '@/components/base/Navbar';
-import Footer from '@/components/base/Footer';
+import classNames from 'classnames';
 
 export interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export default function Layout(props: LayoutProps) {
-  const { children, ...rest } = props;
+  const { children, className, ...rest } = props;
 
   return (
-    <div {...rest}>
-      <Navbar />
+    <div {...rest} className={classNames('sm:ml-64 mt-0 pb-10', className)}>
       {children}
-      <Footer />
     </div>
   );
 }
