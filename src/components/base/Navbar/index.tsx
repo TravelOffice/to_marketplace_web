@@ -1,11 +1,14 @@
 import React from 'react';
 import { FiBookmark } from 'react-icons/fi';
+import classNames from 'classnames';
 import NavbarNotification from '@/components/base/Navbar/NavbarNotification';
 import ProfileDropdown from '@/components/base/Navbar/ProfileDropdown';
+import { useLayoutStore } from '@/hooks/layout';
 
 export default function Navbar() {
+  const isSidebarOpen = useLayoutStore((state) => state.isSidebarOpen);
   return (
-    <nav className="fixed top-0 left-64 right-0 z-20 bg-gray-100">
+    <nav className={classNames('fixed top-0 right-0 z-20 bg-gray-100 transition-all', isSidebarOpen ? 'left-64' : 'left-20')}>
       <div className="flex justify-between items-center mx-8 mt-5 mb-10 px-4 py-3.5 rounded-lg bg-white shadow-lg z-20">
         <div className="flex items-center gap-2">
           <NavbarNotification />

@@ -14,7 +14,7 @@ export default function SidebarItem(props: SidebarItemProps) {
       <Link
         to={path}
         className={classNames(
-          'group transition-all px-4 flex items-center p-2 rounded-lg dark:text-white',
+          'group/item transition-all px-4 flex items-center p-2 rounded-lg dark:text-white py-2.5 w-full',
           path === location.pathname ? 'bg-primary dark:bg-gray-700 text-white' : 'text-secondary',
         )}
       >
