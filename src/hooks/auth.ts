@@ -4,10 +4,10 @@ import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { isTokenExpired } from '@/utils/jwt';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
-import authorizedRequest from '@/services/authorizedRequest';
 
 export interface AuthState {
   currentUser: MarketplaceUser | null,
+  setCurrentUser: (user: MarketplaceUser) => void,
   accessToken: string | null,
   logIn: (token: string) => void,
   logOut: () => void,
@@ -18,13 +18,11 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       currentUser: null,
       accessToken: null,
-      logIn: async (token: string) => {
+      logIn: (token: string) => {
         set(() => ({ accessToken: token }));
-        authorizedRequest.accessToken = token;
-        const currentUser = await authorizedRequest.get('/me');
-        set(() => ({ currentUser }));
       },
       logOut: () => set(() => ({ accessToken: null })),
+      setCurrentUser: (user: MarketplaceUser) => set(() => ({ currentUser: user })),
     }),
     {
       name: 'auth-storage',
@@ -38,6 +36,7 @@ export function useAuth() {
     accessToken,
     logIn,
     currentUser,
+    setCurrentUser,
   } = useAuthStore();
   const location = useLocation();
   const { search: query } = location;
@@ -60,5 +59,6 @@ export function useAuth() {
     accessToken: idToken || accessToken,
     isLoggedIn: !!idToken || !!accessToken,
     currentUser,
+    setCurrentUser,
   };
 }

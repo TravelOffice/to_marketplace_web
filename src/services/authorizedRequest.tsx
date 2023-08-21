@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { useAuthStore } from '@/hooks/auth';
 
 export interface ApiRequestConfig {
   headers?: any,
@@ -10,11 +11,9 @@ export interface ApiRequestConfig {
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const authorizedRequest = {
-  accessToken: '',
-
   toAxiosRequestConfig: (apiRequestConfig?: ApiRequestConfig) => {
     const axiosRequestConfig: AxiosRequestConfig = {
-      headers: { Authorization: authorizedRequest.accessToken },
+      headers: { Authorization: useAuthStore.getState().accessToken },
       params: apiRequestConfig?.queryParams,
       data: apiRequestConfig?.data,
       signal: apiRequestConfig?.signal,
@@ -33,7 +32,6 @@ const authorizedRequest = {
   async get(path: string, config?: ApiRequestConfig): Promise<any> {
     const axiosConfig = this.toAxiosRequestConfig(config);
     const response = await axios.get(`${baseUrl}${path}`, axiosConfig);
-    console.log('Response', response);
     return this.proxyResponseApi(response);
   },
 

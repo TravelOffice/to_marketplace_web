@@ -1,18 +1,21 @@
 import React from 'react';
-import { Post } from '@/models/Post';
+import { TourPost } from '@/models/TourPost/TourPost';
 import PostListItem from './PostListItem';
 
 export interface PostListProps {
-  posts: Post[],
-  renderAction: (post: Post) => React.ReactNode,
+  posts: TourPost[],
+  renderAction: (post: TourPost) => React.ReactNode,
 }
 
 export default function PostList(props: PostListProps) {
-  const { posts, renderAction } = props;
+  const {
+    posts,
+    renderAction,
+  } = props;
   return (
     <div>
       {posts.map((post) => (
-        <PostListItem post={post} key={post.id} renderAction={renderAction} />
+        <PostListItem post={post} key={post.code} renderAction={renderAction} />
       ))}
     </div>
   );

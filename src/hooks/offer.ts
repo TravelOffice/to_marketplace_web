@@ -2,7 +2,7 @@ import { useMutation, useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import authorizedRequest from '@/services/authorizedRequest';
 import { CREATE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
-import { Offer } from '@/models/TourPost/Offer.ts';
+import { Offer } from '@/models/TourPost/Offer';
 
 export function useOffersOfPost(tourPostId: string) {
   return useQuery(

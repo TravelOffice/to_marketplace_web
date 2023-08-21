@@ -3,6 +3,22 @@ import { toast } from 'react-toastify';
 import authorizedRequest from '@/services/authorizedRequest';
 import { CREATE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import { useAuthStore } from '@/hooks/auth';
+
+export function useMe() {
+  return useQuery(
+    ['me'],
+    ({ signal }) => authorizedRequest.get('/me', {
+      signal,
+    }),
+    {
+      onSuccess: (data: any) => {
+        const { setCurrentUser } = useAuthStore.getState();
+        setCurrentUser(data);
+      },
+    },
+  );
+}
 
 export function useMarketplaceUsers() {
   return useQuery(

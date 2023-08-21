@@ -25,10 +25,37 @@ export default function ProfileDropdown() {
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
-            <Link to="/me/profile" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Profile</Link>
-            <Link to="/me/organization" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Organization</Link>
-            <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
-            <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
+            <Link
+              to="/me/profile"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              role="menuitem"
+            >
+              Thông
+              tin Cá nhân
+            </Link>
+            <Link
+              to="/me/organization"
+              onClick={() => setIsOpen(false)}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              role="menuitem"
+            >
+              Thông tin Công ty
+            </Link>
+            <a
+              href="/"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              role="menuitem"
+            >
+              Cài đặt
+            </a>
+            <a
+              href="/"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              role="menuitem"
+            >
+              Đăng xuất
+            </a>
           </div>
         )
       }

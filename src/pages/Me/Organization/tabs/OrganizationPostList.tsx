@@ -1,19 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PostList from '@/components/custom/PostList';
-import { Post } from '@/models/Post';
-import { numberArrayOf } from '@/utils/arrays';
-
-const organizationPosts: Post[] = numberArrayOf(10).map((i) => ({
-  id: i.toString(),
-}));
+import { usePostsByOrganization } from '@/hooks/post';
+import { useAuth } from '@/hooks/auth';
 
 export default function OrganizationPostList() {
+  const { currentUser } = useAuth();
+  const { data: tourPosts } = usePostsByOrganization(currentUser?.organization ?? '');
   return (
     <PostList
-      posts={organizationPosts}
+      posts={tourPosts.data}
       renderAction={(post) => (
-        <Link to={`/posts/${post.id}`}>
+        <Link to={`/posts/${post.code}`}>
           <button
             type="button"
             className="text-white bg-primary w-full rounded-lg font-medium text-sm px-5 py-2.5"

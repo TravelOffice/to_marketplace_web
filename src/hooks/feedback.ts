@@ -4,7 +4,7 @@ import authorizedRequest from '@/services/authorizedRequest';
 import {
   CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
 } from '@/utils/constants';
-import { OrgFeedback } from '@/models/Organization/OrgFeedback.ts';
+import { OrgFeedback } from '@/models/Organization/OrgFeedback';
 
 export function useOrganizationFeedback(organizationId: string) {
   return useQuery(
