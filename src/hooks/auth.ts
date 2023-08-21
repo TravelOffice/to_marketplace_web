@@ -1,10 +1,13 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { isTokenExpired } from '@/utils/jwt';
+import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import authorizedRequest from '@/services/authorizedRequest';
 
 export interface AuthState {
+  currentUser: MarketplaceUser | null,
   accessToken: string | null,
   logIn: (token: string) => void,
   logOut: () => void,
@@ -13,8 +16,14 @@ export interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
+      currentUser: null,
       accessToken: null,
-      logIn: (token: string) => set(() => ({ accessToken: token })),
+      logIn: async (token: string) => {
+        set(() => ({ accessToken: token }));
+        authorizedRequest.accessToken = token;
+        const currentUser = await authorizedRequest.get('/me');
+        set(() => ({ currentUser }));
+      },
       logOut: () => set(() => ({ accessToken: null })),
     }),
     {
@@ -25,7 +34,11 @@ export const useAuthStore = create<AuthState>()(
 );
 
 export function useAuth() {
-  const { accessToken, logIn } = useAuthStore();
+  const {
+    accessToken,
+    logIn,
+    currentUser,
+  } = useAuthStore();
   const location = useLocation();
   const { search: query } = location;
   const params = new URLSearchParams(query);
@@ -46,5 +59,6 @@ export function useAuth() {
   return {
     accessToken: idToken || accessToken,
     isLoggedIn: !!idToken || !!accessToken,
+    currentUser,
   };
 }
