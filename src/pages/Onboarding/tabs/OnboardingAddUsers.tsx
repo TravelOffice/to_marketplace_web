@@ -15,7 +15,7 @@ const roleOptions = [
 export default function OnboardingAddUsers(props: OnboardingAddUsersProps) {
   const { onNext, onBack } = props;
   return (
-    <div className="bg-white max-w-3xl mx-auto max-h-3/4 mt-10 p-6 rounded-lg shadow-lg">
+    <div className="bg-white max-w-3xl mx-auto max-h-3/4 mt-10 p-6 rounded-lg shadow-lg dark:bg-[#283046] dark:text-white">
       <h5 className="font-bold text-lg mb-6">Thêm thành viên</h5>
       <div className="max-h-[50vh] overflow-y-auto">
         {

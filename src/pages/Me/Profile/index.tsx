@@ -20,7 +20,7 @@ export default function Profile() {
     <Layout>
       <div className="mx-8 pt-32">
         <div
-          className="flex items-center border-[1px] rounded-lg px-5 py-5 mb-10 bg-white shadow-2xl"
+          className="flex items-center card rounded-lg px-5 py-5 mb-10 shadow-2xl"
         >
           <img
             src="https://picsum.photos/800/800"
@@ -37,7 +37,7 @@ export default function Profile() {
           </div>
           <div className="flex items-center gap-5">
             <div
-              className="flex justify-center cursor-pointer w-32 shadow-2xl text-center hover:shadow-xl aspect-square bg-white z-10 rounded-lg"
+              className="card flex justify-center cursor-pointer w-32 shadow-2xl text-center hover:shadow-xl aspect-square z-10"
             >
               <div className="my-auto">
                 <span className="font-semibold text-2xl tracking-wider">10</span>
@@ -46,7 +46,7 @@ export default function Profile() {
             </div>
 
             <div
-              className="flex justify-center cursor-pointer w-32 shadow-2xl text-center hover:shadow-xl aspect-square bg-white z-10 rounded-lg"
+              className="card flex justify-center cursor-pointer w-32 shadow-2xl text-center hover:shadow-xl aspect-square z-10"
             >
               <div className="my-auto">
                 <span className="font-semibold text-2xl tracking-wider">10</span>
@@ -55,7 +55,7 @@ export default function Profile() {
             </div>
 
             <div
-              className="flex justify-center cursor-pointer w-32 shadow-2xl text-center hover:shadow-xl aspect-square bg-white z-10 rounded-lg"
+              className="card flex justify-center cursor-pointer w-32 shadow-2xl text-center hover:shadow-xl aspect-square z-10"
             >
               <div className="my-auto">
                 <span className="font-semibold text-2xl tracking-wider">10</span>
@@ -65,13 +65,13 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="mt-10 rounded bg-white">
+        <div className="bg-white dark:bg-[#283046] dark:text-white mt-10">
           <Tabs
             tabs={tabs}
             sticky
             divider={false}
             itemClassName="w-fit"
-            stickyClassName="top-32 bg-white rounded-t"
+            stickyClassName="top-32 bg-white rounded-t dark:bg-[#283046]"
           />
         </div>
       </div>

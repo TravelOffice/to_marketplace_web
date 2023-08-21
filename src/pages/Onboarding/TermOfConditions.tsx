@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 export default function TermOfConditions() {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-50 z-30">
-      <div className="flex flex-col bg-white rounded-lg h-3/4 w-1/2 px-10 py-10 shadow-xl">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-50 z-30 dark:bg-[#161d31]">
+      <div className="flex flex-col bg-white rounded-lg h-3/4 w-1/2 px-10 py-10 shadow-xl dark:dark:bg-[#283046]">
         <h6 className="text-xl font-bold text-primary mb-3">Điều khoản dịch vụ</h6>
-        <span className="text-base">Vui lòng chấp nhận điều khoản dưới đây</span>
-        <div className="flex-1 overflow-y-scroll text-sm text-secondary mt-5 mb-5">
+        <span className="text-base dark:text-white">Vui lòng chấp nhận điều khoản dưới đây</span>
+        <div className="flex-1 overflow-y-scroll text-sm text-secondary mt-5 mb-5 dark:text-white">
           Lorem Ipsum is simply dummy text of the printing and typesetting industry.
           Lorem Ipsum has been the industrys standard dummy text ever since the 1500s,
           when an unknown printer took a galley of type and scrambled it to make

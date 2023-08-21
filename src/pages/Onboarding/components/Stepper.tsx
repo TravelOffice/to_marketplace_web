@@ -14,7 +14,7 @@ export interface StepperProps {
 export default function Stepper(props: StepperProps) {
   const { steps, currentStep } = props;
   return (
-    <div className="flex relative">
+    <div className="flex relative dark:text-white">
       {
         steps.map((step, i) => (
           <div className="relative flex-1" key={step.title}>

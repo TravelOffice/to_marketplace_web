@@ -1,3 +1,7 @@
 #root {
   font-family: 'Poppins', sans-serif;
 }
+
+body {
+  @apply dark:bg-[#161d31];
+}

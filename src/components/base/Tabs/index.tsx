@@ -27,7 +27,7 @@ export default function Tabs(props: TabsProps) {
     <div {...rest}>
       <ul
         className={classNames(
-          'border-b border-gray-200 text-sm font-medium text-center text-gray-500 sm:flex dark:text-gray-400',
+          'border-b border-gray-200 text-sm font-medium text-center text-gray-500 sm:flex dark:text-gray-400 dark:border-gray-700',
           sticky ? `sticky ${stickyClassName}` : '',
           divider ? 'divide-x divide-gray-200 dark:divide-gray-700' : '',
         )}

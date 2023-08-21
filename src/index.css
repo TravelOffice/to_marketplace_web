@@ -5,3 +5,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.card {
+  @apply bg-white p-6 rounded dark:bg-[#283046] dark:text-white;
+}
