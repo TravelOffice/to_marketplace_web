@@ -13,7 +13,7 @@ export default function Comment() {
           <h6 className="font-bold">Nguyen Tuan Anh</h6>
           <span className="text-gray-400 text-xs italic">10:00 Aug 9, 2023</span>
         </div>
-        <p className="text-sm text-secondary">
+        <p className="text-sm text-secondary dark:text-white">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.
         </p>
       </div>

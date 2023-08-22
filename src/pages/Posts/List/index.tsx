@@ -19,24 +19,24 @@ export default function PostList() {
     <Layout>
       <div className="mx-8 pt-32">
         <div className="grid grid-cols-12 gap-6">
-          <div className="sticky top-32 col-span-3 bg-white p-6 h-fit rounded">
+          <div className="card sticky top-32 col-span-3 h-fit">
             <h6 className="font-bold mb-6">Lọc bài đăng</h6>
             <form>
-              <label className="block mb-2 text-sm text-secondary" htmlFor="title">Tiêu đề</label>
+              <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">Tiêu đề</label>
               <Input />
 
-              <label className="block mb-2 text-sm text-secondary" htmlFor="title">Điểm đến</label>
+              <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">Điểm đến</label>
               <Input />
 
-              <label className="block mb-2 text-sm text-secondary" htmlFor="title">
+              <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
                 Ngày khởi
                 hành
               </label>
               <Input />
             </form>
           </div>
-          <div className="col-span-9 bg-white px-6 pb-6 h-fit rounded">
-            <Tabs tabs={tabs} divider={false} sticky stickyClassName="pt-6 top-32 bg-white" />
+          <div className="col-span-9 h-fit bg-white dark:bg-[#283046] dark:text-white">
+            <Tabs tabs={tabs} divider={false} sticky stickyClassName="pt-6 top-32 bg-white dark:bg-[#283046]" />
           </div>
         </div>
       </div>

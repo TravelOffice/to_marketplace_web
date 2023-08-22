@@ -9,7 +9,7 @@ export default function OrganizationPostList() {
   const { data: tourPosts } = usePostsByOrganization(currentUser?.organization ?? '');
   return (
     <PostList
-      posts={tourPosts.data}
+      posts={tourPosts?.data || []}
       renderAction={(post) => (
         <Link to={`/posts/${post.code}`}>
           <button

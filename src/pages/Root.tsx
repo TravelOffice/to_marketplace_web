@@ -13,7 +13,7 @@ export default function Root() {
   }
   useMe();
   return (
-    <div className="bg-gray-100">
+    <div className="bg-gray-100 dark:bg-[#161d31]">
       <Sidebar />
       <Navbar />
       <div className="relative">

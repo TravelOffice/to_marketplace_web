@@ -57,7 +57,7 @@ export default function Onboarding() {
 
   return (
     <Layout>
-      <div className="fixed z-50 inset-0 bg-gray-50">
+      <div className="fixed z-50 inset-0 bg-gray-50 dark:bg-[#161d31]">
         <div className="max-w-4xl mx-auto mt-16">
           <Stepper steps={steps} currentStep={currentStep} />
         </div>

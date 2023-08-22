@@ -14,7 +14,7 @@ export default function Sidebar() {
   return (
     <div
       className={classNames(
-        'fixed top-0 left-0 z-30 h-screen transition-all -translate-x-full sm:translate-x-0 shadow-lg hover:w-64 group/sidebar ease-out',
+        'fixed top-0 left-0 z-30 h-screen transition-all -translate-x-full sm:translate-x-0 shadow-lg hover:w-64 group/sidebar ease-out dark:bg-[#283046] dark:text-[#dcdcdc]',
         isSidebarOpen ? 'w-64' : 'w-20',
       )}
     >

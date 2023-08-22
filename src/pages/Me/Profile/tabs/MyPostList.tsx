@@ -7,7 +7,7 @@ export default function MyPostList() {
   const { data: tourPosts } = useMyPosts();
   return (
     <PostList
-      posts={tourPosts?.data}
+      posts={tourPosts?.data || []}
       renderAction={(post) => (
         <Link to={`/posts/${post.code}`}>
           <button
