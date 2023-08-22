@@ -4,7 +4,7 @@ import authorizedRequest from '@/services/authorizedRequest';
 import {
   CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
 } from '@/utils/constants';
-import { PostRating } from '@/models/TourPost/PostRating.ts';
+import { PostRating } from '@/models/TourPost/PostRating';
 
 export function usePostRatings(tourPostId: string) {
   return useQuery(

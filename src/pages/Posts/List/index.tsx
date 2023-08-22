@@ -6,11 +6,11 @@ import TourList from '@/pages/Posts/List/components/TourList';
 
 const tabs = [
   {
-    title: 'Find tours',
+    title: 'Tìm tour',
     content: <TourList />,
   },
   {
-    title: 'Find leads',
+    title: 'Tìm khách',
     content: <div>Leads</div>,
   },
 ];
@@ -20,15 +20,18 @@ export default function PostList() {
       <div className="mx-8 pt-32">
         <div className="grid grid-cols-12 gap-6">
           <div className="sticky top-32 col-span-3 bg-white p-6 h-fit rounded">
-            <h6 className="font-bold mb-6">Filter</h6>
+            <h6 className="font-bold mb-6">Lọc bài đăng</h6>
             <form>
-              <label className="block mb-2 text-sm text-secondary" htmlFor="title">Title</label>
+              <label className="block mb-2 text-sm text-secondary" htmlFor="title">Tiêu đề</label>
               <Input />
 
-              <label className="block mb-2 text-sm text-secondary" htmlFor="title">Destination</label>
+              <label className="block mb-2 text-sm text-secondary" htmlFor="title">Điểm đến</label>
               <Input />
 
-              <label className="block mb-2 text-sm text-secondary" htmlFor="title">Start date</label>
+              <label className="block mb-2 text-sm text-secondary" htmlFor="title">
+                Ngày khởi
+                hành
+              </label>
               <Input />
             </form>
           </div>

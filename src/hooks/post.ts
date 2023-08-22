@@ -25,6 +25,26 @@ export function usePosts() {
   );
 }
 
+export function usePostsByOrganization(organization: string) {
+  return useQuery(
+    ['posts_oby_organization', organization],
+    ({ signal }) => authorizedRequest.get('/posts', {
+      signal,
+      queryParams: { organization },
+    }),
+  );
+}
+
+export function usePostsByAuthor(author: string) {
+  return useQuery(
+    ['posts_by_author', author],
+    ({ signal }) => authorizedRequest.get('/posts', {
+      signal,
+      queryParams: { author },
+    }),
+  );
+}
+
 export function usePost(id: string) {
   return useQuery(
     ['posts', id],

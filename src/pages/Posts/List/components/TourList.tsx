@@ -1,23 +1,18 @@
 import React from 'react';
 import TourListItem from '@/pages/Posts/List/components/TourListItem';
-import { numberArrayOf } from '@/utils/arrays';
-import { Post } from '@/models/Post';
 import MakeOfferModal from '@/components/custom/MakeOfferModal';
-
-export interface TourListProps {
-
-}
-
-const tours = numberArrayOf(10).map((i) => ({ id: i.toString() })) as Post[];
+import { TourPost } from '@/models/TourPost/TourPost';
+import { usePosts } from '@/hooks/post';
 
 export default function TourList() {
-  const [selectedTour, setSelectedTour] = React.useState<Post>();
+  const [selectedTour, setSelectedTour] = React.useState<TourPost>();
+  const { data: tourPosts } = usePosts();
   return (
     <div>
       {
-        tours.map((tour) => (
+        tourPosts?.data.map((tour: TourPost) => (
           <TourListItem
-            key={tour.id}
+            key={tour.code}
             onMakeOffer={() => setSelectedTour(tour)}
             post={tour}
           />

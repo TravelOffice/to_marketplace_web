@@ -7,7 +7,8 @@ import '@/styles/extended/ckeditor.css';
 import Label from '@/components/base/Label';
 import '@/styles/extended/react-select.css';
 
-export interface CreatePostProps {}
+export interface CreatePostProps {
+}
 
 export default function CreatePost() {
   return (
@@ -18,14 +19,23 @@ export default function CreatePost() {
 
           <form className="mt-5">
             <Label title="Title" required />
-            <input type="text" className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none" />
+            <input
+              type="text"
+              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+            />
 
             <Label title="Type" required />
             <Select
               className="mb-5"
               options={[
-                { value: 'tour', label: 'Post' },
-                { value: 'lead', label: 'Lead' },
+                {
+                  value: 'tour',
+                  label: 'Post',
+                },
+                {
+                  value: 'lead',
+                  label: 'Lead',
+                },
               ]}
               classNamePrefix="react-select"
               theme={(theme) => ({
@@ -43,7 +53,9 @@ export default function CreatePost() {
             />
 
             <Label title="Short description" required />
-            <textarea className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none" />
+            <textarea
+              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+            />
 
             <Label title="Description" required />
             <CKEditor
@@ -51,11 +63,17 @@ export default function CreatePost() {
               data="<p>Hello from CKEditor&nbsp;5!</p>"
               onReady={(editor) => {
                 // You can store the "editor" and use when it is needed.
+                // eslint-disable-next-line no-console
                 console.log('Editor is ready to use!', editor);
               }}
               onChange={(event, editor) => {
                 const data = editor.getData();
-                console.log({ event, editor, data });
+                // eslint-disable-next-line no-console
+                console.log({
+                  event,
+                  editor,
+                  data,
+                });
               }}
             />
 
