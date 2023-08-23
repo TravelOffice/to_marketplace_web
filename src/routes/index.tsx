@@ -15,8 +15,10 @@ const routes: RouteObject[] = [
       rootRoutes,
       postRoutes,
       meRoutes,
-      onboardingRoutes,
     ],
+  },
+  {
+    ...onboardingRoutes,
   },
 ];
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
-import { numberArrayOf } from '@/utils/arrays';
+import { useAllUsers } from '@/hooks/organization';
+import Spinner from '@/components/base/Spinner';
 
 export interface OnboardingAddUsersProps {
   onNext: () => void,
-  onBack: () => void,
 }
 
 const roleOptions = [
@@ -13,23 +13,35 @@ const roleOptions = [
 ];
 
 export default function OnboardingAddUsers(props: OnboardingAddUsersProps) {
-  const { onNext, onBack } = props;
+  const { onNext } = props;
+  const { data: allUsers = [], isLoading } = useAllUsers();
   return (
     <div className="bg-white max-w-3xl mx-auto max-h-3/4 mt-10 p-6 rounded-lg shadow-lg dark:bg-[#283046] dark:text-white">
       <h5 className="font-bold text-lg mb-6">Thêm thành viên</h5>
       <div className="max-h-[50vh] overflow-y-auto">
         {
-          numberArrayOf(10).map((i) => (
-            <div key={i} className="flex items-center gap-4 py-4 pe-5 border-b">
+          isLoading && (
+            <div className="text-center">
+              <Spinner />
+            </div>
+          )
+        }
+        {
+          allUsers.map((user) => (
+            <div key={user.username} className="flex items-center gap-4 py-4 pe-5 border-b">
               <input type="checkbox" />
               <img
-                src="https://picsum.photos/800/800"
+                src={user.avatar || `https://ui-avatars.com/api/?name=${user.firstName}&background=random&length=1&rounded=true`}
                 alt=""
                 className="w-12 h-12 rounded-full"
               />
               <div className="flex-1">
-                <h6 className="font-semibold">John Doe</h6>
-                <p className="text-sm text-secondary">john.doe@example.com</p>
+                <h6 className="font-semibold">
+                  {user.lastName}
+                  {' '}
+                  {user.firstName}
+                </h6>
+                <p className="text-sm text-secondary">{user.email}</p>
               </div>
               <Select
                 options={roleOptions}
@@ -40,8 +52,7 @@ export default function OnboardingAddUsers(props: OnboardingAddUsersProps) {
         }
       </div>
       <div className="flex justify-end mt-10">
-        <button onClick={onBack} type="submit" className="bg-gray-400 text-white px-10 py-2 rounded-lg">Quay lại</button>
-        <button onClick={onNext} type="submit" className="bg-primary text-white px-10 py-2 rounded-lg ms-4">Hoàn thành</button>
+        <button onClick={onNext} type="submit" className="bg-primary text-white px-10 py-2 rounded-lg ms-4">Tiếp theo</button>
       </div>
     </div>
   );

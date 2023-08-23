@@ -1,15 +1,20 @@
 import { toast } from 'react-toastify';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import authorizedRequest from '@/services/authorizedRequest';
+import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useState } from 'react';
+import marketplaceApi from '@/services/marketplaceApi';
 import {
-  CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
+  DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
 } from '@/utils/constants';
-import { Organization } from '@/models/Organization/Organization';
+import { CreateOrganizationFormData, CreateOrganizationPayload, Organization } from '@/models/Organization/Organization';
+import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import { useAuth } from '@/hooks/auth';
+import backendApi from '@/services/backendApi';
+import { User } from '@/models/User/User';
 
 export function useOrganizations() {
   return useQuery(
     ['organizations'],
-    ({ signal }) => authorizedRequest.get('/organizations', {
+    ({ signal }) => marketplaceApi.get('/organizations', {
       signal,
     }),
   );
@@ -18,30 +23,62 @@ export function useOrganizations() {
 export function useOrganization(organizationId: string) {
   return useQuery(
     ['organization', organizationId],
-    ({ signal }) => authorizedRequest.get(`/organizations/${organizationId}`, {
+    ({ signal }) => marketplaceApi.get(`/organizations/${organizationId}`, {
       signal,
     }),
   );
 }
 
-export function useCreateOrganization(organization: Organization) {
+export function useOrganizationByCurrentUser(currentUser: MarketplaceUser | null) {
+  return useQuery({
+    queryKey: ['organization', currentUser?.organization],
+    queryFn: ({ signal }) => marketplaceApi.get(`/organizations/${currentUser?.organization}`, { signal }),
+    enabled: !!currentUser,
+  });
+}
+
+export function useAcceptTermStatus(): 'checking' | 'yes' | 'no' {
+  const { currentUser } = useAuth();
+  const [firstFetch, setFirstFetch] = useState(false);
+  const { data: organization, isFetched } = useOrganizationByCurrentUser(currentUser);
+  useEffect(() => {
+    if (isFetched && !firstFetch) {
+      setFirstFetch(true);
+    }
+  }, [isFetched, firstFetch]);
+  return useMemo(() => {
+    if (!firstFetch) return 'checking';
+    return organization ? 'yes' : 'no';
+  }, [organization, firstFetch]);
+}
+
+export function useAllUsers() {
+  return useQuery({
+    queryKey: ['allUsers'],
+    queryFn: ({ signal }) => backendApi.get<User[]>('/users', { signal }),
+  });
+}
+
+export function useCreateOrganization(
+  options: UseMutationOptions<Organization, Error, CreateOrganizationFormData>,
+) {
   return useMutation(
-    () => authorizedRequest.post('/organizations', organization),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(CREATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
+    async (formData: CreateOrganizationFormData) => {
+      // TODO: Upload logo
+      const { profilePictureFile, ...rest } = formData;
+      const createOrganizationPayload: CreateOrganizationPayload = {
+        ...rest,
+        profilePicture: 'https://picsum.photos/300/300',
+      };
+      return marketplaceApi.post<Organization>('/organizations', createOrganizationPayload);
     },
+    options,
   );
 }
 
 export function useUpdateOrganization(organization: Organization) {
   return useMutation(
-    () => authorizedRequest.post(`/organizations/${organization.name}`, organization),
+    () => marketplaceApi.post(`/organizations/${organization.name}`, organization),
     {
       onSuccess: () => {
         // Show success toast
@@ -56,7 +93,7 @@ export function useUpdateOrganization(organization: Organization) {
 
 export function useDeleteOrganization(organizationId: string) {
   return useMutation(
-    () => authorizedRequest.post(`/organizations/${organizationId}`),
+    () => marketplaceApi.post(`/organizations/${organizationId}`),
     {
       onSuccess: () => {
         // Show success toast

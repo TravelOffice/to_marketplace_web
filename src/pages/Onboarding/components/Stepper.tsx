@@ -20,8 +20,9 @@ export default function Stepper(props: StepperProps) {
           <div className="relative flex-1" key={step.title}>
             <div
               className={classNames(
-                'absolute top-3 border-[1px] border-primary opacity-30',
+                'absolute top-3 border-[1px] opacity-30',
                 i > 0 ? '-left-1/2 w-full scale-90' : '',
+                i <= currentStep ? 'border-primary' : 'border-gray-200',
               )}
             />
             <div className="flex flex-col items-center" key={step.title}>

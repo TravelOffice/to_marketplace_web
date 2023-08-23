@@ -56,8 +56,8 @@ export function useAuth() {
   }, [idToken, logIn]);
 
   return {
-    accessToken: idToken || accessToken,
-    isLoggedIn: !!idToken || !!accessToken,
+    accessToken,
+    isLoggedIn: !!accessToken,
     currentUser,
     setCurrentUser,
   };

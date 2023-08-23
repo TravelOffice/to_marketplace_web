@@ -10,7 +10,6 @@ export default function Input(props: InputProps) {
     className,
     ...rest
   } = props;
-  console.log(rest);
   return (
     <input
       className={classNames(
