@@ -1,7 +1,7 @@
-import { useMutation, useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import authorizedRequest from '@/services/authorizedRequest';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import authorizedRequest, { PaginationPayload } from '@/services/authorizedRequest';
 import {
   CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
 } from '@/utils/constants';
@@ -10,7 +10,7 @@ import { TourPost } from '@/models/TourPost/TourPost';
 export function useMyPosts() {
   return useQuery(
     ['my_posts'],
-    ({ signal }) => authorizedRequest.get('/me/posts', {
+    ({ signal }) => authorizedRequest.get<PaginationPayload<TourPost>>('/me/posts', {
       signal,
     }),
   );
@@ -19,7 +19,7 @@ export function useMyPosts() {
 export function usePosts() {
   return useQuery(
     ['posts'],
-    ({ signal }) => authorizedRequest.get('/posts', {
+    async ({ signal }) => authorizedRequest.get<PaginationPayload<TourPost>>('/posts', {
       signal,
     }),
   );
@@ -28,7 +28,7 @@ export function usePosts() {
 export function usePostsByOrganization(organization: string) {
   return useQuery(
     ['posts_oby_organization', organization],
-    ({ signal }) => authorizedRequest.get('/posts', {
+    ({ signal }) => authorizedRequest.get<PaginationPayload<TourPost>>('/posts', {
       signal,
       queryParams: { organization },
     }),
@@ -38,7 +38,7 @@ export function usePostsByOrganization(organization: string) {
 export function usePostsByAuthor(author: string) {
   return useQuery(
     ['posts_by_author', author],
-    ({ signal }) => authorizedRequest.get('/posts', {
+    async ({ signal }) => authorizedRequest.get <PaginationPayload<TourPost>>('/posts', {
       signal,
       queryParams: { author },
     }),
@@ -48,7 +48,7 @@ export function usePostsByAuthor(author: string) {
 export function usePost(id: string) {
   return useQuery(
     ['posts', id],
-    ({ signal }) => authorizedRequest.get(`/posts/${id}`, {
+    ({ signal }) => authorizedRequest.get<TourPost>(`/posts/${id}`, {
       signal,
     }),
   );
@@ -56,7 +56,7 @@ export function usePost(id: string) {
 
 export function useCreatePost(post: TourPost) {
   return useMutation(
-    () => authorizedRequest.post('/post', post),
+    () => authorizedRequest.post<TourPost>('/post', post),
     {
       onSuccess: () => {
         // Show success toast

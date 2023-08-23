@@ -1,18 +1,20 @@
-import { useMutation, useQuery } from 'react-query';
 import { toast } from 'react-toastify';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import authorizedRequest from '@/services/authorizedRequest';
 import {
   CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
 } from '@/utils/constants';
 import { PostRating } from '@/models/TourPost/PostRating';
 
-export function usePostRatings(tourPostId: string) {
-  return useQuery(
-    ['ratings_of_post', tourPostId],
-    ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/ratings`, {
+export function usePostRatings(tourPostId: string, organization: string, enabled?: boolean) {
+  return useQuery({
+    queryKey: ['ratings_of_post', tourPostId],
+    queryFn: ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/ratings`, {
       signal,
+      queryParams: { organization },
     }),
-  );
+    enabled,
+  });
 }
 
 export function useCreateRating(tourPostId: string, rating: PostRating) {

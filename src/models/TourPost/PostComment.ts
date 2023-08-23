@@ -6,3 +6,8 @@ export interface PostComment {
   createdAt: number,
   updatedAt: number,
 }
+
+export type CreateCommentFormData = Pick<PostComment,
+'tourPostId' |
+'description'
+>;

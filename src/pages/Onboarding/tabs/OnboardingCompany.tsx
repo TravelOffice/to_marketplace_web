@@ -8,7 +8,10 @@ export interface OnboardingCompanyProps {
 }
 
 export default function OnboardingCompany(props: OnboardingCompanyProps) {
-  const { onNext, form } = props;
+  const {
+    onNext,
+    form,
+  } = props;
 
   const {
     control,
@@ -23,7 +26,9 @@ export default function OnboardingCompany(props: OnboardingCompanyProps) {
   };
 
   return (
-    <div className="bg-white max-w-3xl mx-auto max-h-3/4 mt-10 p-6 rounded-lg shadow-lg dark:bg-[#283046] dark:text-white">
+    <div
+      className="bg-white max-w-3xl mx-auto max-h-3/4 mt-10 p-6 rounded-lg shadow-lg dark:bg-[#283046] dark:text-white"
+    >
       <h5 className="font-bold text-lg mb-6">Thông tin công ty</h5>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4 max-h-[50vh] overflow-y-auto pb-4">
@@ -32,8 +37,13 @@ export default function OnboardingCompany(props: OnboardingCompanyProps) {
               Tên công ty
               <span className="text-red-700">*</span>
             </label>
-            <input {...register('name')} type="text" className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]" />
-            {errors.name && <p className="text-red-700 text-xs italic mt-1">{errors.name.message}</p>}
+            <input
+              {...register('name')}
+              type="text"
+              className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]"
+            />
+            {errors.name
+              && <p className="text-red-700 text-xs italic mt-1">{errors.name.message}</p>}
           </div>
           <div>
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
@@ -46,62 +56,105 @@ export default function OnboardingCompany(props: OnboardingCompanyProps) {
               placeholder="Chọn hình ảnh"
               {...register('profilePictureFile')}
             />
-            {errors.profilePictureFile && <p className="text-red-700 text-xs italic mt-1">{errors.profilePictureFile.message}</p>}
+            {errors.profilePictureFile
+              && <p className="text-red-700 text-xs italic mt-1">{errors.profilePictureFile.message}</p>}
           </div>
           <div>
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Email công ty
               <span className="text-red-700">*</span>
             </label>
-            <input {...register('email')} type="text" className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]" />
-            {errors.email && <p className="text-red-700 text-xs italic mt-1">{errors.email.message}</p>}
+            <input
+              {...register('email')}
+              type="text"
+              className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]"
+            />
+            {errors.email
+              && <p className="text-red-700 text-xs italic mt-1">{errors.email.message}</p>}
           </div>
           <div>
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Số điện thoại công ty
               <span className="text-red-700">*</span>
             </label>
-            <input {...register('phoneNumber')} type="text" className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]" />
-            {errors.phoneNumber && <p className="text-red-700 text-xs italic mt-1">{errors.phoneNumber.message}</p>}
+            <input
+              {...register('phoneNumber')}
+              type="text"
+              className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]"
+            />
+            {errors.phoneNumber
+              && <p className="text-red-700 text-xs italic mt-1">{errors.phoneNumber.message}</p>}
           </div>
           <div className="mb-4">
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Địa chỉ công ty
             </label>
-            <input {...register('address')} type="text" className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]" />
-            {errors.address && <p className="text-red-700 text-xs italic mt-1">{errors.address.message}</p>}
+            <input
+              {...register('address')}
+              type="text"
+              className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]"
+            />
+            {errors.address
+              && <p className="text-red-700 text-xs italic mt-1">{errors.address.message}</p>}
           </div>
           <div className="mb-4">
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Website
             </label>
-            <input {...register('website')} type="text" className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]" />
-            {errors.website && <p className="text-red-700 text-xs italic mt-1">{errors.website.message}</p>}
+            <input
+              {...register('website')}
+              type="text"
+              className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]"
+            />
+            {errors.website
+              && <p className="text-red-700 text-xs italic mt-1">{errors.website.message}</p>}
           </div>
           <div className="mb-4">
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Số lượng nhân viên
             </label>
-            <input {...register('employeesCount')} type="number" className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]" />
-            {errors.employeesCount && <p className="text-red-700 text-xs italic mt-1">{errors.employeesCount.message}</p>}
+            <input
+              {...register('employeesCount')}
+              type="number"
+              className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]"
+            />
+            {errors.employeesCount
+              && <p className="text-red-700 text-xs italic mt-1">{errors.employeesCount.message}</p>}
           </div>
           <div className="mb-4">
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Năm thành lập
             </label>
-            <input {...register('foundedYear')} type="number" className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]" />
-            {errors.foundedYear && <p className="text-red-700 text-xs italic mt-1">{errors.foundedYear.message}</p>}
+            <input
+              {...register('foundedYear')}
+              type="number"
+              className="w-full border-[1px] border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-primary dark:bg-[#283046] dark:text-white dark:border-[#404656]"
+            />
+            {errors.foundedYear
+              && <p className="text-red-700 text-xs italic mt-1">{errors.foundedYear.message}</p>}
           </div>
           <div className="mb-4">
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Facebook
             </label>
-            <div className="flex items-center border-[1px] border-gray-200 rounded-lg dark:border-[#404656]">
-              <span className="text-gray-500 bg-gray-100 py-2 px-4 h-full rounded-l-lg">https://facebook.com/</span>
+            <div
+              className="flex items-center border-[1px] border-gray-200 rounded-lg dark:border-[#404656]"
+            >
+              <span
+                className="text-gray-500 bg-gray-100 py-2 px-4 h-full rounded-l-lg"
+              >
+                https://facebook.com/
+              </span>
               <Controller
                 control={control}
                 name="socialMedia.facebook"
-                render={({ field: { onChange, value, ...rest } }) => (
+                render={({
+                  field: {
+                    onChange,
+                    value,
+                    ...rest
+                  },
+                }) => (
                   <input
                     className="w-full ps-2 py-2 pe-4 rounded-r-lg focus:outline-none focus:ring-1 focus:ring-primary dark:bg-[#283046] dark:text-white"
                     value={value?.replace('https://facebook.com/', '')}
@@ -111,18 +164,31 @@ export default function OnboardingCompany(props: OnboardingCompanyProps) {
                 )}
               />
             </div>
-            {errors.socialMedia?.facebook && <p className="text-red-700 text-xs italic mt-1">{errors.socialMedia.facebook.message}</p>}
+            {errors.socialMedia?.facebook
+              && <p className="text-red-700 text-xs italic mt-1">{errors.socialMedia.facebook.message}</p>}
           </div>
           <div className="mb-4">
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Zalo
             </label>
-            <div className="flex items-center border-[1px] border-gray-200 rounded-lg dark:border-[#404656]">
-              <span className="text-gray-500 bg-gray-100 py-2 px-4 h-full rounded-l-lg">https://zalo.me/</span>
+            <div
+              className="flex items-center border-[1px] border-gray-200 rounded-lg dark:border-[#404656]"
+            >
+              <span
+                className="text-gray-500 bg-gray-100 py-2 px-4 h-full rounded-l-lg"
+              >
+                https://zalo.me/
+              </span>
               <Controller
                 control={control}
                 name="socialMedia.zalo"
-                render={({ field: { onChange, value, ...rest } }) => (
+                render={({
+                  field: {
+                    onChange,
+                    value,
+                    ...rest
+                  },
+                }) => (
                   <input
                     className="w-full ps-2 py-2 pe-4 rounded-r-lg focus:outline-none focus:ring-1 focus:ring-primary dark:bg-[#283046] dark:text-white"
                     value={value?.replace('https://zalo.me/', '')}
@@ -132,18 +198,31 @@ export default function OnboardingCompany(props: OnboardingCompanyProps) {
                 )}
               />
             </div>
-            {errors.socialMedia?.zalo && <p className="text-red-700 text-xs italic mt-1">{errors.socialMedia.zalo.message}</p>}
+            {errors.socialMedia?.zalo
+              && <p className="text-red-700 text-xs italic mt-1">{errors.socialMedia.zalo.message}</p>}
           </div>
           <div className="mb-4">
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Twitter
             </label>
-            <div className="flex items-center border-[1px] border-gray-200 rounded-lg dark:border-[#404656]">
-              <span className="text-gray-500 bg-gray-100 py-2 px-4 h-full rounded-l-lg">https://twitter.com/</span>
+            <div
+              className="flex items-center border-[1px] border-gray-200 rounded-lg dark:border-[#404656]"
+            >
+              <span
+                className="text-gray-500 bg-gray-100 py-2 px-4 h-full rounded-l-lg"
+              >
+                https://twitter.com/
+              </span>
               <Controller
                 control={control}
                 name="socialMedia.twitter"
-                render={({ field: { onChange, value, ...rest } }) => (
+                render={({
+                  field: {
+                    onChange,
+                    value,
+                    ...rest
+                  },
+                }) => (
                   <input
                     className="w-full ps-2 py-2 pe-4 rounded-r-lg focus:outline-none focus:ring-1 focus:ring-primary dark:bg-[#283046] dark:text-white"
                     value={value?.replace('https://twitter.com/', '')}
@@ -153,18 +232,31 @@ export default function OnboardingCompany(props: OnboardingCompanyProps) {
                 )}
               />
             </div>
-            {errors.socialMedia?.twitter && <p className="text-red-700 text-xs italic mt-1">{errors.socialMedia.twitter.message}</p>}
+            {errors.socialMedia?.twitter
+              && <p className="text-red-700 text-xs italic mt-1">{errors.socialMedia.twitter.message}</p>}
           </div>
           <div className="mb-4">
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
               Instagram
             </label>
-            <div className="flex items-center border-[1px] border-gray-200 rounded-lg dark:border-[#404656]">
-              <span className="text-gray-500 bg-gray-100 py-2 px-4 h-full rounded-l-lg">https://instagram.com/</span>
+            <div
+              className="flex items-center border-[1px] border-gray-200 rounded-lg dark:border-[#404656]"
+            >
+              <span
+                className="text-gray-500 bg-gray-100 py-2 px-4 h-full rounded-l-lg"
+              >
+                https://instagram.com/
+              </span>
               <Controller
                 control={control}
                 name="socialMedia.instagram"
-                render={({ field: { onChange, value, ...rest } }) => (
+                render={({
+                  field: {
+                    onChange,
+                    value,
+                    ...rest
+                  },
+                }) => (
                   <input
                     className="w-full ps-2 py-2 pe-4 rounded-r-lg focus:outline-none focus:ring-1 focus:ring-primary dark:bg-[#283046] dark:text-white"
                     value={value?.replace('https://instagram.com/', '')}
@@ -174,7 +266,8 @@ export default function OnboardingCompany(props: OnboardingCompanyProps) {
                 )}
               />
             </div>
-            {errors.socialMedia?.instagram && <p className="text-red-700 text-xs italic mt-1">{errors.socialMedia.instagram.message}</p>}
+            {errors.socialMedia?.instagram
+              && <p className="text-red-700 text-xs italic mt-1">{errors.socialMedia.instagram.message}</p>}
           </div>
         </div>
         <div className="flex justify-end mt-4">
