@@ -23,8 +23,14 @@ export default function PostListItem(props: PostListItemProps) {
       </div>
       <div className="flex flex-col flex-1 text-left ps-5">
         <Link to={`/posts/${post.code}`} className="font-bold text-lg mb-1">{post.name}</Link>
-        <RatingBar rating={3.5} />
-        <p className="flex-1 text-sm text-gray-500 mb-2 text-justify dark:text-white">
+        {
+          post.ratingAverage! > 0 ?? (
+            <RatingBar rating={post.ratingAverage!} />
+          )
+        }
+        <p
+          className="flex-1 text-sm text-gray-500 mb-2 text-justify dark:text-white whitespace-pre-wrap"
+        >
           {post.description}
           {' '}
           <Link to={`/posts/${post.code}`} className="text-blue-600">Xem thêm</Link>

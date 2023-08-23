@@ -1,24 +1,8 @@
-import { useMutation, useQuery } from 'react-query';
 import { toast } from 'react-toastify';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import authorizedRequest from '@/services/authorizedRequest';
 import { CREATE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
-import { useAuthStore } from '@/hooks/auth';
-
-export function useMe() {
-  return useQuery(
-    ['me'],
-    ({ signal }) => authorizedRequest.get('/me', {
-      signal,
-    }),
-    {
-      onSuccess: (data: any) => {
-        const { setCurrentUser } = useAuthStore.getState();
-        setCurrentUser(data);
-      },
-    },
-  );
-}
 
 export function useMarketplaceUsers() {
   return useQuery(
@@ -29,12 +13,15 @@ export function useMarketplaceUsers() {
   );
 }
 
-export function useMarketplaceUser(userId: string) {
+export function useMarketplaceUser(userId: string, enabled?: boolean) {
   return useQuery(
-    ['marketplace_user', userId],
-    ({ signal }) => authorizedRequest.get(`/users/${userId}`, {
-      signal,
-    }),
+    {
+      queryKey: ['marketplace_user', userId],
+      queryFn: ({ signal }) => authorizedRequest.get<MarketplaceUser>(`/users/${encodeURIComponent(userId)}`, {
+        signal,
+      }),
+      enabled,
+    },
   );
 }
 

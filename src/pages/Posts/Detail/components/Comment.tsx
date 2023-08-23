@@ -1,8 +1,15 @@
 import React from 'react';
+import { PostComment } from '@/models/TourPost/PostComment';
+import { useMarketplaceUser } from '@/hooks/marketplaceUser';
+import { useDateDuration } from '@/utils/common';
 
-export interface CommentProps {}
+export interface CommentProps {
+  comment: PostComment,
+}
 
-export default function Comment() {
+export default function Comment(props: CommentProps) {
+  const { comment } = props;
+  const { data: author } = useMarketplaceUser(comment.authorId);
   return (
     <div className="flex mb-5">
       <div className="flex-shrink-0">
@@ -10,11 +17,15 @@ export default function Comment() {
       </div>
       <div className="flex-1 ms-5">
         <div className="mb-2">
-          <h6 className="font-bold">Nguyen Tuan Anh</h6>
-          <span className="text-gray-400 text-xs italic">10:00 Aug 9, 2023</span>
+          <h6 className="font-bold">{author?.name}</h6>
+          <span className="text-gray-400 text-xs italic">
+            {useDateDuration(comment.createdAt)}
+            {' '}
+            trước
+          </span>
         </div>
         <p className="text-sm text-secondary dark:text-white">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.
+          {comment.description}
         </p>
       </div>
     </div>

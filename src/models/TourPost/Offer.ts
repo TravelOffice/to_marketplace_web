@@ -10,7 +10,7 @@ export const OfferStatusTypes = Object.keys(OfferStatus);
 export interface Offer {
   code: string, // Auto-generated code from DynamoDB
   description?: string, // Description of the offer
-  totalPax: string, // Total pax of the offer
+  totalPax: number, // Total pax of the offer
   pricePerPax: number, // Price per pax of the offer
   commissionRate: number, // Commission rate per pax of the offer
   authorId: string, // Alias id of marketplace user that is auto-generated or set by user
@@ -28,3 +28,13 @@ export interface Offer {
   createdAt: number,
   updatedAt: number,
 }
+
+export type CreateOfferFormData = Pick<Offer,
+'description' |
+'totalPax' |
+'pricePerPax' |
+'commissionRate' |
+'tourPostId'
+> & {
+  unlimited: boolean,
+};

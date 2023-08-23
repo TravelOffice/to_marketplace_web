@@ -62,3 +62,5 @@ export function useAuth() {
     setCurrentUser,
   };
 }
+
+export const useCurrentUser = () => useAuthStore((state) => state.currentUser);

@@ -1,34 +1,38 @@
-import { useMutation, useQuery } from 'react-query';
 import { toast } from 'react-toastify';
-import authorizedRequest from '@/services/authorizedRequest';
-import {
-  CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
-} from '@/utils/constants';
-import { PostComment } from '@/models/TourPost/PostComment';
+import 'react-toastify/dist/ReactToastify.css';
 
-export function useComments(tourPostId: string) {
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import authorizedRequest, { PaginationParams, PaginationPayload } from '@/services/authorizedRequest';
+import { DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
+import { CreateCommentFormData, PostComment } from '@/models/TourPost/PostComment';
+
+export function useComments(tourPostId: string, paginationParams?: PaginationParams) {
   return useQuery(
     ['comments', tourPostId],
-    ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/comments`, {
+    ({ signal }) => authorizedRequest.get<PaginationPayload<PostComment>>(`/posts/${tourPostId}/comments`, {
       signal,
+      queryParams: paginationParams,
     }),
   );
 }
 
-export function useCreateComment(tourPostId: string, comment: PostComment) {
+export const useCreateCommentMutation = (tourPostId: string) => {
+  const queryClient = useQueryClient();
   return useMutation(
-    () => authorizedRequest.post(`/posts/${tourPostId}/comments`, comment),
     {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(CREATE_SUCCESS);
+      mutationFn: (comment: CreateCommentFormData) => authorizedRequest.post<PostComment>(`/posts/${tourPostId}/comments`, comment),
+      onSuccess: (newComment) => {
+        queryClient.setQueryData(['comments', tourPostId], (input: PaginationPayload<PostComment> | undefined) => ({
+          ...input,
+          data: [newComment].concat(input?.data ?? []),
+        } as PaginationPayload<PostComment>));
       },
       onError: () => {
         toast.error(SOMETHING_WRONG);
       },
     },
   );
-}
+};
 
 export function useComment(tourPostId: string, commentId: string) {
   return useQuery(

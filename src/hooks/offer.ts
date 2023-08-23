@@ -1,32 +1,27 @@
-import { useMutation, useQuery } from 'react-query';
 import { toast } from 'react-toastify';
+import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import authorizedRequest from '@/services/authorizedRequest';
-import { CREATE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
-import { Offer } from '@/models/TourPost/Offer';
+import { SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
+import { CreateOfferFormData, Offer } from '@/models/TourPost/Offer';
 
-export function useOffersOfPost(tourPostId: string) {
+export function useOffersOfPost(tourPostId: string, enabled?: boolean) {
   return useQuery(
-    ['offers_of_post', tourPostId],
-    ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/offers`, {
-      signal,
-    }),
-  );
-}
-
-export function useCreateOffer(tourPostId: string, offer: Offer) {
-  return useMutation(
-    () => authorizedRequest.post(`/posts/${tourPostId}/offers`, offer),
     {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(CREATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
+      queryKey: ['offers_of_post', tourPostId],
+      queryFn: ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/offers`, {
+        signal,
+      }),
+      enabled,
     },
   );
 }
+
+export const useCreateOfferMutation = (
+  options: UseMutationOptions<Offer, Error, CreateOfferFormData>,
+) => useMutation(
+  (offer: CreateOfferFormData) => authorizedRequest.post<Offer>(`/posts/${offer.tourPostId}/offers`, offer),
+  options,
+);
 
 export function useSentOfferOfOrganization(organization: string) {
   return useQuery(

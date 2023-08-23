@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Layout from '@/components/base/Layout';
 import Tabs, { Tab } from '@/components/base/Tabs';
 import MyPostList from '@/pages/Me/Profile/tabs/MyPostList';
+import { useCurrentUser } from '@/hooks/auth';
 
 const tabs: Tab[] = [
   {
@@ -16,6 +17,7 @@ const tabs: Tab[] = [
 ];
 
 export default function Profile() {
+  const currentUser = useCurrentUser();
   return (
     <Layout>
       <div className="mx-8 pt-32">
@@ -28,11 +30,15 @@ export default function Profile() {
             className="w-32 h-32 rounded-full mx-auto"
           />
           <div className="flex-1 mx-5">
-            <h5 className="font-semibold text-lg mb-2">Nguyen Tuan Anh</h5>
-            <Link to="/me/organization" className="italic text-secondary mb-4">PYS Travel</Link>
-            <p className="text-sm mt-4">
-              Lorem Ipsum is simply dummy text of the printing and
-              typesetting industry
+            <h5 className="font-semibold text-lg mb-2">{currentUser?.name}</h5>
+            <Link
+              to="/me/organization"
+              className="italic text-secondary mb-4"
+            >
+              {currentUser?.organization}
+            </Link>
+            <p className="text-sm mt-4 ">
+              {currentUser?.description}
             </p>
           </div>
           <div className="flex items-center gap-5">
