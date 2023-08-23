@@ -1,15 +1,15 @@
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import authorizedRequest, { PaginationParams, PaginationPayload } from '@/services/authorizedRequest';
 import { DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import { CreateCommentFormData, PostComment } from '@/models/TourPost/PostComment';
+import { PaginationParams, PaginationPayload } from '@/services/BaseApi';
+import marketplaceApi from '@/services/marketplaceApi';
 
 export function useComments(tourPostId: string, paginationParams?: PaginationParams) {
   return useQuery(
     ['comments', tourPostId],
-    ({ signal }) => authorizedRequest.get<PaginationPayload<PostComment>>(`/posts/${tourPostId}/comments`, {
+    ({ signal }) => marketplaceApi.get<PaginationPayload<PostComment>>(`/posts/${tourPostId}/comments`, {
       signal,
       queryParams: paginationParams,
     }),
@@ -20,7 +20,7 @@ export const useCreateCommentMutation = (tourPostId: string) => {
   const queryClient = useQueryClient();
   return useMutation(
     {
-      mutationFn: (comment: CreateCommentFormData) => authorizedRequest.post<PostComment>(`/posts/${tourPostId}/comments`, comment),
+      mutationFn: (comment: CreateCommentFormData) => marketplaceApi.post<PostComment>(`/posts/${tourPostId}/comments`, comment),
       onSuccess: (newComment) => {
         queryClient.setQueryData(['comments', tourPostId], (input: PaginationPayload<PostComment> | undefined) => ({
           ...input,
@@ -37,7 +37,7 @@ export const useCreateCommentMutation = (tourPostId: string) => {
 export function useComment(tourPostId: string, commentId: string) {
   return useQuery(
     ['comment', commentId],
-    ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/comments/${commentId}}`, {
+    ({ signal }) => marketplaceApi.get(`/posts/${tourPostId}/comments/${commentId}}`, {
       signal,
     }),
   );
@@ -45,7 +45,7 @@ export function useComment(tourPostId: string, commentId: string) {
 
 export function useUpdateComment(tourPostId: string, comment: PostComment) {
   return useMutation(
-    () => authorizedRequest.put(`/posts/${tourPostId}/comments/${comment.code}`, comment),
+    () => marketplaceApi.put(`/posts/${tourPostId}/comments/${comment.code}`, comment),
     {
       onSuccess: () => {
         // Show success toast
@@ -60,7 +60,7 @@ export function useUpdateComment(tourPostId: string, comment: PostComment) {
 
 export function useDeleteComment(tourPostId: string, commentId: string) {
   return useMutation(
-    () => authorizedRequest.delete(`/posts/${tourPostId}/comments/${commentId}`),
+    () => marketplaceApi.delete(`/posts/${tourPostId}/comments/${commentId}`),
     {
       onSuccess: () => {
         // Show success toast

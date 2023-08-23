@@ -1,13 +1,13 @@
 import { toast } from 'react-toastify';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import authorizedRequest from '@/services/authorizedRequest';
 import { CREATE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import marketplaceApi from '@/services/marketplaceApi';
 
 export function useMarketplaceUsers() {
   return useQuery(
     ['marketplace_users'],
-    ({ signal }) => authorizedRequest.get('/users', {
+    ({ signal }) => marketplaceApi.get('/users', {
       signal,
     }),
   );
@@ -17,7 +17,7 @@ export function useMarketplaceUser(userId: string, enabled?: boolean) {
   return useQuery(
     {
       queryKey: ['marketplace_user', userId],
-      queryFn: ({ signal }) => authorizedRequest.get<MarketplaceUser>(`/users/${encodeURIComponent(userId)}`, {
+      queryFn: ({ signal }) => marketplaceApi.get<MarketplaceUser>(`/users/${encodeURIComponent(userId)}`, {
         signal,
       }),
       enabled,
@@ -27,7 +27,7 @@ export function useMarketplaceUser(userId: string, enabled?: boolean) {
 
 export function useCreateMarketplaceUser(marketplaceUser: MarketplaceUser) {
   return useMutation(
-    () => authorizedRequest.post('/users=', marketplaceUser),
+    () => marketplaceApi.post('/users=', marketplaceUser),
     {
       onSuccess: () => {
         // Show success toast
@@ -42,7 +42,7 @@ export function useCreateMarketplaceUser(marketplaceUser: MarketplaceUser) {
 
 export function useUpdateProfile(marketplaceUser: MarketplaceUser) {
   return useMutation(
-    () => authorizedRequest.put('me', marketplaceUser),
+    () => marketplaceApi.put('me', marketplaceUser),
     {
       onSuccess: () => {
         // Show success toast
@@ -57,7 +57,7 @@ export function useUpdateProfile(marketplaceUser: MarketplaceUser) {
 
 export function useEnableMarketplaceUser(userId: string, enable: boolean) {
   return useMutation(
-    () => authorizedRequest.put('enable-user', {
+    () => marketplaceApi.put('enable-user', {
       userId,
       enable,
     }),

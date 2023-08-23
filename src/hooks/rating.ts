@@ -1,15 +1,15 @@
 import { toast } from 'react-toastify';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import authorizedRequest from '@/services/authorizedRequest';
 import {
   CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
 } from '@/utils/constants';
 import { PostRating } from '@/models/TourPost/PostRating';
+import marketplaceApi from '@/services/marketplaceApi';
 
 export function usePostRatings(tourPostId: string, organization: string, enabled?: boolean) {
   return useQuery({
     queryKey: ['ratings_of_post', tourPostId],
-    queryFn: ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/ratings`, {
+    queryFn: ({ signal }) => marketplaceApi.get(`/posts/${tourPostId}/ratings`, {
       signal,
       queryParams: { organization },
     }),
@@ -19,7 +19,7 @@ export function usePostRatings(tourPostId: string, organization: string, enabled
 
 export function useCreateRating(tourPostId: string, rating: PostRating) {
   return useMutation(
-    () => authorizedRequest.post(`/posts/${tourPostId}/ratings`, rating),
+    () => marketplaceApi.post(`/posts/${tourPostId}/ratings`, rating),
     {
       onSuccess: () => {
         // Show success toast
@@ -35,7 +35,7 @@ export function useCreateRating(tourPostId: string, rating: PostRating) {
 export function useRating(tourPostId: string, ratingId: string) {
   return useQuery(
     ['rating', ratingId],
-    ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/ratings/${ratingId}}`, {
+    ({ signal }) => marketplaceApi.get(`/posts/${tourPostId}/ratings/${ratingId}}`, {
       signal,
     }),
   );
@@ -44,7 +44,7 @@ export function useRating(tourPostId: string, ratingId: string) {
 export function useOrganizationRatings(organizationId: string) {
   return useQuery(
     ['ratings_of_org', organizationId],
-    ({ signal }) => authorizedRequest.get(`/organizations/${organizationId}/ratings`, {
+    ({ signal }) => marketplaceApi.get(`/organizations/${organizationId}/ratings`, {
       signal,
     }),
   );
@@ -52,7 +52,7 @@ export function useOrganizationRatings(organizationId: string) {
 
 export function useUpdateRating(tourPostId: string, rating: PostRating) {
   return useMutation(
-    () => authorizedRequest.put(`/posts/${tourPostId}/ratings/${rating.code}`, rating),
+    () => marketplaceApi.put(`/posts/${tourPostId}/ratings/${rating.code}`, rating),
     {
       onSuccess: () => {
         // Show success toast
@@ -67,7 +67,7 @@ export function useUpdateRating(tourPostId: string, rating: PostRating) {
 
 export function useDeleteRating(tourPostId: string, ratingId: string) {
   return useMutation(
-    () => authorizedRequest.delete(`/posts/${tourPostId}/ratings/${ratingId}`),
+    () => marketplaceApi.delete(`/posts/${tourPostId}/ratings/${ratingId}`),
     {
       onSuccess: () => {
         // Show success toast

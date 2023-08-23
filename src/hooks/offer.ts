@@ -1,14 +1,14 @@
 import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
-import authorizedRequest from '@/services/authorizedRequest';
 import { SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import { CreateOfferFormData, Offer } from '@/models/TourPost/Offer';
+import marketplaceApi from '@/services/marketplaceApi';
 
 export function useOffersOfPost(tourPostId: string, enabled?: boolean) {
   return useQuery(
     {
       queryKey: ['offers_of_post', tourPostId],
-      queryFn: ({ signal }) => authorizedRequest.get(`/posts/${tourPostId}/offers`, {
+      queryFn: ({ signal }) => marketplaceApi.get(`/posts/${tourPostId}/offers`, {
         signal,
       }),
       enabled,
@@ -19,14 +19,14 @@ export function useOffersOfPost(tourPostId: string, enabled?: boolean) {
 export const useCreateOfferMutation = (
   options: UseMutationOptions<Offer, Error, CreateOfferFormData>,
 ) => useMutation(
-  (offer: CreateOfferFormData) => authorizedRequest.post<Offer>(`/posts/${offer.tourPostId}/offers`, offer),
+  (offer: CreateOfferFormData) => marketplaceApi.post<Offer>(`/posts/${offer.tourPostId}/offers`, offer),
   options,
 );
 
 export function useSentOfferOfOrganization(organization: string) {
   return useQuery(
     ['sent_offers_of_org', organization],
-    ({ signal }) => authorizedRequest.get(`/organizations/${organization}/sent-offers`, {
+    ({ signal }) => marketplaceApi.get(`/organizations/${organization}/sent-offers`, {
       signal,
     }),
   );
@@ -35,7 +35,7 @@ export function useSentOfferOfOrganization(organization: string) {
 export function useReceivedOfferOfOrganization(organization: string) {
   return useQuery(
     ['received_offers_of_org', organization],
-    ({ signal }) => authorizedRequest.get(`/me/organizations/${organization}/received-offers`, {
+    ({ signal }) => marketplaceApi.get(`/me/organizations/${organization}/received-offers`, {
       signal,
     }),
   );
@@ -44,7 +44,7 @@ export function useReceivedOfferOfOrganization(organization: string) {
 export function useOffer(offerId: string) {
   return useQuery(
     ['offer', offerId],
-    ({ signal }) => authorizedRequest.get(`/offers/${offerId}`, {
+    ({ signal }) => marketplaceApi.get(`/offers/${offerId}`, {
       signal,
     }),
   );
@@ -52,7 +52,7 @@ export function useOffer(offerId: string) {
 
 export function useUpdateOffer(offer: Offer) {
   return useMutation(
-    () => authorizedRequest.put(`/offers/${offer.code}`, offer),
+    () => marketplaceApi.put(`/offers/${offer.code}`, offer),
     {
       onSuccess: () => {
         // Show success toast
@@ -67,7 +67,7 @@ export function useUpdateOffer(offer: Offer) {
 
 export function useCancelOffer(offerId: string, cancelReason: string) {
   return useMutation(
-    () => authorizedRequest.put(`/offers/${offerId}/cancel`, { cancelReason }),
+    () => marketplaceApi.put(`/offers/${offerId}/cancel`, { cancelReason }),
     {
       onSuccess: () => {
         // Show success toast
@@ -82,7 +82,7 @@ export function useCancelOffer(offerId: string, cancelReason: string) {
 
 export function useAcceptOffer(offerId: string) {
   return useMutation(
-    () => authorizedRequest.put(`/offers/${offerId}/accept`),
+    () => marketplaceApi.put(`/offers/${offerId}/accept`),
     {
       onSuccess: () => {
         // Show success toast
@@ -97,7 +97,7 @@ export function useAcceptOffer(offerId: string) {
 
 export function useRejectOffer(offerId: string, rejectReason: string) {
   return useMutation(
-    () => authorizedRequest.put(`/offers/${offerId}/reject`, { rejectReason }),
+    () => marketplaceApi.put(`/offers/${offerId}/reject`, { rejectReason }),
     {
       onSuccess: () => {
         // Show success toast
@@ -113,7 +113,7 @@ export function useRejectOffer(offerId: string, rejectReason: string) {
 export function useMySentOffers() {
   return useQuery(
     ['my_sent_offer'],
-    ({ signal }) => authorizedRequest.get('/me/sent-offers', {
+    ({ signal }) => marketplaceApi.get('/me/sent-offers', {
       signal,
     }),
   );
@@ -122,7 +122,7 @@ export function useMySentOffers() {
 export function useMyReceivedOffers() {
   return useQuery(
     ['my_received_offer'],
-    ({ signal }) => authorizedRequest.get('/me/received-offers', {
+    ({ signal }) => marketplaceApi.get('/me/received-offers', {
       signal,
     }),
   );
