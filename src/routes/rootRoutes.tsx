@@ -1,13 +1,15 @@
 import React from 'react';
 import { RouteObject } from 'react-router-dom';
-import HomePage from '@/pages/Home';
 
 const rootRoutes: RouteObject = {
   path: '/',
   children: [
     {
       index: true,
-      element: <HomePage />,
+      async lazy() {
+        const Component = await import('@/pages/Dashboard');
+        return { Component: Component.default };
+      },
     },
     {
       path: 'about',
