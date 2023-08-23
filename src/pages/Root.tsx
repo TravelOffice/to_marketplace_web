@@ -16,10 +16,6 @@ export default function Root() {
   } = useAuth();
   const acceptTerm = useAcceptTermStatus();
 
-  if (!isLoggedIn) {
-    return <div />;
-  }
-
   useEffect(() => {
     const abortController = new AbortController();
     marketplaceApi
@@ -32,6 +28,10 @@ export default function Root() {
 
     };
   }, [isLoggedIn, setCurrentUser]);
+
+  if (!isLoggedIn) {
+    return <div />;
+  }
 
   if (acceptTerm === 'no') {
     return <Navigate to="/onboarding/term-of-conditions" />;
