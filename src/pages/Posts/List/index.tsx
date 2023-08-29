@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '@/components/base/Layout';
 import Input from '@/components/base/Input';
 import Tabs from '@/components/base/Tabs';
-import TourList from '@/pages/Posts/List/components/TourList';
+import TourList from '@/pages/Posts/List/components/TourList.tsx';
 
 const tabs = [
   {
@@ -14,6 +14,7 @@ const tabs = [
     content: <div>Leads</div>,
   },
 ];
+
 export default function PostList() {
   return (
     <Layout>
@@ -22,10 +23,16 @@ export default function PostList() {
           <div className="card sticky top-32 col-span-3 h-fit">
             <h6 className="font-bold mb-6">Lọc bài đăng</h6>
             <form>
-              <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">Tiêu đề</label>
+              <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
+                Tiêu
+                đề
+              </label>
               <Input />
 
-              <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">Điểm đến</label>
+              <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
+                Điểm
+                đến
+              </label>
               <Input />
 
               <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">
@@ -36,7 +43,12 @@ export default function PostList() {
             </form>
           </div>
           <div className="col-span-9 h-fit bg-white dark:bg-[#283046] dark:text-white">
-            <Tabs tabs={tabs} divider={false} sticky stickyClassName="pt-6 top-32 bg-white dark:bg-[#283046]" />
+            <Tabs
+              tabs={tabs}
+              divider={false}
+              sticky
+              stickyClassName="pt-6 top-32 bg-white dark:bg-[#283046]"
+            />
           </div>
         </div>
       </div>

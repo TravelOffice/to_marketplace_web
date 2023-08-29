@@ -84,11 +84,15 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
   });
 
   const onSendOffer = (data: CreateOfferFormData) => {
-    if (data.unlimited) {
+    const {
+      unlimited: deletedAtt,
+      ...restData
+    } = data;
+    if (deletedAtt) {
       return mutate({
-        ...data,
+        ...restData,
         totalPax: -1,
-      });
+      } as CreateOfferFormData);
     }
     return mutate(data);
   };
@@ -99,6 +103,7 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
       </ModalHeader>
       <ModalBody>
         <form onSubmit={handleSubmit(onSendOffer)}>
+          <input value={tourPostId} hidden {...register('tourPostId')} />
           <div className="grid grid-cols-3 gap-2 mb-2">
             <label htmlFor="pricePerpax" className="col-span-2 block text-sm text-gray-700 mb-1">
               Giá/khách
