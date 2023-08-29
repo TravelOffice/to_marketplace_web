@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ToastContainer } from 'react-toastify';
 import Layout from '@/components/base/Layout';
 import RatingBar from '@/components/base/RatingBar';
 import Comment from '@/pages/Posts/Detail/components/Comment';
@@ -202,14 +201,12 @@ export default function PostDetail() {
             ) : null
           }
         </div>
-        <ToastContainer />
       </div>
       <MakeOfferModal
         isOpen={showMakeOfferModal}
         tourPostId={postId!}
         toggle={() => setShowMakeOfferModal(false)}
       />
-      <ToastContainer />
     </Layout>
   );
 }

@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PostList from '@/components/custom/PostList';
 import { usePostsByOrganization } from '@/hooks/post';
-import { useAuth } from '@/hooks/auth';
+import { useCurrentUser } from '@/hooks/auth';
 
 export default function OrganizationPostList() {
-  const { currentUser } = useAuth();
+  const currentUser = useCurrentUser();
   const { data: tourPosts } = usePostsByOrganization(currentUser?.organization ?? '');
   return (
     <PostList

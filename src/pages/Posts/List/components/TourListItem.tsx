@@ -5,6 +5,8 @@ import moment from 'moment';
 import RatingBar from '@/components/base/RatingBar';
 import { TourPost } from '@/models/TourPost/TourPost';
 import { useCurrentUser } from '@/hooks/auth';
+import { useDateDuration } from '@/utils/common.tsx';
+import { useMarketplaceUser } from '@/hooks/marketplaceUser.ts';
 
 export interface TourListItemProps extends React.HTMLAttributes<HTMLDivElement> {
   post: TourPost,
@@ -19,6 +21,7 @@ export default function TourListItem(props: TourListItemProps) {
     post,
     ...rest
   } = props;
+  const { data: author } = useMarketplaceUser(post?.authorId!, !!post);
   const onEditPost = () => {
     navigate(`/posts/${post?.code}`);
   };
@@ -50,7 +53,22 @@ export default function TourListItem(props: TourListItemProps) {
         }
       </div>
       <div className="flex flex-col flex-1 text-left ps-5">
-        <Link to={`/posts/${post.code}`} className="font-bold text-lg mb-1">{post.name}</Link>
+        <Link to={`/posts/${post.code}`} className="font-bold text-lg">{post.name}</Link>
+        <span className="text-sm font-light text-secondary dark:text-white mb-2">
+          <Link
+            to={`/users/${author?.id}`}
+            className="font-semibold text-primary"
+          >
+            {author?.name}
+          </Link>
+          ,
+          {' '}
+          <span className="font-semibold">
+            {useDateDuration(post?.createdAt!)}
+            {' '}
+            trước
+          </span>
+        </span>
         {
           post?.ratingAverage! > 0 && (
             <RatingBar rating={post?.ratingAverage!} />
@@ -86,17 +104,13 @@ export default function TourListItem(props: TourListItemProps) {
           <div className="flex items-center gap-2 dark:text-white">
             <LiaBookmarkSolid className="w-6 h-6 text-sky-500" />
             <span>
-              <strong className="font-bold text-black dark:text-white">4</strong>
-              {' '}
-              bookmarks
+              Bookmark
             </span>
           </div>
           <div className="flex items-center gap-2 dark:text-white">
             <LiaBell className="w-6 h-6 text-sky-500" />
             <span>
-              <strong className="font-bold text-black dark:text-white">4</strong>
-              {' '}
-              followers
+              Theo dõi
             </span>
           </div>
         </div>

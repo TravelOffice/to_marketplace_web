@@ -1,8 +1,12 @@
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import {
-  CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
+  CREATE_SUCCESS,
+  DELETE_SUCCESS,
+  NUMBER_ITEM_PER_PAGE,
+  SOMETHING_WRONG,
+  UPDATE_SUCCESS,
 } from '@/utils/constants';
 import { TourPost } from '@/models/TourPost/TourPost';
 import marketplaceApi from '@/services/marketplaceApi';
@@ -18,12 +22,27 @@ export function useMyPosts() {
 }
 
 export function usePosts() {
-  return useQuery(
-    ['posts'],
-    async ({ signal }) => marketplaceApi.get<PaginationPayload<TourPost>>('/posts', {
+  return useInfiniteQuery({
+    queryKey: ['posts'],
+    queryFn: async ({
       signal,
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<TourPost>>(
+      '/posts',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
 }
 
 export function usePostsByOrganization(organization: string) {

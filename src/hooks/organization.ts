@@ -2,10 +2,12 @@ import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import marketplaceApi from '@/services/marketplaceApi';
+import { DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import {
-  DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
-} from '@/utils/constants';
-import { CreateOrganizationFormData, CreateOrganizationPayload, Organization } from '@/models/Organization/Organization';
+  CreateOrganizationFormData,
+  CreateOrganizationPayload,
+  Organization,
+} from '@/models/Organization/Organization';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import { useAuth } from '@/hooks/auth';
 import backendApi from '@/services/backendApi';
@@ -40,7 +42,10 @@ export function useOrganizationByCurrentUser(currentUser: MarketplaceUser | null
 export function useAcceptTermStatus(): 'checking' | 'yes' | 'no' {
   const { currentUser } = useAuth();
   const [firstFetch, setFirstFetch] = useState(false);
-  const { data: organization, isFetched } = useOrganizationByCurrentUser(currentUser);
+  const {
+    data: organization,
+    isFetched,
+  } = useOrganizationByCurrentUser(currentUser);
   useEffect(() => {
     if (isFetched && !firstFetch) {
       setFirstFetch(true);
@@ -65,7 +70,10 @@ export function useCreateOrganization(
   return useMutation(
     async (formData: CreateOrganizationFormData) => {
       // TODO: Upload logo
-      const { profilePictureFile, ...rest } = formData;
+      const {
+        profilePictureFile,
+        ...rest
+      } = formData;
       const createOrganizationPayload: CreateOrganizationPayload = {
         ...rest,
         profilePicture: 'https://picsum.photos/300/300',
@@ -103,5 +111,14 @@ export function useDeleteOrganization(organizationId: string) {
         toast.error(SOMETHING_WRONG);
       },
     },
+  );
+}
+
+export function useOrganizationStatistic(organizationId: string) {
+  return useQuery(
+    ['organizations_statistic'],
+    ({ signal }) => marketplaceApi.get(`/organizations/${organizationId}/statistic`, {
+      signal,
+    }),
   );
 }
