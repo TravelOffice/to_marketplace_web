@@ -15,7 +15,7 @@ export default function CreatePost() {
     <Layout>
       <div className="container mx-auto px-6">
         <div className="border-[1px] rounded px-5 py-5 mt-10 mb-10">
-          <h5 className="font-bold">Create your post</h5>
+          <h5 className="font-bold">Tạo bài đăng</h5>
 
           <form className="mt-5">
             <Label title="Title" required />

@@ -12,7 +12,7 @@ export interface Offer {
   description?: string, // Description of the offer
   totalPax: number, // Total pax of the offer
   pricePerPax: number, // Price per pax of the offer
-  commissionRate: number, // Commission rate per pax of the offer
+  commission: number, // Commission rate per pax of the offer
   authorId: string, // Alias id of marketplace user that is auto-generated or set by user
   sentOrg: string, // The ID of the organization that sent the offer
   tourPostId: string, // The ID of the tour post
@@ -33,7 +33,7 @@ export type CreateOfferFormData = Pick<Offer,
 'description' |
 'totalPax' |
 'pricePerPax' |
-'commissionRate' |
+'commission' |
 'tourPostId'
 > & {
   unlimited: boolean,

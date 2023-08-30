@@ -7,7 +7,7 @@ export interface TourPost {
   description?: string, // Description of the tour post
   type: TourPostType, // Type of the tour post, can be 'BUY' or 'SELL'
   pricePerPax: number, // Price per pax of the offer
-  commissionRate: number, // Commission rate per pax of the offer
+  commission: number, // Commission rate per pax of the offer
   // Lead code / tour template code (pk, sk) of the tenant that this tour post is linked to
   linkedToTargetKeys?: { pk: string, sk: string },
   organization: string, // The ID of organization
@@ -34,3 +34,13 @@ export interface TourPost {
   createdAt: number,
   updatedAt: number,
 }
+
+export type EditPostFormData = Pick<TourPost,
+'name' |
+'description' |
+'type' |
+'pricePerPax' |
+'commission' |
+'endingLocation' |
+'departureDate'
+>;

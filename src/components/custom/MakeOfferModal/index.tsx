@@ -28,7 +28,7 @@ const schema: ObjectSchema<CreateOfferFormData> = yup.object()
       .typeError('Giá trị không hợp lệ')
       .min(1, 'Giá trị không hợp lệ')
       .required(),
-    commissionRate: yup.number()
+    commission: yup.number()
       .typeError('Giá trị không hợp lệ')
       .min(1, 'Giá trị không hợp lệ')
       .required(),
@@ -58,7 +58,7 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
         description: '',
         totalPax: 0,
         pricePerPax: 0,
-        commissionRate: 0,
+        commission: 0,
         unlimited: true,
       },
     },
@@ -148,7 +148,7 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
             </label>
           </div>
           <div className="grid grid-cols-3 gap-2 mb-2">
-            <label htmlFor="commissionRate" className="col-span-2 block text-sm text-gray-700 mb-1">
+            <label htmlFor="commission" className="col-span-2 block text-sm text-gray-700 mb-1">
               Chiết khấu
               {' '}
               <span className="text-red-700">*</span>
@@ -158,14 +158,14 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
                   'focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none',
                 )}
                 type="number"
-                {...register('commissionRate')}
+                {...register('commission')}
               />
-              {errors.commissionRate
-                && <p className="text-red-700 text-xs italic">{errors.commissionRate.message}</p>}
+              {errors.commission
+                && <p className="text-red-700 text-xs italic">{errors.commission.message}</p>}
             </label>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <label htmlFor="commissionRate" className="col-span-3 block text-sm text-gray-700 mb-1">
+            <label htmlFor="commission" className="col-span-3 block text-sm text-gray-700 mb-1">
               Mô tả
               <textarea
                 rows={4}
