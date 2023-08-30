@@ -5,7 +5,6 @@ import App from './pages/App';
 import './index.css';
 import './styles/extended/ckeditor.css';
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-virtualized/styles.css'; // only needs to be imported once
 
 const queryClient = new QueryClient({
   defaultOptions: {

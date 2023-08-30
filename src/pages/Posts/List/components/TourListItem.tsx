@@ -2,6 +2,7 @@ import React from 'react';
 import { LiaBell, LiaBookmarkSolid, LiaHandshake } from 'react-icons/lia';
 import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import { FiArrowRight } from 'react-icons/fi';
 import RatingBar from '@/components/base/RatingBar';
 import { TourPost } from '@/models/TourPost/TourPost';
 import { useCurrentUser } from '@/hooks/auth';
@@ -30,7 +31,7 @@ export default function TourListItem(props: TourListItemProps) {
       className="bg-white dark:bg-[#283046] flex w-full py-4 px-6 border-b last:border-b-0 dark:border-gray-700"
       {...rest}
     >
-      <div className="h-full">
+      <div className="h-full w-48">
         <img src="https://picsum.photos/200/300" alt="" className="rounded-lg w-48 h-48 mb-2" />
         {
           currentUser?.id === post.authorId ? (
@@ -52,7 +53,7 @@ export default function TourListItem(props: TourListItemProps) {
           )
         }
       </div>
-      <div className="flex flex-col flex-1 text-left ps-5">
+      <div className="flex flex-col flex-1 text-left ps-5 break-words overflow-hidden">
         <Link to={`/posts/${post.code}`} className="font-bold text-lg">{post.name}</Link>
         <span className="text-sm font-light text-secondary dark:text-white mb-2">
           <Link
@@ -77,9 +78,14 @@ export default function TourListItem(props: TourListItemProps) {
         <p
           className="flex-1 text-sm text-gray-500 mb-2 text-justify dark:text-white whitespace-pre-wrap"
         >
-          {post.description}
-          {' '}
-          <Link to={`/posts/${post.code}`} className="text-blue-600">Xem thêm</Link>
+          <span className="text-ellipsis line-clamp-[13]">
+            {post.description}
+          </span>
+          <Link to={`/posts/${post.code}`} className="text-primary flex items-center">
+            Xem chi tiết
+            {' '}
+            <FiArrowRight />
+          </Link>
         </p>
         <div className="text-sm mb-1">
           <span className="text-gray-500 dark:text-white">Điểm đến: </span>

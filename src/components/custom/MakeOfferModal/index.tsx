@@ -97,7 +97,7 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
     return mutate(data);
   };
   return (
-    <Modal {...rest}>
+    <Modal {...rest} size="xl">
       <ModalHeader>
         Taọ yêu cầu
       </ModalHeader>

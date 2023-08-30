@@ -15,6 +15,8 @@ import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 import { formatCurrency, useDateDuration } from '@/utils/common';
 import { CreateCommentFormData } from '@/models/TourPost/PostComment';
 import MakeOfferModal from '@/components/custom/MakeOfferModal';
+import OfferListCard from '@/pages/Posts/Detail/components/OfferListCard';
+import RatingCard from '@/pages/Posts/Detail/components/RatingCard';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   .shape({
@@ -71,7 +73,7 @@ export default function PostDetail() {
                 trước
               </span>
             </span>
-            <p className="text-sm text-secondary mb-5 mt-10 dark:text-white whitespace-pre-wrap">
+            <p className="text-sm text-secondary mb-5 mt-10 dark:text-white whitespace-pre-wrap break-words">
               {post?.description}
             </p>
             <div className="flex justify-between items-center mt-4 text-sm text-secondary">
@@ -105,8 +107,13 @@ export default function PostDetail() {
               </div>
             </div>
           </div>
+          <OfferListCard />
           <div className="card px-5 py-5 mb-10">
-            <h5 className="font-bold mb-5">Bình luận</h5>
+            <h5 className="font-bold mb-5">
+              Bình luận (5)
+              {' '}
+              <button type="button" className="underline text-sm font-normal text-primary">Làm mới</button>
+            </h5>
             <Form onSubmit={handleSubmit(onSendComment)}>
               <div className="mb-5">
                 <div className="flex">
@@ -200,6 +207,7 @@ export default function PostDetail() {
               </div>
             ) : null
           }
+          <RatingCard />
         </div>
       </div>
       <MakeOfferModal
