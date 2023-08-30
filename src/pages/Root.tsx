@@ -49,7 +49,7 @@ export default function Root() {
     <div className="bg-gray-100 dark:bg-[#161d31]">
       <Sidebar />
       <Navbar />
-      <div className="relative">
+      <div className="relative min-h-screen">
         <Outlet />
       </div>
     </div>

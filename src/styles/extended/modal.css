@@ -3,7 +3,7 @@
 }
 
 .modal-content {
-    @apply relative transform rounded-lg bg-white text-left shadow-xl transition-all sm:my-8;
+    @apply w-full relative transform rounded-lg bg-white text-left shadow-xl transition-all sm:my-8;
 }
 
 .modal-enter {

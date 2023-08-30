@@ -1,19 +1,30 @@
 import React, { useEffect, useRef } from 'react';
 import { FaXmark } from 'react-icons/fa6';
 import { CSSTransition } from 'react-transition-group';
+import classNames from 'classnames';
 import ReactPortal from '@/components/base/ReactPortal';
 import '@/styles/extended/modal.css';
 
 export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   isOpen: boolean,
   toggle: () => void,
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl',
 }
+
+const modalSizes = {
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+  xl: 'max-w-xl',
+  '2xl': 'max-w-2xl',
+};
 
 export default function Modal(props: ModalProps) {
   const {
     children,
     toggle,
     isOpen,
+    size = 'xl',
   } = props;
 
   const nodeRef = useRef(null);
@@ -39,8 +50,9 @@ export default function Modal(props: ModalProps) {
         <div className="modal relative z-50" role="dialog" ref={nodeRef}>
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div
-              className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+              className={classNames('flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 mx-auto', size ? modalSizes[size] : '')}
             >
+              {/* size ? modalSizes[size] : '' */}
               <CSSTransition
                 in={isOpen}
                 timeout={1000}
@@ -50,7 +62,7 @@ export default function Modal(props: ModalProps) {
               >
                 <div
                   ref={contentRef}
-                  className="modal-content"
+                  className={classNames('modal-content')}
                 >
                   <button
                     type="button"

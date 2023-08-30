@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '@/components/base/Layout';
 import Input from '@/components/base/Input';
 import Tabs from '@/components/base/Tabs';
-import TourList from '@/pages/Posts/List/components/TourList.tsx';
+import TourList from '@/pages/Posts/List/components/TourList';
 
 const tabs = [
   {

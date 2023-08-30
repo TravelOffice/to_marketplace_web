@@ -1,6 +1,6 @@
 import React from 'react';
-import { FaStar, FaStarHalf } from 'react-icons/fa';
 import classNames from 'classnames';
+import { BsStar, BsStarFill, BsStarHalf } from 'react-icons/bs';
 import { numberArrayOf } from '@/utils/arrays';
 
 export interface RatingBarProps {
@@ -14,18 +14,24 @@ export default function RatingBar(props: RatingBarProps) {
   const correctRating = Math.min(Math.max(rating, 0), 5);
   const fullStars = Math.floor(correctRating);
   const hasHalfStar = correctRating - fullStars >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
   return (
-    <div className="flex items-center space-x-1 mb-2">
+    <div className="flex items-center space-x-1">
       {
         numberArrayOf(fullStars).map((i) => (
-          <FaStar className={classNames('fill-primary', starClassname)} key={i} />
+          <BsStarFill className={classNames('fill-primary', starClassname)} key={i} />
         ))
       }
       {
         hasHalfStar && (
-          <FaStarHalf className={classNames('fill-primary', starClassname)} />
+          <BsStarHalf className={classNames('fill-primary', starClassname)} />
         )
+      }
+      {
+        numberArrayOf(emptyStars).map((i) => (
+          <BsStar className={classNames('fill-gray-300', starClassname)} key={i} />
+        ))
       }
       {
         showText && (
