@@ -8,4 +8,9 @@ export const useDateDuration = (data: string | number) => {
     .humanize();
 };
 
-export const formatCurrency = (amount: number) => new Intl.NumberFormat('en-US').format(amount);
+export const formatCurrency = (amount: number) => {
+  if (amount) {
+    return new Intl.NumberFormat('en-US').format(amount);
+  }
+  return 0;
+};

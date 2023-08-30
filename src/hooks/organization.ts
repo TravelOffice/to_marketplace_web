@@ -12,6 +12,7 @@ import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import { useAuth } from '@/hooks/auth';
 import backendApi from '@/services/backendApi';
 import { User } from '@/models/User/User';
+import { OrgStatistic } from '@/models/Organization/OrgStatistic.ts';
 
 export function useOrganizations() {
   return useQuery(
@@ -34,7 +35,7 @@ export function useOrganization(organizationId: string) {
 export function useOrganizationByCurrentUser(currentUser: MarketplaceUser | null) {
   return useQuery({
     queryKey: ['organization', currentUser?.organization],
-    queryFn: ({ signal }) => marketplaceApi.get(`/organizations/${currentUser?.organization}`, { signal }),
+    queryFn: ({ signal }) => marketplaceApi.get<Organization>(`/organizations/${currentUser?.organization}`, { signal }),
     enabled: !!currentUser,
   });
 }
@@ -114,11 +115,14 @@ export function useDeleteOrganization(organizationId: string) {
   );
 }
 
-export function useOrganizationStatistic(organizationId: string) {
+export function useOrganizationStatistic(organizationId: string, enabled: boolean) {
   return useQuery(
     ['organizations_statistic'],
-    ({ signal }) => marketplaceApi.get(`/organizations/${organizationId}/statistic`, {
+    ({ signal }) => marketplaceApi.get<OrgStatistic>(`/organizations/${organizationId}/statistic`, {
       signal,
     }),
+    {
+      enabled,
+    },
   );
 }

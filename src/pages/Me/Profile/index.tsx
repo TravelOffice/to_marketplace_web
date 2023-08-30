@@ -7,11 +7,15 @@ import { useCurrentUser } from '@/hooks/auth';
 
 const tabs: Tab[] = [
   {
-    title: 'My posts',
+    title: 'Bài đăng của tôi',
     content: <MyPostList />,
   },
   {
-    title: 'My received offers',
+    title: 'Yêu cầu nhận được',
+    content: <div>Offers</div>,
+  },
+  {
+    title: 'Yêu cầu gửi đi',
     content: <div>Offers</div>,
   },
 ];

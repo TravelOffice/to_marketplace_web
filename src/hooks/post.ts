@@ -13,12 +13,27 @@ import marketplaceApi from '@/services/marketplaceApi';
 import { PaginationPayload } from '@/services/BaseApi';
 
 export function useMyPosts() {
-  return useQuery(
-    ['my_posts'],
-    ({ signal }) => marketplaceApi.get<PaginationPayload<TourPost>>('/me/posts', {
+  return useInfiniteQuery({
+    queryKey: ['my_posts'],
+    queryFn: async ({
       signal,
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<TourPost>>(
+      '/me/posts',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
 }
 
 export function usePosts() {
@@ -45,14 +60,30 @@ export function usePosts() {
   });
 }
 
-export function usePostsByOrganization(organization: string) {
-  return useQuery(
-    ['posts_oby_organization', organization],
-    ({ signal }) => marketplaceApi.get<PaginationPayload<TourPost>>('/posts', {
+export function usePostsByOrganization(organization: string, enabled: boolean) {
+  return useInfiniteQuery({
+    queryKey: ['posts_oby_organization', organization],
+    queryFn: async ({
       signal,
-      queryParams: { organization },
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<TourPost>>(
+      '/posts',
+      {
+        queryParams: {
+          organization,
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+    enabled,
+  });
 }
 
 export function usePostsByAuthor(author: string) {

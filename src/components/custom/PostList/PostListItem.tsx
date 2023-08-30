@@ -1,39 +1,66 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { LiaBell, LiaBookmarkSolid, LiaHandshake } from 'react-icons/lia';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
+import { FiArrowRight } from 'react-icons/fi';
 import RatingBar from '@/components/base/RatingBar';
 import { TourPost } from '@/models/TourPost/TourPost';
+import { useDateDuration } from '@/utils/common';
+import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 
-export interface PostListItemProps {
+export interface PostListItemProps extends React.HTMLAttributes<HTMLDivElement> {
   post: TourPost,
   renderAction: (post: TourPost) => React.ReactNode,
 }
 
 export default function PostListItem(props: PostListItemProps) {
   const {
-    post,
     renderAction,
+    post,
+    ...rest
   } = props;
+  const { data: author } = useMarketplaceUser(post?.authorId!, !!post);
   return (
-    <div className="flex px-6 py-4 border-b last:border-b-0 dark:border-gray-700 dark:text-white">
-      <div className="h-full">
+    <div
+      className="bg-white dark:bg-[#283046] flex w-full py-4 px-6 border-b last:border-b-0 dark:border-gray-700"
+      {...rest}
+    >
+      <div className="h-full w-48">
         <img src="https://picsum.photos/200/300" alt="" className="rounded-lg w-48 h-48 mb-2" />
         {renderAction(post)}
       </div>
-      <div className="flex flex-col flex-1 text-left ps-5">
-        <Link to={`/posts/${post.code}`} className="font-bold text-lg mb-1">{post.name}</Link>
+      <div className="flex flex-col flex-1 text-left ps-5 break-words overflow-hidden">
+        <Link to={`/posts/${post.code}`} className="font-bold text-lg">{post.name}</Link>
+        <span className="text-sm font-light text-secondary dark:text-white mb-2">
+          <Link
+            to={`/users/${author?.id}`}
+            className="font-semibold text-primary"
+          >
+            {author?.name}
+          </Link>
+          {' '}
+          <span className="text-gray-400 text-xs italic">
+            {useDateDuration(post?.createdAt!)}
+            {' '}
+            trước
+          </span>
+        </span>
         {
-          post.ratingAverage! > 0 ?? (
-            <RatingBar rating={post.ratingAverage!} />
+          post?.ratingAverage! > 0 && (
+            <RatingBar rating={post?.ratingAverage!} />
           )
         }
         <p
           className="flex-1 text-sm text-gray-500 mb-2 text-justify dark:text-white whitespace-pre-wrap"
         >
-          {post.description}
-          {' '}
-          <Link to={`/posts/${post.code}`} className="text-blue-600">Xem thêm</Link>
+          <span className="text-ellipsis line-clamp-[13]">
+            {post.description}
+          </span>
+          <Link to={`/posts/${post.code}`} className="text-primary flex items-center">
+            Xem chi tiết
+            {' '}
+            <FiArrowRight />
+          </Link>
         </p>
         <div className="text-sm mb-1">
           <span className="text-gray-500 dark:text-white">Điểm đến: </span>
@@ -43,32 +70,28 @@ export default function PostListItem(props: PostListItemProps) {
           <span className="text-gray-500 dark:text-white">Ngày khởi hành: </span>
           <span className="font-bold">
             {moment(post.departureDate)
-              .format(('DD/MM/YYYY'))}
+              .format('DD/MM/YYYY')}
           </span>
         </div>
         <div className="flex justify-between items-center mt-4 text-sm text-secondary">
           <div className="flex items-center gap-2 dark:text-white">
             <LiaHandshake className="w-6 h-6 text-primary" />
             <span>
-              <strong className="font-bold text-black dark:text-white">10</strong>
+              <strong className="font-bold text-black dark:text-white">{post.totalOffers}</strong>
               {' '}
-              offers
+              Yêu cầu
             </span>
           </div>
           <div className="flex items-center gap-2 dark:text-white">
             <LiaBookmarkSolid className="w-6 h-6 text-sky-500" />
             <span>
-              <strong className="font-bold text-black dark:text-white">4</strong>
-              {' '}
-              bookmarks
+              Bookmark
             </span>
           </div>
           <div className="flex items-center gap-2 dark:text-white">
             <LiaBell className="w-6 h-6 text-sky-500" />
             <span>
-              <strong className="font-bold text-black dark:text-white">4</strong>
-              {' '}
-              followers
+              Theo dõi
             </span>
           </div>
         </div>

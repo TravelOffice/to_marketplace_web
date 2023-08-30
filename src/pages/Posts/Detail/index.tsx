@@ -62,12 +62,9 @@ export default function PostDetail() {
           <div className="card px-5 py-5 mb-10">
             <h5 className="text-lg font-bold">{post?.name}</h5>
             <span className="text-sm font-light text-secondary dark:text-white">
-              Đăng bởi
-              {' '}
               <span className="text-primary font-semibold">{author?.name}</span>
-              ,
               {' '}
-              <span className="font-semibold">
+              <span className="text-gray-400 text-xs italic">
                 {useDateDuration(post?.createdAt!)}
                 {' '}
                 trước
@@ -174,7 +171,7 @@ export default function PostDetail() {
             <div className="flex justify-between mb-5">
               <span className="text-sm">Chiết khấu</span>
               <span className="font-semibold">
-                {formatCurrency(post?.commissionRate!)}
+                {formatCurrency(post?.commission!)}
                 {' '}
                 VND
               </span>
