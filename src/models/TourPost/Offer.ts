@@ -38,3 +38,7 @@ export type CreateOfferFormData = Pick<Offer,
 > & {
   unlimited: boolean,
 };
+
+export type RejectOfferFormData = Pick<Offer,
+'rejectReason'
+>;
