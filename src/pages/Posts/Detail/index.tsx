@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { LiaBell, LiaBookmarkSolid, LiaHandshake } from 'react-icons/lia';
 import { Form, useParams } from 'react-router-dom';
 import moment from 'moment';
@@ -7,7 +7,6 @@ import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Layout from '@/components/base/Layout';
-import RatingBar from '@/components/base/RatingBar';
 import Comment from '@/pages/Posts/Detail/components/Comment';
 import { usePost } from '@/hooks/post';
 import { useComments, useCreateCommentMutation } from '@/hooks/comment';
@@ -17,6 +16,8 @@ import { CreateCommentFormData } from '@/models/TourPost/PostComment';
 import MakeOfferModal from '@/components/custom/MakeOfferModal';
 import OfferListCard from '@/pages/Posts/Detail/components/OfferListCard';
 import RatingCard from '@/pages/Posts/Detail/components/RatingCard';
+import { useOffersOfPost } from '@/hooks/offer';
+import { useCurrentUser } from '@/hooks/auth';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   .shape({
@@ -28,10 +29,12 @@ const schema: ObjectSchema<CreateCommentFormData> = yup.object()
 
 export default function PostDetail() {
   const [showMakeOfferModal, setShowMakeOfferModal] = React.useState(false);
+  const currentUser = useCurrentUser();
   const { postId } = useParams();
   const { data: post } = usePost(postId!);
   const { data: comments } = useComments(postId!, { limit: 100 });
   const { data: author } = useMarketplaceUser(post?.authorId!, !!post);
+  const { data: offers } = useOffersOfPost(postId!, true);
   const {
     handleSubmit,
     formState: { errors },
@@ -55,6 +58,10 @@ export default function PostDetail() {
     }
   };
 
+  const isAuthor = useMemo(() => currentUser?.id === post?.authorId, [currentUser, post]);
+
+  const inProcessOffers = useMemo(() => offers?.filter((offer) => offer.offerStatus === 'IN_PROCESS'), offers);
+
   return (
     <Layout>
       <div className="mx-8 pt-32 mt-1 grid grid-cols-7 gap-6">
@@ -70,7 +77,9 @@ export default function PostDetail() {
                 trước
               </span>
             </span>
-            <p className="text-sm text-secondary mb-5 mt-10 dark:text-white whitespace-pre-wrap break-words">
+            <p
+              className="text-sm text-secondary mb-5 mt-10 dark:text-white whitespace-pre-wrap break-words"
+            >
               {post?.description}
             </p>
             <div className="flex justify-between items-center mt-4 text-sm text-secondary">
@@ -104,12 +113,18 @@ export default function PostDetail() {
               </div>
             </div>
           </div>
-          <OfferListCard />
+          {
+            isAuthor ? (
+              <OfferListCard offers={inProcessOffers ?? []} />
+            ) : null
+          }
           <div className="card px-5 py-5 mb-10">
             <h5 className="font-bold mb-5">
               Bình luận (5)
               {' '}
-              <button type="button" className="underline text-sm font-normal text-primary">Làm mới</button>
+              <button type="button" className="underline text-sm font-normal text-primary">
+                Làm mới
+              </button>
             </h5>
             <Form onSubmit={handleSubmit(onSendComment)}>
               <div className="mb-5">
@@ -182,28 +197,11 @@ export default function PostDetail() {
               className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"
               onClick={() => setShowMakeOfferModal(true)}
             >
-              Gửi yêu cấu
+              {
+                currentUser?.id === post?.authorId ? 'Cập nhật bài đăng' : 'Gửi yêu cầu'
+              }
             </button>
           </div>
-          {
-            post?.ratingAverage ? (
-              <div className="card px-5 py-5 mb-10">
-                <h5 className="font-bold mb-5">
-                  Đánh giá (
-                  {post?.ratingAverage}
-                  {' '}
-                  trên 5)
-                </h5>
-                <div className="flex justify-center">
-                  <RatingBar
-                    rating={post?.ratingAverage!}
-                    showText={false}
-                    starClassname="w-10 h-10"
-                  />
-                </div>
-              </div>
-            ) : null
-          }
           <RatingCard />
         </div>
       </div>

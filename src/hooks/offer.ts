@@ -1,14 +1,14 @@
 import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import { SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
-import { CreateOfferFormData, Offer } from '@/models/TourPost/Offer';
+import { CreateOfferFormData, Offer, RejectOfferFormData } from '@/models/TourPost/Offer';
 import marketplaceApi from '@/services/marketplaceApi';
 
 export function useOffersOfPost(tourPostId: string, enabled?: boolean) {
   return useQuery(
     {
       queryKey: ['offers_of_post', tourPostId],
-      queryFn: ({ signal }) => marketplaceApi.get(`/posts/${tourPostId}/offers`, {
+      queryFn: ({ signal }) => marketplaceApi.get<Offer[]>(`/posts/${tourPostId}/offers`, {
         signal,
       }),
       enabled,
@@ -80,35 +80,20 @@ export function useCancelOffer(offerId: string, cancelReason: string) {
   );
 }
 
-export function useAcceptOffer(offerId: string) {
-  return useMutation(
-    () => marketplaceApi.put(`/offers/${offerId}/accept`),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
-  );
-}
+export const useAcceptOfferMutation = (
+  options: UseMutationOptions<Offer, Error, string>,
+) => useMutation(
+  (offerId: string) => marketplaceApi.put<Offer>(`/offers/${offerId}/accept`),
+  options,
+);
 
-export function useRejectOffer(offerId: string, rejectReason: string) {
-  return useMutation(
-    () => marketplaceApi.put(`/offers/${offerId}/reject`, { rejectReason }),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
-  );
-}
+export const useRejectOfferMutation = (
+  offerId: string,
+  options: UseMutationOptions<Offer, Error, RejectOfferFormData>,
+) => useMutation(
+  (data: RejectOfferFormData) => marketplaceApi.put<Offer>(`/offers/${offerId}/reject`, data),
+  options,
+);
 
 export function useMySentOffers() {
   return useQuery(

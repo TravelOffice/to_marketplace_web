@@ -1,14 +1,15 @@
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery, useMutation, useQuery, useQueryClient,
+} from '@tanstack/react-query';
 import {
   CREATE_SUCCESS,
   DELETE_SUCCESS,
   NUMBER_ITEM_PER_PAGE,
   SOMETHING_WRONG,
-  UPDATE_SUCCESS,
 } from '@/utils/constants';
-import { TourPost } from '@/models/TourPost/TourPost';
+import { EditPostFormData, TourPost } from '@/models/TourPost/TourPost';
 import marketplaceApi from '@/services/marketplaceApi';
 import { PaginationPayload } from '@/services/BaseApi';
 
@@ -121,23 +122,25 @@ export function useCreatePost(post: TourPost) {
   );
 }
 
-export function useUpdatePost(post: TourPost) {
+export const useUpdatePostMutation = (postId: string) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   return useMutation(
-    () => marketplaceApi.put(`/posts/${post.code}`, post),
     {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-        // Go to edit tour post page
-        navigate('/posts/:postId');
+      mutationFn: (post: EditPostFormData) => marketplaceApi.put<TourPost>(`/posts/${postId}`, post),
+      onSuccess: (newPost) => {
+        queryClient.setQueryData(['posts', postId], (input: TourPost | undefined) => ({
+          ...input,
+          ...newPost,
+        }));
+        navigate(`/posts/${postId}`);
       },
       onError: () => {
         toast.error(SOMETHING_WRONG);
       },
     },
   );
-}
+};
 
 export function useBookmarkedPosts() {
   return useQuery(
