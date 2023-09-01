@@ -28,8 +28,6 @@ export default function OfferCard(props: OfferCardProps) {
         </div>
         <div className="text-sm italic">
           {useDateDuration(offer.createdAt)}
-          {' '}
-          trước
         </div>
         <div>
           <span>

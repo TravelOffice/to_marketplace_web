@@ -105,14 +105,16 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
         <form onSubmit={handleSubmit(onSendOffer)}>
           <input value={tourPostId} hidden {...register('tourPostId')} />
           <div className="grid grid-cols-3 gap-2 mb-2">
-            <label htmlFor="pricePerpax" className="col-span-2 block text-sm text-gray-700 mb-1">
+            <label
+              htmlFor="pricePerpax"
+              className="col-span-2 block text-sm text-gray-700 mb-1 dark:text-white"
+            >
               Giá/khách
               {' '}
               <span className="text-red-700">*</span>
               <input
                 className={classNames(
                   'border-[1px] w-full h-8 mb-1 p-2.5 text-gray-900 text-sm dark:bg-[#283046] dark:text-white dark:border-gray-700',
-                  'focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none',
                 )}
                 type="number"
                 {...register('pricePerPax')}
@@ -122,14 +124,14 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
             </label>
           </div>
           <div className="grid grid-cols-3 gap-2 mb-2">
-            <label htmlFor="totalPax" className="block text-sm text-gray-700 mb-1">
+            <label htmlFor="totalPax" className="block text-sm text-gray-700 mb-1 dark:text-white">
               Số lượng khách
               {' '}
               <span className="text-red-700">*</span>
               <input
                 className={classNames(
                   'border-[1px] w-full h-8 mb-1 p-2.5 text-gray-900 text-sm dark:bg-[#283046] dark:text-white dark:border-gray-700',
-                  'focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none disabled:text-gray-600',
+                  'disabled:text-gray-600',
                 )}
                 type="number"
                 disabled={unlimited}
@@ -138,7 +140,10 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
               {errors.totalPax
                 && <p className="text-red-700 text-xs italic">{errors.totalPax.message}</p>}
             </label>
-            <label htmlFor="unlimited" className="block text-sm text-gray-700 mt-8 mb-1">
+            <label
+              htmlFor="unlimited"
+              className="block text-sm text-gray-700 mt-8 mb-1 dark:text-white"
+            >
               <input
                 type="checkbox"
                 {...register('unlimited')}
@@ -148,14 +153,16 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
             </label>
           </div>
           <div className="grid grid-cols-3 gap-2 mb-2">
-            <label htmlFor="commission" className="col-span-2 block text-sm text-gray-700 mb-1">
+            <label
+              htmlFor="commission"
+              className="col-span-2 block text-sm text-gray-700 mb-1 dark:text-white"
+            >
               Chiết khấu
               {' '}
               <span className="text-red-700">*</span>
               <input
                 className={classNames(
                   'border-[1px] w-full h-8 mb-1 p-2.5 text-gray-900 text-sm dark:bg-[#283046] dark:text-white dark:border-gray-700',
-                  'focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none',
                 )}
                 type="number"
                 {...register('commission')}
@@ -165,13 +172,15 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
             </label>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <label htmlFor="commission" className="col-span-3 block text-sm text-gray-700 mb-1">
+            <label
+              htmlFor="commission"
+              className="col-span-3 block text-sm text-gray-700 mb-1 dark:text-white"
+            >
               Mô tả
               <textarea
                 rows={4}
                 className={classNames(
                   'border-[1px] w-full h-32 mb-1 p-2.5 text-gray-900 text-sm dark:bg-[#283046] dark:text-white dark:border-gray-700',
-                  'focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none',
                 )}
                 {...register('description')}
               />

@@ -41,8 +41,6 @@ export default function PostListItem(props: PostListItemProps) {
           {' '}
           <span className="text-gray-400 text-xs italic">
             {useDateDuration(post?.createdAt!)}
-            {' '}
-            trước
           </span>
         </span>
         {
