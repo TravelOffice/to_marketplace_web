@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useCurrentUser } from '@/hooks/auth';
 
 export default function ProfileDropdown() {
+  const currentUser = useCurrentUser();
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="ml-3 relative">
@@ -14,7 +16,7 @@ export default function ProfileDropdown() {
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className="sr-only">Open user menu</span>
-          <img src="https://picsum.photos/400/400" alt="" className="w-10 h-10 rounded-full" />
+          <img src={currentUser?.avatar} alt="" className="w-10 h-10 rounded-full" />
         </button>
       </div>
       {

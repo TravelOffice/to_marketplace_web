@@ -44,7 +44,11 @@ export default function PostList(props: PostListProps) {
     <>
       <div>
         {tourPosts.map((post) => (
-          <PostListItem post={post} key={post.code} renderAction={renderAction} />
+          <PostListItem
+            post={post}
+            key={post.code}
+            renderAction={renderAction}
+          />
         ))}
       </div>
       <div className="text-center">

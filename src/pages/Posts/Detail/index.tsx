@@ -1,14 +1,24 @@
-import React, { useMemo } from 'react';
-import { LiaBell, LiaBookmarkSolid, LiaHandshake } from 'react-icons/lia';
+import React, { useEffect, useMemo, useState } from 'react';
+import { LiaHandshake } from 'react-icons/lia';
 import { Form, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  BsBell, BsBookmark, BsFillBellFill, BsFillBookmarkCheckFill,
+} from 'react-icons/bs';
+import { toast } from 'react-toastify';
 import Layout from '@/components/base/Layout';
 import Comment from '@/pages/Posts/Detail/components/Comment';
-import { usePost } from '@/hooks/post';
+import {
+  useCreateBookmarkPostMutation,
+  useDeleteBookmarkPostMutation,
+  useFollowPostMutation,
+  usePost,
+  useUnfollowPostMutation,
+} from '@/hooks/post';
 import { useComments, useCreateCommentMutation } from '@/hooks/comment';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 import { formatCurrency, useDateDuration } from '@/utils/common';
@@ -18,7 +28,8 @@ import OfferListCard from '@/pages/Posts/Detail/components/OfferListCard';
 import RatingCard from '@/pages/Posts/Detail/components/RatingCard';
 import { useOffersOfPost } from '@/hooks/offer';
 import { useCurrentUser } from '@/hooks/auth';
-import { usePostRatings } from '@/hooks/rating.ts';
+import { usePostRatings } from '@/hooks/rating';
+import { SOMETHING_WRONG } from '@/utils/constants';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   .shape({
@@ -33,9 +44,15 @@ export default function PostDetail() {
   const currentUser = useCurrentUser();
   const { postId } = useParams();
   const { data: post } = usePost(postId!);
-  const { data: comments } = useComments(postId!, { limit: 100 });
+  const {
+    data: comments,
+    refetch: refetchComments,
+  } = useComments(postId!, { limit: 100 });
   const { data: author } = useMarketplaceUser(post?.authorId!, !!post);
-  const { data: offers } = useOffersOfPost(postId!, !!postId);
+  const {
+    data: offers,
+    refetch: refetchOffers,
+  } = useOffersOfPost(postId!, !!postId);
   const { data: ratings } = usePostRatings(postId!, post?.organization!, !!post);
   const {
     handleSubmit,
@@ -61,15 +78,55 @@ export default function PostDetail() {
   };
 
   const isAuthor = useMemo(() => currentUser?.id === post?.authorId, [currentUser, post]);
-
   const inProcessOffers = useMemo(() => offers?.filter((offer) => offer.offerStatus === 'IN_PROCESS'), offers);
-
+  const [isBookmarked, setBookmark] = useState(false);
+  const [isFollowed, setFollow] = useState(false);
+  useEffect(() => {
+    if (post?.isBookmarked !== undefined) {
+      setBookmark(post.isBookmarked);
+    }
+    if (post?.isFollowed !== undefined) {
+      setFollow(post.isFollowed);
+    }
+  }, [post]);
+  const createBookmarkPostMutation = useCreateBookmarkPostMutation({
+    onSuccess: () => {
+      setBookmark(true);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+  const deleteBookmarkPostMutation = useDeleteBookmarkPostMutation({
+    onSuccess: () => {
+      setBookmark(false);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+  const followPostMutation = useFollowPostMutation({
+    onSuccess: () => {
+      setFollow(true);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+  const unfollowPostMutation = useUnfollowPostMutation({
+    onSuccess: () => {
+      setFollow(false);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
   return (
     <Layout>
       <div className="mx-8 pt-32 mt-1 grid grid-cols-7 gap-6">
         <div className="col-span-5">
           <div className="card px-5 py-5 mb-10">
-            <h5 className="text-lg font-bold">{post?.name}</h5>
+            <div className="text-lg font-bold">{post?.name}</div>
             <span className="text-sm font-light text-secondary dark:text-white">
               <span className="text-primary font-semibold">{author?.name}</span>
               {' '}
@@ -78,7 +135,7 @@ export default function PostDetail() {
               </span>
             </span>
             <p
-              className="text-sm text-secondary mb-5 mt-10 dark:text-white whitespace-pre-wrap break-words"
+              className="text-sm text-secondary mb-5 mt-5 dark:text-white whitespace-pre-wrap break-words"
             >
               {post?.description}
             </p>
@@ -95,27 +152,65 @@ export default function PostDetail() {
                   Yêu cầu
                 </span>
               </div>
-              <div className="flex items-center gap-2 dark:text-white">
-                <LiaBookmarkSolid className="w-6 h-6 text-sky-500" />
-                <span>
-                  <strong className="font-bold text-black dark:text-white">4</strong>
-                  {' '}
-                  bookmarks
-                </span>
-              </div>
-              <div className="flex items-center gap-2 dark:text-white">
-                <LiaBell className="w-6 h-6 text-sky-500" />
-                <span>
-                  <strong className="font-bold text-black dark:text-white">4</strong>
-                  {' '}
-                  Theo dõi
-                </span>
-              </div>
+              {isBookmarked ? (
+                <div className="flex items-center gap-2 dark:text-white">
+                  <BsFillBookmarkCheckFill className="w-5 h-5 text-sky-500" />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      deleteBookmarkPostMutation.mutate(postId!);
+                    }}
+                  >
+                    Bỏ đánh dấu
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 dark:text-white">
+                  <BsBookmark className="w-5 h-5 text-sky-500" />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      createBookmarkPostMutation.mutate(postId!);
+                    }}
+                  >
+                    Đánh dấu
+                  </a>
+                </div>
+              )}
+              {isFollowed ? (
+                <div className="flex items-center gap-2 dark:text-white">
+                  <BsFillBellFill className="w-5 h-5 text-sky-500" />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      unfollowPostMutation.mutate(postId!);
+                    }}
+                  >
+                    Bỏ theo dõi
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 dark:text-white">
+                  <BsBell className="w-5 h-5 text-sky-500" />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      followPostMutation.mutate(postId!);
+                    }}
+                  >
+                    Theo dõi
+                  </a>
+                </div>
+              )}
             </div>
           </div>
           {
             isAuthor ? (
-              <OfferListCard offers={inProcessOffers ?? []} />
+              <OfferListCard offers={inProcessOffers ?? []} refetch={() => refetchOffers()} />
             ) : null
           }
           <div className="card px-5 py-5 mb-10">
@@ -124,7 +219,11 @@ export default function PostDetail() {
               {comments?.data.length}
               )
               {' '}
-              <button type="button" className="underline text-sm font-normal text-primary">
+              <button
+                type="button"
+                className="underline text-sm font-normal text-primary"
+                onClick={() => refetchComments()}
+              >
                 Làm mới
               </button>
             </h5>
@@ -171,12 +270,6 @@ export default function PostDetail() {
                   .format('DD-MM-YYYY')}
               </span>
             </div>
-            <div className="flex justify-between mb-4">
-              <span className="text-sm">Số lượng khách</span>
-              <span className="font-semibold">
-                {post?.maximumPaxToTrade! > -1 ? post?.maximumPaxToTrade : 'Không giới hạn'}
-              </span>
-            </div>
             <div className="flex justify-between mb-5">
               <span className="text-sm">Giá/khách</span>
               <span className="font-semibold">
@@ -193,7 +286,12 @@ export default function PostDetail() {
                 VND
               </span>
             </div>
-
+            <div className="flex justify-between mb-4">
+              <span className="text-sm">Số lượng khách</span>
+              <span className="font-semibold">
+                {post?.maximumPaxToTrade! > -1 ? post?.maximumPaxToTrade : 'Không giới hạn'}
+              </span>
+            </div>
             <button
               type="button"
               className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"

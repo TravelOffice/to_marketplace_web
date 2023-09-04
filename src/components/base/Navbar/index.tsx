@@ -23,7 +23,7 @@ export default function Navbar() {
         <div className="flex items-center">
           <div className="flex flex-col items-end me-5">
             <h6 className="text-gray-800 font-semibold dark:text-white">{currentUser?.name}</h6>
-            <p className="text-gray-600 text-sm dark:text-white">{currentUser?.description}</p>
+            <p className="text-gray-600 text-sm dark:text-white">{currentUser?.alias}</p>
           </div>
           <ProfileDropdown />
         </div>
