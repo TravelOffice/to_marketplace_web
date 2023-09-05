@@ -18,6 +18,7 @@ import OfferListCard from '@/pages/Posts/Detail/components/OfferListCard';
 import RatingCard from '@/pages/Posts/Detail/components/RatingCard';
 import { useOffersOfPost } from '@/hooks/offer';
 import { useCurrentUser } from '@/hooks/auth';
+import { usePostRatings } from '@/hooks/rating.ts';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   .shape({
@@ -34,7 +35,8 @@ export default function PostDetail() {
   const { data: post } = usePost(postId!);
   const { data: comments } = useComments(postId!, { limit: 100 });
   const { data: author } = useMarketplaceUser(post?.authorId!, !!post);
-  const { data: offers } = useOffersOfPost(postId!, true);
+  const { data: offers } = useOffersOfPost(postId!, !!postId);
+  const { data: ratings } = usePostRatings(postId!, post?.organization!, !!post);
   const {
     handleSubmit,
     formState: { errors },
@@ -73,8 +75,6 @@ export default function PostDetail() {
               {' '}
               <span className="text-gray-400 text-xs italic">
                 {useDateDuration(post?.createdAt!)}
-                {' '}
-                trước
               </span>
             </span>
             <p
@@ -120,7 +120,9 @@ export default function PostDetail() {
           }
           <div className="card px-5 py-5 mb-10">
             <h5 className="font-bold mb-5">
-              Bình luận (5)
+              Bình luận (
+              {comments?.data.length}
+              )
               {' '}
               <button type="button" className="underline text-sm font-normal text-primary">
                 Làm mới
@@ -202,7 +204,7 @@ export default function PostDetail() {
               }
             </button>
           </div>
-          <RatingCard />
+          <RatingCard ratings={ratings!} ratingAverage={post?.ratingAverage!} />
         </div>
       </div>
       <MakeOfferModal

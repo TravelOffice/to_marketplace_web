@@ -9,7 +9,7 @@ import marketplaceApi from '@/services/marketplaceApi';
 export function usePostRatings(tourPostId: string, organization: string, enabled?: boolean) {
   return useQuery({
     queryKey: ['ratings_of_post', tourPostId],
-    queryFn: ({ signal }) => marketplaceApi.get(`/posts/${tourPostId}/ratings`, {
+    queryFn: ({ signal }) => marketplaceApi.get<PostRating[]>(`/posts/${tourPostId}/ratings`, {
       signal,
       queryParams: { organization },
     }),

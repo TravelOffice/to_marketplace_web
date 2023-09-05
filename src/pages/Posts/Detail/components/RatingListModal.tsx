@@ -3,9 +3,11 @@ import classNames from 'classnames';
 import Modal, { ModalProps } from '@/components/base/Modal';
 import ModalHeader from '@/components/base/Modal/ModalHeader';
 import ModalBody from '@/components/base/Modal/ModalBody';
-import RatingBar from '@/components/base/RatingBar';
+import { PostRating } from '@/models/TourPost/PostRating';
+import RatingListItem from '@/pages/Posts/Detail/components/RatingListItem';
 
 export interface RatingListModalProps extends ModalProps {
+  readonly ratings: PostRating[],
 }
 
 const ratingTypes = [
@@ -28,23 +30,15 @@ const ratingTypeLabels: Record<RatingFilterType, string> = {
   5: '5 sao',
 };
 
-const ratings = Array.from({ length: 5 }).map((_, i) => ({
-  id: i,
-  name: 'Nguyễn Văn A',
-  avatar: 'https://picsum.photos/600/600',
-  rating: Math.ceil(Math.random() * 5),
-  content: 'Skem',
-  createdAt: '1 ngày trước',
-}));
-
 export default function RatingListModal(props: RatingListModalProps) {
+  const { ratings } = props;
   const [ratingFilter, setRatingFilter] = React.useState<RatingFilterType>('all');
   const filteredRatings = React.useMemo(() => {
     if (ratingFilter === 'all') {
       return ratings;
     }
-    return ratings.filter((rating) => Math.round(rating.rating) === Number(ratingFilter));
-  }, [ratingFilter]);
+    return ratings?.filter((rating) => Math.round(rating.star) === Number(ratingFilter));
+  }, [ratings, ratingFilter]);
   return (
     <Modal {...props} size="2xl">
       <ModalHeader>
@@ -72,33 +66,17 @@ export default function RatingListModal(props: RatingListModalProps) {
           Tìm thấy
           {' '}
           <span className="font-medium text-primary">
-            {filteredRatings.length}
+            {filteredRatings?.length}
           </span>
           {' '}
           kết quả
         </div>
         <div className="flex flex-col gap-5">
           {
-            filteredRatings.map((rating) => (
-              <div key={rating.id} className="flex gap-5">
-                <img
-                  src={rating.avatar}
-                  alt=""
-                  className="w-10 h-10 rounded-full"
-                />
-                <div>
-                  <h5 className="font-medium mb-1">
-                    {rating.name}
-                    {' '}
-                    <span className="text-sm italic text-gray-400">
-                      {rating.createdAt}
-                    </span>
-                  </h5>
-                  <RatingBar rating={rating.rating} showText={false} starClassname="w-4 h-4" />
-                  <p className="text-sm mt-2">{rating.content}</p>
-                </div>
-              </div>
-            ))
+            filteredRatings?.sort((a, b) => b.createdAt - a.createdAt)
+              .map((rating) => (
+                <RatingListItem rating={rating} />
+              ))
           }
         </div>
       </ModalBody>

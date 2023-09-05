@@ -20,8 +20,6 @@ export default function Comment(props: CommentProps) {
           <h6 className="font-bold">{author?.name}</h6>
           <span className="text-gray-400 text-xs italic">
             {useDateDuration(comment.createdAt)}
-            {' '}
-            trước
           </span>
         </div>
         <p className="text-sm text-secondary dark:text-white">
