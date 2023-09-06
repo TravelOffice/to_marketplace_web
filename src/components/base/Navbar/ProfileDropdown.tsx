@@ -23,7 +23,7 @@ export default function ProfileDropdown() {
       {
         isOpen && (
           <div
-            className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5"
+            className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white text-gray-700 ring-1 ring-black ring-opacity-5 dark:bg-dark dark:text-white"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="user-menu"
@@ -31,30 +31,29 @@ export default function ProfileDropdown() {
             <Link
               to="/me/profile"
               onClick={() => setIsOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
               role="menuitem"
             >
-              Thông
-              tin Cá nhân
+              Thông tin Cá nhân
             </Link>
             <Link
               to="/me/organization"
               onClick={() => setIsOpen(false)}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
               role="menuitem"
             >
               Thông tin Công ty
             </Link>
             <a
               href="/"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
               role="menuitem"
             >
               Cài đặt
             </a>
             <a
               href="/"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
               role="menuitem"
             >
               Đăng xuất

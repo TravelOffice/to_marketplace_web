@@ -12,7 +12,7 @@ import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import { useAuth } from '@/hooks/auth';
 import backendApi from '@/services/backendApi';
 import { User } from '@/models/User/User';
-import { OrgStatistic } from '@/models/Organization/OrgStatistic.ts';
+import { OrgStatistic } from '@/models/Organization/OrgStatistic';
 
 export function useOrganizations() {
   return useQuery(

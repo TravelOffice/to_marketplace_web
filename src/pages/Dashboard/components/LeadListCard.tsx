@@ -68,14 +68,14 @@ export default function LeadListCard() {
       <div>
         <button
           type="button"
-          className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-5 w-10 h-10 bg-white rounded-full shadow-lg flex justify-center items-center"
+          className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-5 w-10 h-10 bg-white rounded-full shadow-lg flex justify-center items-center dark:bg-dark"
           onClick={() => setActiveIndex((activeIndex + leads.length - 1) % leads.length)}
         >
           <FiArrowLeft />
         </button>
         <button
           type="button"
-          className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-5 w-10 h-10 bg-white rounded-full shadow-lg flex justify-center items-center"
+          className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-5 w-10 h-10 bg-white rounded-full shadow-lg flex justify-center items-center dark:bg-dark"
           onClick={() => setActiveIndex((activeIndex + 1) % leads.length)}
         >
           <FiArrowRight />
