@@ -1,8 +1,11 @@
 import { toast } from 'react-toastify';
-import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
-import { SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
+import {
+  useInfiniteQuery, useMutation, UseMutationOptions, useQuery,
+} from '@tanstack/react-query';
+import { NUMBER_ITEM_PER_PAGE, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import { CreateOfferFormData, Offer, RejectOfferFormData } from '@/models/TourPost/Offer';
 import marketplaceApi from '@/services/marketplaceApi';
+import { PaginationPayload } from '@/services/BaseApi.ts';
 
 export function useOffersOfPost(tourPostId: string, enabled?: boolean) {
   return useQuery(
@@ -23,22 +26,52 @@ export const useCreateOfferMutation = (
   options,
 );
 
-export function useSentOfferOfOrganization(organization: string) {
-  return useQuery(
-    ['sent_offers_of_org', organization],
-    ({ signal }) => marketplaceApi.get(`/organizations/${organization}/sent-offers`, {
+export function useSentOfferOfOrganization() {
+  return useInfiniteQuery({
+    queryKey: ['sent_offers_of_org'],
+    queryFn: async ({
       signal,
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<Offer>>(
+      '/me/organizations/sent-offers',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
 }
 
-export function useReceivedOfferOfOrganization(organization: string) {
-  return useQuery(
-    ['received_offers_of_org', organization],
-    ({ signal }) => marketplaceApi.get(`/me/organizations/${organization}/received-offers`, {
+export function useReceivedOfferOfOrganization() {
+  return useInfiniteQuery({
+    queryKey: ['received_offers_of_org'],
+    queryFn: async ({
       signal,
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<Offer>>(
+      '/me/organizations/received-offers',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
 }
 
 export function useOffer(offerId: string) {
@@ -96,19 +129,49 @@ export const useRejectOfferMutation = (
 );
 
 export function useMySentOffers() {
-  return useQuery(
-    ['my_sent_offer'],
-    ({ signal }) => marketplaceApi.get('/me/sent-offers', {
+  return useInfiniteQuery({
+    queryKey: ['my_recemy_sent_offerived_offer'],
+    queryFn: async ({
       signal,
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<Offer>>(
+      '/me/sent-offers',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
 }
 
 export function useMyReceivedOffers() {
-  return useQuery(
-    ['my_received_offer'],
-    ({ signal }) => marketplaceApi.get<Offer[]>('/me/received-offers', {
+  return useInfiniteQuery({
+    queryKey: ['my_received_offer'],
+    queryFn: async ({
       signal,
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<Offer>>(
+      '/me/received-offers',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
 }

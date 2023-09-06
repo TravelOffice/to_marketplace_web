@@ -6,6 +6,9 @@ import MyPostList from '@/pages/Me/Profile/tabs/MyPostList';
 import { useCurrentUser } from '@/hooks/auth';
 import MyBookmarkedPostList from '@/pages/Me/Profile/tabs/MyBookmarkedPostList';
 import MyFollowPostList from '@/pages/Me/Profile/tabs/MyFollowPostList';
+import { generateUserAvatar } from '@/utils/common';
+import MyReceivedOfferList from '@/pages/Me/Profile/tabs/MyReceivedOfferList';
+import MySentOfferList from '@/pages/Me/Profile/tabs/MySentOfferList';
 
 const tabs: Tab[] = [
   {
@@ -20,6 +23,14 @@ const tabs: Tab[] = [
     title: 'Bài đăng đang theo dõi',
     content: <MyFollowPostList />,
   },
+  {
+    title: 'Yêu cầu nhận được',
+    content: <MyReceivedOfferList />,
+  },
+  {
+    title: 'Yêu cầu gửi đi',
+    content: <MySentOfferList />,
+  },
 ];
 
 export default function Profile() {
@@ -31,7 +42,7 @@ export default function Profile() {
           className="flex items-center card rounded-lg px-5 py-5 mb-10 shadow-2xl"
         >
           <img
-            src={currentUser?.avatar}
+            src={generateUserAvatar(currentUser)}
             alt=""
             className="w-32 h-32 rounded-full mx-auto"
           />

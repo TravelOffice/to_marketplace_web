@@ -24,6 +24,13 @@ const postRoutes: RouteObject = {
         return { Component: Component.default };
       },
     },
+    {
+      path: ':postId/edit',
+      async lazy() {
+        const Component = await import('@/pages/Posts/Edit');
+        return { Component: Component.default };
+      },
+    },
   ],
 };
 

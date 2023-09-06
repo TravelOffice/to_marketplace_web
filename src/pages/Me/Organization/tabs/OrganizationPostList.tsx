@@ -13,7 +13,6 @@ export default function OrganizationPostList() {
       type="button"
       className="text-white bg-primary w-full rounded-lg font-medium text-sm px-5 py-2.5"
       onClick={() => navigate(`/posts/${post?.code}`)}
-      disabled={currentUser?.organization === post.organization}
     >
       Chi tiết
     </button>

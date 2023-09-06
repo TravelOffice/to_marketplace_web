@@ -6,7 +6,7 @@ import { isTokenExpired } from '@/utils/jwt';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 
 export interface AuthState {
-  currentUser: MarketplaceUser | null,
+  currentUser: MarketplaceUser | undefined,
   setCurrentUser: (user: MarketplaceUser) => void,
   accessToken: string | null,
   logIn: (token: string) => void,
@@ -16,7 +16,7 @@ export interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      currentUser: null,
+      currentUser: undefined,
       accessToken: null,
       logIn: (token: string) => {
         set(() => ({ accessToken: token }));

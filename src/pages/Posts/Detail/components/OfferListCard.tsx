@@ -37,6 +37,7 @@ export default function OfferListCard(props: OfferListCardProps) {
           offers?.sort((a, b) => b.commission - a.commission)
             .map((offer) => (
               <OfferCard
+                key={offer.code}
                 offer={offer}
                 acceptOffer={() => setAcceptOffer(offer)}
                 rejectOffer={() => setRejectOffer(offer)}

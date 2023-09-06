@@ -83,7 +83,7 @@ export default function PostListItem(props: PostListItemProps) {
       {...rest}
     >
       <div className="h-full w-48">
-        <img src={logo} alt="" className="rounded-lg w-48 h-48 mb-2" />
+        <img src={post.thumbnail ?? logo} alt="" className="rounded-lg w-48 h-48 mb-2" />
         {renderAction(post)}
       </div>
       <div className="flex flex-col flex-1 text-left ps-5 break-words overflow-hidden">
@@ -131,7 +131,7 @@ export default function PostListItem(props: PostListItemProps) {
           </span>
         </div>
         <div className="flex justify-between items-center mt-4 text-sm text-secondary">
-          <div className="flex items-center gap-2 dark:text-white">
+          <div className="flex items-center gap-2 dark:text-white mr-4">
             <LiaHandshake className="w-6 h-6 text-primary" />
             <span>
               <strong className="font-bold text-black dark:text-white">{post.totalOffers}</strong>
@@ -139,60 +139,64 @@ export default function PostListItem(props: PostListItemProps) {
               Yêu cầu
             </span>
           </div>
-          {isBookmarked ? (
-            <div className="flex items-center gap-2 dark:text-white">
-              <BsFillBookmarkCheckFill className="w-5 h-5 text-sky-500" />
-              <a
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  deleteBookmarkPostMutation.mutate(post?.code);
-                }}
-              >
-                Bỏ đánh dấu
-              </a>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 dark:text-white">
-              <BsBookmark className="w-5 h-5 text-sky-500" />
-              <a
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  createBookmarkPostMutation.mutate(post?.code);
-                }}
-              >
-                Đánh dấu
-              </a>
-            </div>
-          )}
-          {isFollowed ? (
-            <div className="flex items-center gap-2 dark:text-white">
-              <BsFillBellFill className="w-5 h-5 text-sky-500" />
-              <a
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  unfollowPostMutation.mutate(post?.code);
-                }}
-              >
-                Bỏ theo dõi
-              </a>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 dark:text-white">
-              <BsBell className="w-5 h-5 text-sky-500" />
-              <a
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  followPostMutation.mutate(post?.code);
-                }}
-              >
-                Theo dõi
-              </a>
-            </div>
-          )}
+          <div className="flex items-center gap-2 dark:text-white mr-4">
+            {isBookmarked ? (
+              <>
+                <BsFillBookmarkCheckFill className="w-5 h-5 text-sky-500" />
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    deleteBookmarkPostMutation.mutate(post?.code);
+                  }}
+                >
+                  Bỏ đánh dấu
+                </a>
+              </>
+            ) : (
+              <>
+                <BsBookmark className="w-5 h-5 text-sky-500" />
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    createBookmarkPostMutation.mutate(post?.code);
+                  }}
+                >
+                  Đánh dấu
+                </a>
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-2 dark:text-white">
+            {isFollowed ? (
+              <>
+                <BsFillBellFill className="w-5 h-5 text-sky-500" />
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    unfollowPostMutation.mutate(post?.code);
+                  }}
+                >
+                  Bỏ theo dõi
+                </a>
+              </>
+            ) : (
+              <>
+                <BsBell className="w-5 h-5 text-sky-500" />
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    followPostMutation.mutate(post?.code);
+                  }}
+                >
+                  Theo dõi
+                </a>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

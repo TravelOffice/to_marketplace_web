@@ -32,7 +32,7 @@ export function useOrganization(organizationId: string) {
   );
 }
 
-export function useOrganizationByCurrentUser(currentUser: MarketplaceUser | null) {
+export function useOrganizationByCurrentUser(currentUser: MarketplaceUser | undefined) {
   return useQuery({
     queryKey: ['organization', currentUser?.organization],
     queryFn: ({ signal }) => marketplaceApi.get<Organization>(`/organizations/${currentUser?.organization}`, { signal }),

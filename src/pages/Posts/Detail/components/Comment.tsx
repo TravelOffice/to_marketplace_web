@@ -1,7 +1,7 @@
 import React from 'react';
 import { PostComment } from '@/models/TourPost/PostComment';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
-import { useDateDuration } from '@/utils/common';
+import { generateUserAvatar, useDateDuration } from '@/utils/common';
 
 export interface CommentProps {
   comment: PostComment,
@@ -13,7 +13,11 @@ export default function Comment(props: CommentProps) {
   return (
     <div className="flex mb-5">
       <div className="flex-shrink-0">
-        <img src="https://picsum.photos/400/400" alt="" className="w-10 h-10 rounded-full" />
+        <img
+          src={generateUserAvatar(author)}
+          alt=""
+          className="w-10 h-10 rounded-full"
+        />
       </div>
       <div className="flex-1 ms-5">
         <div className="mb-2">

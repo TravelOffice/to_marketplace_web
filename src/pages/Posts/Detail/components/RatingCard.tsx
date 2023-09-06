@@ -40,7 +40,7 @@ export default function RatingCard(props: RatingCardProps) {
           [...Array(5)
             .keys()].reverse()
             .map((index) => (
-              <div className="flex items-center text-sm">
+              <div key={index} className="flex items-center text-sm">
                 <RatingBar rating={index + 1} showText={false} starClassname="w-4 h-4" />
                 <button
                   type="button"
