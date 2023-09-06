@@ -107,7 +107,7 @@ export function useMySentOffers() {
 export function useMyReceivedOffers() {
   return useQuery(
     ['my_received_offer'],
-    ({ signal }) => marketplaceApi.get('/me/received-offers', {
+    ({ signal }) => marketplaceApi.get<Offer[]>('/me/received-offers', {
       signal,
     }),
   );

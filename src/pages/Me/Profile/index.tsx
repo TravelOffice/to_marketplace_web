@@ -4,6 +4,8 @@ import Layout from '@/components/base/Layout';
 import Tabs, { Tab } from '@/components/base/Tabs';
 import MyPostList from '@/pages/Me/Profile/tabs/MyPostList';
 import { useCurrentUser } from '@/hooks/auth';
+import MyBookmarkedPostList from '@/pages/Me/Profile/tabs/MyBookmarkedPostList';
+import MyFollowPostList from '@/pages/Me/Profile/tabs/MyFollowPostList';
 
 const tabs: Tab[] = [
   {
@@ -11,12 +13,12 @@ const tabs: Tab[] = [
     content: <MyPostList />,
   },
   {
-    title: 'Yêu cầu nhận được',
-    content: <div>Offers</div>,
+    title: 'Bài đăng đã ghim',
+    content: <MyBookmarkedPostList />,
   },
   {
-    title: 'Yêu cầu gửi đi',
-    content: <div>Offers</div>,
+    title: 'Bài đăng đang theo dõi',
+    content: <MyFollowPostList />,
   },
 ];
 
@@ -29,7 +31,7 @@ export default function Profile() {
           className="flex items-center card rounded-lg px-5 py-5 mb-10 shadow-2xl"
         >
           <img
-            src="https://picsum.photos/800/800"
+            src={currentUser?.avatar}
             alt=""
             className="w-32 h-32 rounded-full mx-auto"
           />
@@ -60,7 +62,7 @@ export default function Profile() {
             >
               <div className="my-auto">
                 <span className="font-semibold text-2xl tracking-wider">10</span>
-                <p className="mt-2">Deals</p>
+                <p className="mt-2">Offers</p>
               </div>
             </div>
 

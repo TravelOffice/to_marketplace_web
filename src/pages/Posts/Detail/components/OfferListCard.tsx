@@ -6,10 +6,14 @@ import OfferCard from '@/pages/Posts/Detail/components/OfferCard';
 
 export interface OfferListCardProps {
   offers: Offer[],
+  refetch: () => void,
 }
 
 export default function OfferListCard(props: OfferListCardProps) {
-  const { offers } = props;
+  const {
+    offers,
+    refetch,
+  } = props;
   const [acceptOffer, setAcceptOffer] = React.useState<Offer>();
   const [rejectOffer, setRejectOffer] = React.useState<Offer>();
 
@@ -20,7 +24,11 @@ export default function OfferListCard(props: OfferListCardProps) {
         {offers?.length}
         )
         {' '}
-        <button type="button" className="underline text-sm font-normal text-primary">
+        <button
+          type="button"
+          className="underline text-sm font-normal text-primary"
+          onClick={refetch}
+        >
           Làm mới
         </button>
       </h5>

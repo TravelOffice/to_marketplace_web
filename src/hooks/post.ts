@@ -1,17 +1,18 @@
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import {
-  useInfiniteQuery, useMutation, useQuery, useQueryClient,
+  useInfiniteQuery,
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  useQueryClient,
 } from '@tanstack/react-query';
-import {
-  CREATE_SUCCESS,
-  DELETE_SUCCESS,
-  NUMBER_ITEM_PER_PAGE,
-  SOMETHING_WRONG,
-} from '@/utils/constants';
+import { CREATE_SUCCESS, NUMBER_ITEM_PER_PAGE, SOMETHING_WRONG } from '@/utils/constants';
 import { EditPostFormData, TourPost } from '@/models/TourPost/TourPost';
 import marketplaceApi from '@/services/marketplaceApi';
 import { PaginationPayload } from '@/services/BaseApi';
+import { FollowedTourPost } from '@/models/TourPost/FollowedTourPost';
+import { BookmarkedTourPost } from '@/models/TourPost/BookmarkedTourPost';
 
 export function useMyPosts() {
   return useInfiniteQuery({
@@ -142,80 +143,86 @@ export const useUpdatePostMutation = (postId: string) => {
   );
 };
 
-export function useBookmarkedPosts() {
-  return useQuery(
-    ['bookmarked_posts'],
-    ({ signal }) => marketplaceApi.get('/me/bookmarked-posts', {
+export function useMyBookmarkedPosts() {
+  return useInfiniteQuery({
+    queryKey: ['bookmarked_posts'],
+    queryFn: async ({
       signal,
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<TourPost>>(
+      '/me/bookmarked-posts',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
 }
 
-export function useFollowedPosts() {
-  return useQuery(
-    ['bookmarked_posts'],
-    ({ signal }) => marketplaceApi.get('/me/followed-posts', {
+export function useMyFollowPosts() {
+  return useInfiniteQuery({
+    queryKey: ['follow_posts'],
+    queryFn: async ({
       signal,
-    }),
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<TourPost>>(
+      '/me/followed-posts',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
+}
+
+export function useCreateBookmarkPostMutation(
+  options: UseMutationOptions<BookmarkedTourPost, Error, string>,
+) {
+  return useMutation(
+    (tourPostId: string) => marketplaceApi.post<BookmarkedTourPost>(`/posts/${tourPostId}/bookmark`),
+    options,
   );
 }
 
-export function useCreateBookmark(tourPostId: string) {
+export function useDeleteBookmarkPostMutation(
+  options: UseMutationOptions<BookmarkedTourPost, Error, string>,
+) {
   return useMutation(
-    () => marketplaceApi.post(`/posts/${tourPostId}/bookmark`),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(CREATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
+    (tourPostId: string) => marketplaceApi.delete<BookmarkedTourPost>(`/posts/${tourPostId}/bookmark`),
+    options,
   );
 }
 
-export function useDeleteBookmark(tourPostId: string) {
+export function useFollowPostMutation(
+  options: UseMutationOptions<FollowedTourPost, Error, string>,
+) {
   return useMutation(
-    () => marketplaceApi.delete(`/posts/${tourPostId}/bookmark`),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(CREATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
+    (tourPostId: string) => marketplaceApi.post<FollowedTourPost>(`/posts/${tourPostId}/follow`),
+    options,
   );
 }
 
-export function useFollowPost(tourPostId: string) {
+export function useUnfollowPostMutation(
+  options: UseMutationOptions<FollowedTourPost, Error, string>,
+) {
   return useMutation(
-    () => marketplaceApi.post(`/posts/${tourPostId}/follow`),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(CREATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
-  );
-}
-
-export function useUnfollowPost(tourPostId: string) {
-  return useMutation(
-    () => marketplaceApi.delete(`/posts/${tourPostId}/follow`),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(DELETE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
+    (tourPostId: string) => marketplaceApi.delete<FollowedTourPost>(`/posts/${tourPostId}/follow`),
+    options,
   );
 }
