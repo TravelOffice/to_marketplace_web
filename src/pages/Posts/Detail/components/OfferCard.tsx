@@ -1,13 +1,12 @@
 import React from 'react';
 import { Offer } from '@/models/TourPost/Offer';
-import { formatCurrency, useDateDuration } from '@/utils/common';
+import { formatCurrency, generateUserAvatar, useDateDuration } from '@/utils/common';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 
 export interface OfferCardProps {
   offer: Offer,
   acceptOffer: (offer: Offer) => void,
   rejectOffer: (offer: Offer) => void,
-
 }
 
 export default function OfferCard(props: OfferCardProps) {
@@ -19,7 +18,11 @@ export default function OfferCard(props: OfferCardProps) {
   const { data: author } = useMarketplaceUser(offer.authorId, !!offer);
   return (
     <div key={offer.code} className="border-b last:border-0 flex py-5 gap-5">
-      <img src="https://picsum.photos/600/600" alt="" className="w-14 h-14 rounded-full" />
+      <img
+        src={generateUserAvatar(author)}
+        alt=""
+        className="w-14 h-14 rounded-full"
+      />
       <div className="flex-1">
         <div>
           <h5 className="font-semibold text-lg">

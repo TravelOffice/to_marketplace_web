@@ -75,7 +75,7 @@ export default function RatingListModal(props: RatingListModalProps) {
           {
             filteredRatings?.sort((a, b) => b.createdAt - a.createdAt)
               .map((rating) => (
-                <RatingListItem rating={rating} />
+                <RatingListItem key={rating.code} rating={rating} />
               ))
           }
         </div>

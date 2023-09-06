@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { LiaHandshake } from 'react-icons/lia';
-import { Form, useParams } from 'react-router-dom';
+import { Form, useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -40,6 +40,7 @@ const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   });
 
 export default function PostDetail() {
+  const navigate = useNavigate();
   const [showMakeOfferModal, setShowMakeOfferModal] = React.useState(false);
   const currentUser = useCurrentUser();
   const { postId } = useParams();
@@ -78,7 +79,7 @@ export default function PostDetail() {
   };
 
   const isAuthor = useMemo(() => currentUser?.id === post?.authorId, [currentUser, post]);
-  const inProcessOffers = useMemo(() => offers?.filter((offer) => offer.offerStatus === 'IN_PROCESS'), offers);
+  const inProcessOffers = useMemo(() => offers?.filter((offer) => offer.offerStatus === 'IN_PROCESS'), [offers]);
   const [isBookmarked, setBookmark] = useState(false);
   const [isFollowed, setFollow] = useState(false);
   useEffect(() => {
@@ -121,6 +122,31 @@ export default function PostDetail() {
       toast.error(SOMETHING_WRONG);
     },
   });
+  const renderAction = () => {
+    if (currentUser?.id === post?.authorId) {
+      return (
+        <button
+          type="button"
+          className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"
+          onClick={() => navigate(`/posts/${post?.code}/edit`)}
+        >
+          Cập nhật bài đăng
+        </button>
+      );
+    }
+    if (currentUser?.organization === post?.organization) {
+      return null;
+    }
+    return (
+      <button
+        type="button"
+        className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"
+        onClick={() => setShowMakeOfferModal(true)}
+      >
+        Gửi yêu cầu
+      </button>
+    );
+  };
   return (
     <Layout>
       <div className="mx-8 pt-32 mt-1 grid grid-cols-7 gap-6">
@@ -292,15 +318,9 @@ export default function PostDetail() {
                 {post?.maximumPaxToTrade! > -1 ? post?.maximumPaxToTrade : 'Không giới hạn'}
               </span>
             </div>
-            <button
-              type="button"
-              className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"
-              onClick={() => setShowMakeOfferModal(true)}
-            >
-              {
-                currentUser?.id === post?.authorId ? 'Cập nhật bài đăng' : 'Gửi yêu cầu'
-              }
-            </button>
+            {
+              renderAction()
+            }
           </div>
           <RatingCard ratings={ratings!} ratingAverage={post?.ratingAverage!} />
         </div>

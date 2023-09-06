@@ -4,6 +4,8 @@ import Layout from '@/components/base/Layout';
 import OrganizationPostList from '@/pages/Me/Organization/tabs/OrganizationPostList';
 import { useOrganizationByCurrentUser, useOrganizationStatistic } from '@/hooks/organization';
 import { useCurrentUser } from '@/hooks/auth';
+import ReceivedOfferListOfOrg from '@/pages/Me/Organization/tabs/ReceivedOfferListOfOrg';
+import SentOfferListOfOrg from '@/pages/Me/Organization/tabs/SentOfferListOfOrg';
 
 const tabs = [
   {
@@ -12,11 +14,11 @@ const tabs = [
   },
   {
     title: 'Yêu cầu nhận được',
-    content: <div>Offers</div>,
+    content: <ReceivedOfferListOfOrg />,
   },
   {
     title: 'Yêu cầu gửi đi',
-    content: <div>Analytics</div>,
+    content: <SentOfferListOfOrg />,
   },
   {
     title: 'Thành viên',

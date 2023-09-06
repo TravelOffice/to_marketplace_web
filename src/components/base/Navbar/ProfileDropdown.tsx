@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/auth';
+import { generateUserAvatar } from '@/utils/common.tsx';
 
 export default function ProfileDropdown() {
   const currentUser = useCurrentUser();
@@ -16,7 +17,7 @@ export default function ProfileDropdown() {
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className="sr-only">Open user menu</span>
-          <img src={currentUser?.avatar} alt="" className="w-10 h-10 rounded-full" />
+          <img src={generateUserAvatar(currentUser)} alt="" className="w-10 h-10 rounded-full" />
         </button>
       </div>
       {

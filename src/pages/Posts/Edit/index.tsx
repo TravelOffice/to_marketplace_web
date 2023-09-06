@@ -3,8 +3,8 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import { Form } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
+import { Form, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import Layout from '@/components/base/Layout';
@@ -13,6 +13,7 @@ import Label from '@/components/base/Label';
 import '@/styles/extended/react-select.css';
 import { EditPostFormData } from '@/models/TourPost/TourPost';
 import { usePost, useUpdatePostMutation } from '@/hooks/post';
+import { tourPostTypes } from '@/models/TourPost/TourPostType';
 
 const schema: ObjectSchema<EditPostFormData> = yup.object()
   .shape({
@@ -21,10 +22,11 @@ const schema: ObjectSchema<EditPostFormData> = yup.object()
     description: yup.string()
       .required('Vui lòng nhập mô tả'),
     type: yup.string()
+      .oneOf(tourPostTypes)
       .required('Vui lòng chọn loại'),
-    pricePerPax: yup.string()
+    pricePerPax: yup.number()
       .required('Vui lòng nhập giá mỗi khách'),
-    commission: yup.string()
+    commission: yup.number()
       .required('Vui lòng nhập chiết khấu'),
     departureDate: yup.string()
       .required('Vui lòng nhập thời gian khởi hành'),
@@ -32,14 +34,22 @@ const schema: ObjectSchema<EditPostFormData> = yup.object()
       .required('Vui lòng nhập điểm đến'),
   });
 
-export interface EditPostProps {
-  postId: string,
-}
+const postTypeOptions = [
+  {
+    value: 'SELL_PASSENGER',
+    label: 'Bán khách',
+  },
+  {
+    value: 'BUY_PASSENGER',
+    label: 'Tìm khách',
+  },
+];
 
-export default function EditPost(props: EditPostProps) {
-  const { postId } = props;
-  const { data: post } = usePost(postId);
+export default function EditPost() {
+  const { postId } = useParams();
+  const { data: post } = usePost(postId!);
   const {
+    control,
     handleSubmit,
     formState: { errors },
     register,
@@ -60,74 +70,67 @@ export default function EditPost(props: EditPostProps) {
 
   return (
     <Layout>
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 pt-20">
         <div className="border-[1px] rounded px-5 py-5 mt-10 mb-10">
           <h5 className="font-bold">Chỉnh sửa bài đăng</h5>
-
           <Form className="mt-5" onSubmit={handleSubmit(onEditPost)}>
-            <Label title="Tiêu đề" required />
+            <Label title="Tiêu đề" required htmlFor="name" />
             <input
-              {...register('name')}
               type="text"
               className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              {...register('name')}
             />
             {errors.name
               && <p className="text-red-700 text-xs italic mt-1">{errors.name.message}</p>}
 
-            <Label title="Loại" required />
-            <Select
-              className="mb-5"
-              options={[
-                {
-                  value: 'tour',
-                  label: 'Tìm tour',
+            <Label title="Loại" required htmlFor="type" />
+            <Controller
+              control={control}
+              name="type"
+              render={({
+                field: {
+                  value,
+                  onChange,
+                  ...rest
                 },
-                {
-                  value: 'passenger',
-                  label: 'Tìm khách',
-                },
-              ]}
-              classNamePrefix="react-select"
-              theme={(theme) => ({
-                ...theme,
-                colors: {
-                  ...theme.colors,
-                  primary25: 'rgba(253,146,34,0.05)',
-                  primary: '#FD9222',
-                },
-              })}
-              classNames={{
-                control: (state) => (state.isFocused ? 'border-primary ring-1 ring-primary' : 'border-gray-300'),
-                option: (state) => (state.isFocused ? 'bg-primary text-white' : ''),
-              }}
+              }) => (
+                <Select
+                  className="mb-5"
+                  options={postTypeOptions}
+                  classNamePrefix="react-select"
+                  theme={(theme) => ({
+                    ...theme,
+                    colors: {
+                      ...theme.colors,
+                      primary25: 'rgba(253,146,34,0.05)',
+                      primary: '#FD9222',
+                    },
+                  })}
+                  classNames={{
+                    control: (state) => (state.isFocused ? 'border-primary ring-1 ring-primary' : 'border-gray-300'),
+                    option: (state) => (state.isFocused ? 'bg-primary text-white' : ''),
+                  }}
+                  {...rest}
+                />
+              )}
             />
 
             <Label title="Chi tiết" required />
-            <textarea
-              {...register('description')}
-              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-            />
-            {errors.description
-              && <p className="text-red-700 text-xs italic mt-1">{errors.description.message}</p>}
-
-            <Label title="Chi tiết" required />
-            <CKEditor
-              editor={ClassicEditor}
-              data="<p>Hello from CKEditor&nbsp;5!</p>"
-              onReady={(editor) => {
-                // You can store the "editor" and use when it is needed.
-                // eslint-disable-next-line no-console
-                console.log('Editor is ready to use!', editor);
-              }}
-              onChange={(event, editor) => {
-                const data = editor.getData();
-                // eslint-disable-next-line no-console
-                console.log({
-                  event,
-                  editor,
-                  data,
-                });
-              }}
+            <Controller
+              control={control}
+              name="description"
+              render={({ field: { onChange } }) => (
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={post?.description}
+                  onReady={(editor) => {
+                    // You can store the "editor" and use when it is needed.
+                    // eslint-disable-next-line no-console
+                    console.log('Editor is ready to use!', editor);
+                  }}
+                  onChange={onChange}
+                />
+              )}
             />
 
             <div className="mt-5">
