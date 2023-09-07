@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import { CREATE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
-import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import { CreateMultipleUsersPayload, MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import marketplaceApi from '@/services/marketplaceApi';
 
 export function useMarketplaceUsers() {
@@ -70,5 +70,16 @@ export function useEnableMarketplaceUser(userId: string, enable: boolean) {
         toast.error(SOMETHING_WRONG);
       },
     },
+  );
+}
+
+export function useAddUsersMutation(
+  options: UseMutationOptions<void, Error, CreateMultipleUsersPayload>,
+) {
+  return useMutation(
+    async (payload: CreateMultipleUsersPayload) => {
+      await marketplaceApi.post('/users', payload);
+    },
+    options,
   );
 }

@@ -1,3 +1,4 @@
+import { User } from '@/models/User/User';
 import { LanguageType } from './LanguageType';
 import { ThemeType } from './ThemeType';
 
@@ -24,3 +25,9 @@ export interface MarketplaceUser {
   createdAt: number,
   updated: number,
 }
+
+export type UserWithRoles = User & { roles: string[] };
+
+export type CreateMultipleUsersPayload = {
+  users: Array<UserWithRoles>,
+};
