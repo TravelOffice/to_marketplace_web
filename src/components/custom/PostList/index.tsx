@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import { TourPost } from '@/models/TourPost/TourPost';
 import { PaginationPayload } from '@/services/BaseApi';
+import { numberArrayOf } from '@/utils/arrays';
 import PostListItem from './PostListItem';
 import TourPostSkeleton from '../Skeleton/TourPostSkeleton';
-import { numberArrayOf } from '@/utils/arrays';
 
 export interface PostListProps {
   queryResult: UseInfiniteQueryResult<PaginationPayload<TourPost>>

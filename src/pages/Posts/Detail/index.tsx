@@ -30,6 +30,7 @@ import { useOffersOfPost } from '@/hooks/offer';
 import { useCurrentUser } from '@/hooks/auth';
 import { usePostRatings } from '@/hooks/rating';
 import { SOMETHING_WRONG } from '@/utils/constants';
+import { OfferStatus } from '@/models/TourPost/Offer';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   .shape({
@@ -54,7 +55,7 @@ export default function PostDetail() {
     data: offers,
     refetch: refetchOffers,
   } = useOffersOfPost(postId!, !!postId);
-  const { data: ratings } = usePostRatings(postId!, post?.organization!, !!post);
+  const { data: ratings = [] } = usePostRatings(postId!, post?.organization!, !!post);
   const {
     handleSubmit,
     formState: { errors },
@@ -147,6 +148,19 @@ export default function PostDetail() {
       </button>
     );
   };
+
+  const canRate = useMemo(() => {
+    // Skip rating if user is the author
+    if (currentUser?.id === post?.authorId) return false;
+
+    // Skip rating if user is not in process offer
+    const myOffer = offers?.find((offer) => offer.authorId === currentUser?.id);
+    if (!myOffer || myOffer.offerStatus !== OfferStatus.ACCEPTED) return false;
+
+    // Skip rating if user already rated
+    return !ratings?.find((rating) => rating.authorId === currentUser?.id);
+  }, [currentUser, post, ratings]);
+
   return (
     <Layout>
       <div className="mx-8 pt-32 mt-1 grid grid-cols-7 gap-6">
@@ -322,7 +336,11 @@ export default function PostDetail() {
               renderAction()
             }
           </div>
-          <RatingCard ratings={ratings!} ratingAverage={post?.ratingAverage!} />
+          <RatingCard
+            ratings={ratings!}
+            ratingAverage={post?.ratingAverage!}
+            canRate={canRate}
+          />
         </div>
       </div>
       <MakeOfferModal

@@ -8,3 +8,7 @@ export interface PostRating {
   createdAt: number,
   updatedAt: number,
 }
+
+export type CreatePostRatingFormData = Pick<PostRating, 'star' | 'description'>;
+
+export type UpdatePostRatingFormData = CreatePostRatingFormData;

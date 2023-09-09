@@ -1,9 +1,9 @@
-import OfferSkeleton from '@/components/custom/Skeleton/OfferSkeleton';
-import { useMyReceivedOffers } from '@/hooks/offer.ts';
-import { Offer } from '@/models/TourPost/Offer.ts';
-import MyOfferCard from '@/pages/Me/Profile/components/MyOfferCard.tsx';
-import { numberArrayOf } from '@/utils/arrays';
 import React, { useMemo } from 'react';
+import OfferSkeleton from '@/components/custom/Skeleton/OfferSkeleton';
+import { useMyReceivedOffers } from '@/hooks/offer';
+import { Offer } from '@/models/TourPost/Offer';
+import MyOfferCard from '@/pages/Me/Profile/components/MyOfferCard';
+import { numberArrayOf } from '@/utils/arrays';
 
 export default function MyReceivedOfferList() {
   const {
@@ -28,8 +28,6 @@ export default function MyReceivedOfferList() {
     });
     return offers;
   }, [data]);
-
-  console.log(receivedOffers);
 
   return status === 'loading' ? (
     numberArrayOf(10).map((index) => (
