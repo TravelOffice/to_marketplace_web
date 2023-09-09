@@ -6,6 +6,7 @@ import { useOrganizationByCurrentUser, useOrganizationStatistic } from '@/hooks/
 import { useCurrentUser } from '@/hooks/auth';
 import ReceivedOfferListOfOrg from '@/pages/Me/Organization/tabs/ReceivedOfferListOfOrg';
 import SentOfferListOfOrg from '@/pages/Me/Organization/tabs/SentOfferListOfOrg';
+import OrganizationMembers from '@/pages/Me/Organization/tabs/OrganizationMembers';
 
 const tabs = [
   {
@@ -22,7 +23,7 @@ const tabs = [
   },
   {
     title: 'Thành viên',
-    content: <div>Members</div>,
+    content: <OrganizationMembers />,
   },
 ];
 export default function MyOrganization() {
@@ -92,7 +93,7 @@ export default function MyOrganization() {
             sticky
             divider={false}
             itemClassName="w-fit"
-            stickyClassName="top-32 bg-white rounded-t dark:bg-[#283046]"
+            stickyClassName="top-32 bg-white rounded-t dark:bg-[#283046] z-20"
           />
         </div>
       </div>
