@@ -226,3 +226,17 @@ export function useUnfollowPostMutation(
     options,
   );
 }
+
+export function useTopCommissionPosts() {
+  const queryClient = useQueryClient();
+  return useQuery({
+    queryFn: () => marketplaceApi.get<TourPost[]>('/trending-posts'),
+    onSuccess: (topCommissionPosts) => {
+      // Set default top 10 commission posts
+      queryClient.setQueryData(['topCommissionPosts', 10], topCommissionPosts);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+}
