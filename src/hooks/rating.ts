@@ -1,9 +1,9 @@
 import { toast } from 'react-toastify';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import {
-  CREATE_SUCCESS, DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
+  DELETE_SUCCESS, SOMETHING_WRONG,
 } from '@/utils/constants';
-import { PostRating } from '@/models/TourPost/PostRating';
+import { CreatePostRatingFormData, PostRating, UpdatePostRatingFormData } from '@/models/TourPost/PostRating';
 import marketplaceApi from '@/services/marketplaceApi';
 
 export function usePostRatings(tourPostId: string, organization: string, enabled?: boolean) {
@@ -17,18 +17,13 @@ export function usePostRatings(tourPostId: string, organization: string, enabled
   });
 }
 
-export function useCreateRating(tourPostId: string, rating: PostRating) {
+export function useCreateRating(
+  tourPostId: string,
+  options?: UseMutationOptions<PostRating, unknown, CreatePostRatingFormData>,
+) {
   return useMutation(
-    () => marketplaceApi.post(`/posts/${tourPostId}/ratings`, rating),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(CREATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
+    (formData: CreatePostRatingFormData) => marketplaceApi.post<PostRating>(`/posts/${tourPostId}/ratings`, formData),
+    options,
   );
 }
 
@@ -50,18 +45,14 @@ export function useOrganizationRatings(organizationId: string) {
   );
 }
 
-export function useUpdateRating(tourPostId: string, rating: PostRating) {
+export function useUpdateRating(
+  tourPostId: string,
+  ratingCode: string,
+  options?: UseMutationOptions<PostRating, unknown, UpdatePostRatingFormData>,
+) {
   return useMutation(
-    () => marketplaceApi.put(`/posts/${tourPostId}/ratings/${rating.code}`, rating),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
+    (formData: UpdatePostRatingFormData) => marketplaceApi.put<PostRating>(`/posts/${tourPostId}/ratings/${ratingCode}`, formData),
+    options,
   );
 }
 

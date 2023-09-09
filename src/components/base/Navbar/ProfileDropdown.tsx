@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/auth';
-import { generateUserAvatar } from '@/utils/common.tsx';
+import { generateUserAvatar } from '@/utils/common';
 
 export default function ProfileDropdown() {
   const currentUser = useCurrentUser();

@@ -9,15 +9,15 @@ export default function TourPostSkeleton() {
         </svg>
       </div>
       <div className="w-full">
-        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-2"></div>
-        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-40 mb-4"></div>
-        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2 mr-2"></div>
-        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2 mr-2"></div>
-        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-8 mr-2"></div>
+        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-2" />
+        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-40 mb-4" />
+        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2 mr-2" />
+        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2 mr-2" />
+        <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-8 mr-2" />
         <div className="flex items-center space-x-12 mr-2">
-          <div className="h-4 bg-gray-200 rounded-lg dark:bg-gray-700 w-full"></div>
-          <div className="h-4 bg-gray-200 rounded-lg dark:bg-gray-700 w-full"></div>
-          <div className="h-4 bg-gray-200 rounded-lg dark:bg-gray-700 w-full"></div>
+          <div className="h-4 bg-gray-200 rounded-lg dark:bg-gray-700 w-full" />
+          <div className="h-4 bg-gray-200 rounded-lg dark:bg-gray-700 w-full" />
+          <div className="h-4 bg-gray-200 rounded-lg dark:bg-gray-700 w-full" />
         </div>
       </div>
     </div>

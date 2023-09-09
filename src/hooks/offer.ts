@@ -5,7 +5,7 @@ import {
 import { NUMBER_ITEM_PER_PAGE, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import { CreateOfferFormData, Offer, RejectOfferFormData } from '@/models/TourPost/Offer';
 import marketplaceApi from '@/services/marketplaceApi';
-import { PaginationPayload } from '@/services/BaseApi.ts';
+import { PaginationPayload } from '@/services/BaseApi';
 
 export function useOffersOfPost(tourPostId: string, enabled?: boolean) {
   return useQuery(

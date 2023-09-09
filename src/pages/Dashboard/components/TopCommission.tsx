@@ -1,13 +1,12 @@
 import React from 'react';
+import moment from 'moment';
+import { PiAirplaneLanding, PiCalendar } from 'react-icons/pi';
+import { Link } from 'react-router-dom';
 import goldBadge from '@/assets/images/illustrator/badge.svg';
 import silverBadge from '@/assets/images/illustrator/badge-silver.svg';
 import bronzeBadge from '@/assets/images/illustrator/badge-bronze.svg';
 import { useTopCommissionPosts } from '@/hooks/post';
-import moment from 'moment';
-import { PiAirplaneLanding, PiCalendar } from 'react-icons/pi';
-import { Link } from 'react-router-dom';
 import { useDateDuration } from '@/utils/common';
-
 
 function getTop123Badge(topIndex: number) {
   switch (topIndex) {
@@ -15,7 +14,7 @@ function getTop123Badge(topIndex: number) {
     case 2: return silverBadge;
     case 3: return bronzeBadge;
 
-    default: return;
+    default: return undefined;
   }
 }
 
@@ -27,7 +26,8 @@ export default function TopCommission() {
         <caption className="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800">
           Bài viết nổi bật
           <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-            Các bài đăng đang có tỉ lệ hoa hồng khi ghép cao nhất. Hãy chọn bài đăng phù hợp và tạo yêu cầu ghép tour.
+            Các bài đăng đang có tỉ lệ hoa hồng khi ghép cao nhất. Hãy chọn bài
+            đăng phù hợp và tạo yêu cầu ghép tour.
           </p>
         </caption>
         <thead className="bg-gray-100 dark:bg-[#343d55]">
@@ -67,7 +67,11 @@ export default function TopCommission() {
                       </div>
                       <img src={getTop123Badge(index + 1)} alt="" className="absolute top-0 right-5 h-12" />
                     </td>
-                    <td className="text-left text-sm py-3 ps-5">{new Intl.NumberFormat('vi-VN').format(commission)} đ</td>
+                    <td className="text-left text-sm py-3 ps-5">
+                      {new Intl.NumberFormat('vi-VN').format(commission)}
+                      {' '}
+                      đ
+                    </td>
                     <td className="text-left text-sm">
                       <div className="flex gap-1">
                         <PiAirplaneLanding className="h-6 w-6 text-gray-400 dark:text-white" />
