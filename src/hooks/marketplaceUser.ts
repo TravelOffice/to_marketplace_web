@@ -7,7 +7,7 @@ import marketplaceApi from '@/services/marketplaceApi';
 export function useMarketplaceUsers() {
   return useQuery(
     ['marketplace_users'],
-    ({ signal }) => marketplaceApi.get('/users', {
+    ({ signal }) => marketplaceApi.get<MarketplaceUser[]>('/users', {
       signal,
     }),
   );
@@ -40,6 +40,26 @@ export function useCreateMarketplaceUser(marketplaceUser: MarketplaceUser) {
   );
 }
 
+export function useUpdateMarketplaceUser(
+  id: string,
+  options?: UseMutationOptions<MarketplaceUser, Error, Partial<MarketplaceUser>>,
+) {
+  return useMutation(
+    (data: Partial<MarketplaceUser>) => marketplaceApi.put<MarketplaceUser>(`/users/${id}`, data),
+    options,
+  );
+}
+
+export function useUpdateMarketplaceUserRole(
+  id: string,
+  options?: UseMutationOptions<MarketplaceUser, Error, string>,
+) {
+  return useMutation(
+    (role: string) => marketplaceApi.put<MarketplaceUser>(`/users/${id}`, { roles: [role] }),
+    options,
+  );
+}
+
 export function useUpdateProfile(marketplaceUser: MarketplaceUser) {
   return useMutation(
     () => marketplaceApi.put('me', marketplaceUser),
@@ -55,21 +75,18 @@ export function useUpdateProfile(marketplaceUser: MarketplaceUser) {
   );
 }
 
-export function useEnableMarketplaceUser(userId: string, enable: boolean) {
+export function useEnableMarketplaceUser(
+  userId: string,
+  options?: UseMutationOptions<void, Error, boolean>,
+) {
   return useMutation(
-    () => marketplaceApi.put('enable-user', {
-      userId,
-      enable,
-    }),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
+    async (enable: boolean) => {
+      await marketplaceApi.put('/enable-user', {
+        userId,
+        enable,
+      });
     },
+    options,
   );
 }
 
