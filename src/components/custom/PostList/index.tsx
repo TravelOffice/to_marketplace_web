@@ -3,6 +3,8 @@ import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import { TourPost } from '@/models/TourPost/TourPost';
 import { PaginationPayload } from '@/services/BaseApi';
 import PostListItem from './PostListItem';
+import TourPostSkeleton from '../Skeleton/TourPostSkeleton';
+import { numberArrayOf } from '@/utils/arrays';
 
 export interface PostListProps {
   queryResult: UseInfiniteQueryResult<PaginationPayload<TourPost>>
@@ -39,7 +41,9 @@ export default function PostList(props: PostListProps) {
   }, [data]);
 
   return status === 'loading' ? (
-    <p>Đang tải...</p>
+    numberArrayOf(5).map((index) => (
+      <TourPostSkeleton key={index} />
+    ))
   ) : (
     <>
       <div>

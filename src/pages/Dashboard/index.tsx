@@ -7,9 +7,11 @@ import TopCommission from '@/pages/Dashboard/components/TopCommission';
 import MarketplaceStatisticCard from './components/MarketplaceStatisticCard';
 import { Link } from 'react-router-dom';
 import { useCurrentOrganizationStatistic } from '@/hooks/statistic';
+import { useCurrentUser } from '@/hooks/auth';
 
 export default function Dashboard() {
   const orgStatistic = useCurrentOrganizationStatistic();
+  const currentUser = useCurrentUser();
   return (
     <Layout>
       <div className="mx-8 pt-32">
@@ -18,7 +20,9 @@ export default function Dashboard() {
             className={`col-span-2 card shadow-lg rounded relative ${orgStatistic ? '' : 'animate-pulse'}`}
           >
             <img src={socialUpdate} alt="" className="absolute top-0 right-0 h-full bottom-0 py-8" />
-            <h3 className="leading-6 font-medium text-gray-900 dark:text-white">Chào ngày mới 🎉 John!</h3>
+            <h3 className="leading-6 font-medium text-gray-900 dark:text-white">
+              Chào ngày mới 🎉 {currentUser?.organization.toUpperCase()}!
+            </h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">Chúc bạn ngày mới vui vẻ</p>
             {
               orgStatistic ? (

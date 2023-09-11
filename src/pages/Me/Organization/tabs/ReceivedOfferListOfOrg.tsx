@@ -1,7 +1,9 @@
-import React, { useMemo } from 'react';
+import OfferSkeleton from '@/components/custom/Skeleton/OfferSkeleton';
 import { useReceivedOfferOfOrganization } from '@/hooks/offer';
 import { Offer } from '@/models/TourPost/Offer';
 import OrganizationOfferCard from '@/pages/Me/Organization/components/OrganizationOfferCard';
+import { numberArrayOf } from '@/utils/arrays';
+import React, { useMemo } from 'react';
 
 export default function ReceivedOfferListOfOrg() {
   const {
@@ -28,7 +30,9 @@ export default function ReceivedOfferListOfOrg() {
   }, [data]);
 
   return status === 'loading' ? (
-    <p>Đang tải...</p>
+    numberArrayOf(10).map((index) => (
+      <OfferSkeleton key={index} />
+    ))
   ) : (
     <>
       <div>
