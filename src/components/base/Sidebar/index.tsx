@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiHome, FiShoppingCart } from 'react-icons/fi';
+import { FiHome, FiShare2 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import logo from '@/assets/images/logo/logo.svg';
@@ -46,9 +46,9 @@ export default function Sidebar() {
           </SidebarItem>
           <SidebarItem path="/posts">
             <div className="w-5 h-5">
-              <FiShoppingCart className="transition w-5 h-5" />
+              <FiShare2 className="transition w-5 h-5" />
             </div>
-            <div className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}>Marketplace</div>
+            <div className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}>Travel Connect</div>
           </SidebarItem>
         </ul>
       </div>

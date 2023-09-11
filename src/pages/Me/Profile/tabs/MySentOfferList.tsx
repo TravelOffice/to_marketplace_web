@@ -1,7 +1,9 @@
-import React, { useMemo } from 'react';
+import OfferSkeleton from '@/components/custom/Skeleton/OfferSkeleton';
 import { useMySentOffers } from '@/hooks/offer.ts';
 import { Offer } from '@/models/TourPost/Offer.ts';
 import MyOfferCard from '@/pages/Me/Profile/components/MyOfferCard.tsx';
+import { numberArrayOf } from '@/utils/arrays';
+import React, { useMemo } from 'react';
 
 export default function MySentOfferList() {
   const {
@@ -28,7 +30,9 @@ export default function MySentOfferList() {
   }, [data]);
 
   return status === 'loading' ? (
-    <p>Đang tải...</p>
+    numberArrayOf(10).map((index) => (
+      <OfferSkeleton key={index} />
+    ))
   ) : (
     <>
       <div>
