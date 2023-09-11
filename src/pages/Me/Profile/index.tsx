@@ -8,7 +8,7 @@ import MyBookmarkedPostList from '@/pages/Me/Profile/tabs/MyBookmarkedPostList';
 import MyFollowPostList from '@/pages/Me/Profile/tabs/MyFollowPostList';
 import { generateUserAvatar } from '@/utils/common';
 import MyReceivedOfferList from '@/pages/Me/Profile/tabs/MyReceivedOfferList';
-import MySentOfferList from '@/pages/Me/Profile/tabs/MySentOfferList';
+import MySentOfferList from './tabs/MySentOfferList';
 
 const tabs: Tab[] = [
   {

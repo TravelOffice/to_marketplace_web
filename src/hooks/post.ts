@@ -13,6 +13,7 @@ import marketplaceApi from '@/services/marketplaceApi';
 import { PaginationPayload } from '@/services/BaseApi';
 import { FollowedTourPost } from '@/models/TourPost/FollowedTourPost';
 import { BookmarkedTourPost } from '@/models/TourPost/BookmarkedTourPost';
+import { TourPostType } from '@/models/TourPost/TourPostType';
 
 export function useMyPosts() {
   return useInfiniteQuery({
@@ -38,9 +39,9 @@ export function useMyPosts() {
   });
 }
 
-export function usePosts() {
+export function usePosts(postType?: TourPostType) {
   return useInfiniteQuery({
-    queryKey: ['posts'],
+    queryKey: ['posts', postType],
     queryFn: async ({
       signal,
       pageParam,
@@ -48,6 +49,7 @@ export function usePosts() {
       '/posts',
       {
         queryParams: {
+          postType,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
         },

@@ -4,9 +4,9 @@ import Layout from '@/components/base/Layout';
 import OrganizationPostList from '@/pages/Me/Organization/tabs/OrganizationPostList';
 import { useOrganizationByCurrentUser, useOrganizationStatistic } from '@/hooks/organization';
 import { useCurrentUser } from '@/hooks/auth';
-import ReceivedOfferListOfOrg from '@/pages/Me/Organization/tabs/ReceivedOfferListOfOrg';
-import SentOfferListOfOrg from '@/pages/Me/Organization/tabs/SentOfferListOfOrg';
 import OrganizationMembers from '@/pages/Me/Organization/tabs/OrganizationMembers';
+import ReceivedOfferListOfOrganization from '@/pages/Me/Organization/tabs/ReceivedOfferListOfOrganization';
+import SentOfferListOfOrganization from '@/pages/Me/Organization/tabs/SentOfferListOfOrganization';
 
 const tabs = [
   {
@@ -15,17 +15,18 @@ const tabs = [
   },
   {
     title: 'Yêu cầu nhận được',
-    content: <ReceivedOfferListOfOrg />,
+    content: <ReceivedOfferListOfOrganization />,
   },
   {
     title: 'Yêu cầu gửi đi',
-    content: <SentOfferListOfOrg />,
+    content: <SentOfferListOfOrganization />,
   },
   {
     title: 'Thành viên',
     content: <OrganizationMembers />,
   },
 ];
+
 export default function MyOrganization() {
   const currentUser = useCurrentUser();
   const { data } = useOrganizationByCurrentUser(currentUser);
@@ -93,7 +94,7 @@ export default function MyOrganization() {
             sticky
             divider={false}
             itemClassName="w-fit"
-            stickyClassName="top-32 bg-white rounded-t dark:bg-[#283046] z-20"
+            stickyClassName="top-32 bg-white rounded-t dark:bg-[#283046]"
           />
         </div>
       </div>

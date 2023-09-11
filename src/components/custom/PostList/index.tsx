@@ -41,7 +41,7 @@ export default function PostList(props: PostListProps) {
   }, [data]);
 
   return status === 'loading' ? (
-    numberArrayOf(5).map((index) => (
+    numberArrayOf(3).map((index) => (
       <TourPostSkeleton key={index} />
     ))
   ) : (

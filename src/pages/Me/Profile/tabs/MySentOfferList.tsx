@@ -1,11 +1,22 @@
-import React, { useMemo } from 'react';
-import OfferSkeleton from '@/components/custom/Skeleton/OfferSkeleton';
-import { useMySentOffers } from '@/hooks/offer';
-import { Offer } from '@/models/TourPost/Offer';
+import React, { useMemo, useState } from 'react';
+import { Offer, OfferStatus } from '@/models/TourPost/Offer';
 import MyOfferCard from '@/pages/Me/Profile/components/MyOfferCard';
+import FilterOfferButtons from '@/components/custom/FilterOfferButtons';
+import { useMySentOffers } from '@/hooks/offer';
+import OfferSkeleton from '@/components/custom/Skeleton/OfferSkeleton';
 import { numberArrayOf } from '@/utils/arrays';
 
+const generateLoadMoreButton = (isFetching: boolean, hasNextPage?: boolean) => {
+  if (isFetching) return 'Tải thêm...';
+  if (hasNextPage) return 'Tải thêm';
+  return '';
+};
+
 export default function MySentOfferList() {
+  const [
+    filteringOfferStatus,
+    setFilteringOfferStatus,
+  ] = useState(OfferStatus.IN_PROCESS);
   const {
     data,
     fetchNextPage,
@@ -13,15 +24,8 @@ export default function MySentOfferList() {
     isFetching,
     isFetchingNextPage,
     status,
-  } = useMySentOffers();
-
-  const generateLoadMoreButton = () => {
-    if (isFetching) return 'Tải thêm...';
-    if (hasNextPage) return 'Tải thêm';
-    return '';
-  };
-
-  const receivedOffers = useMemo(() => {
+  } = useMySentOffers(filteringOfferStatus);
+  const sentOffers = useMemo(() => {
     let offers: Offer[] = [];
     data?.pages.forEach((page) => {
       offers = offers.concat(page.data);
@@ -29,34 +33,47 @@ export default function MySentOfferList() {
     return offers;
   }, [data]);
 
-  return status === 'loading' ? (
-    numberArrayOf(10).map((index) => (
-      <OfferSkeleton key={index} />
-    ))
-  ) : (
+  return (
     <>
-      <div>
-        {
-          receivedOffers?.map((offer) => (
-            <MyOfferCard
-              offer={offer}
-            />
-          ))
-        }
+      <div className="px-5 py-5">
+        <FilterOfferButtons
+          filteringOfferStatus={filteringOfferStatus}
+          setFilteringOfferStatus={setFilteringOfferStatus}
+        />
       </div>
-      <div className="text-center">
-        <button
-          type="button"
-          className="text-center"
-          onClick={() => fetchNextPage()}
-          disabled={!hasNextPage || isFetchingNextPage}
-        >
-          {
-            generateLoadMoreButton()
-          }
-        </button>
-      </div>
-      <div>{isFetching && !isFetchingNextPage ? 'Đang tải...' : null}</div>
+      {
+        status === 'loading' ? (
+          numberArrayOf(3)
+            .map((index) => (
+              <OfferSkeleton key={index} />
+            ))
+        ) : (
+          <>
+            <div>
+              {
+                sentOffers?.map((offer) => (
+                  <MyOfferCard
+                    offer={offer}
+                  />
+                ))
+              }
+            </div>
+            <div className="text-center">
+              <button
+                type="button"
+                className="text-center"
+                onClick={() => fetchNextPage()}
+                disabled={!hasNextPage || isFetchingNextPage}
+              >
+                {
+                  generateLoadMoreButton(isFetching, hasNextPage)
+                }
+              </button>
+            </div>
+            <div>{isFetching && !isFetchingNextPage ? 'Đang tải...' : null}</div>
+          </>
+        )
+      }
     </>
   );
 }

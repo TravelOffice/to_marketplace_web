@@ -30,7 +30,7 @@ export default function ReceivedOfferListOfOrg() {
   }, [data]);
 
   return status === 'loading' ? (
-    numberArrayOf(10).map((index) => (
+    numberArrayOf(3).map((index) => (
       <OfferSkeleton key={index} />
     ))
   ) : (

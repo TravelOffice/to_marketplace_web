@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PostList from '@/components/custom/PostList';
+import { TourPost } from '@/models/TourPost/TourPost';
 import { usePostsByOrganization } from '@/hooks/post';
 import { useCurrentUser } from '@/hooks/auth';
-import { TourPost } from '@/models/TourPost/TourPost';
 
 export default function OrganizationPostList() {
   const currentUser = useCurrentUser();

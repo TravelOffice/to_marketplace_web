@@ -1,11 +1,17 @@
 import React from 'react';
 import { TourPost } from '@/models/TourPost/TourPost';
-import { usePosts } from '@/hooks/post';
 import MakeOfferModal from '@/components/custom/MakeOfferModal';
 import { useCurrentUser } from '@/hooks/auth';
 import PostList from '@/components/custom/PostList';
+import { usePosts } from '@/hooks/post';
+import { TourPostType } from '@/models/TourPost/TourPostType';
 
-export default function TourList() {
+interface TourPostProps {
+  postType: TourPostType,
+}
+
+export default function TourList(props: TourPostProps) {
+  const { postType } = props;
   const currentUser = useCurrentUser();
   const [selectedPost, setSelectedPost] = React.useState<TourPost>();
   const renderAction = (post: TourPost) => {
@@ -26,7 +32,7 @@ export default function TourList() {
   return (
     <>
       <PostList
-        queryResult={usePosts()}
+        queryResult={usePosts(postType)}
         renderAction={renderAction}
       />
       <MakeOfferModal
