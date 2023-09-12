@@ -37,7 +37,7 @@ export default function TourList(props: TourPostProps) {
       />
       <MakeOfferModal
         isOpen={!!selectedPost}
-        tourPostId={selectedPost?.code!}
+        post={selectedPost!}
         toggle={() => setSelectedPost(undefined)}
       />
     </>

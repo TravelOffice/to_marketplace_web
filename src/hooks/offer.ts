@@ -1,13 +1,14 @@
-import { toast } from 'react-toastify';
 import {
   useInfiniteQuery, useMutation, UseMutationOptions, useQuery,
 } from '@tanstack/react-query';
-import { NUMBER_ITEM_PER_PAGE, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
+import { NUMBER_ITEM_PER_PAGE } from '@/utils/constants';
 import {
+  CancelOfferFormData,
   CreateOfferFormData,
   Offer,
   OfferStatus,
   RejectOfferFormData,
+  UpdateOfferFormData,
 } from '@/models/TourPost/Offer';
 import marketplaceApi from '@/services/marketplaceApi';
 import { PaginationPayload } from '@/services/BaseApi';
@@ -90,35 +91,21 @@ export function useOffer(offerId: string) {
   );
 }
 
-export function useUpdateOffer(offer: Offer) {
-  return useMutation(
-    () => marketplaceApi.put(`/offers/${offer.code}`, offer),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
-  );
-}
+export const useUpdateOfferMutation = (
+  offerId: string,
+  options: UseMutationOptions<Offer, Error, UpdateOfferFormData>,
+) => useMutation(
+  (offer: UpdateOfferFormData) => marketplaceApi.put<Offer>(`/offers/${offerId}`, offer),
+  options,
+);
 
-export function useCancelOffer(offerId: string, cancelReason: string) {
-  return useMutation(
-    () => marketplaceApi.put(`/offers/${offerId}/cancel`, { cancelReason }),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
-  );
-}
+export const useCancelOfferMutation = (
+  offerId: string,
+  options: UseMutationOptions<Offer, Error, CancelOfferFormData>,
+) => useMutation(
+  (data: CancelOfferFormData) => marketplaceApi.put<Offer>(`/offers/${offerId}/cancel`, data),
+  options,
+);
 
 export const useAcceptOfferMutation = (
   options: UseMutationOptions<Offer, Error, string>,

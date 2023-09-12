@@ -35,10 +35,19 @@ export type CreateOfferFormData = Pick<Offer,
 'pricePerPax' |
 'commission' |
 'tourPostId'
-> & {
-  unlimited: boolean,
-};
+>;
+
+export type UpdateOfferFormData = Pick<Offer,
+'description' |
+'totalPax' |
+'pricePerPax' |
+'commission'
+>;
 
 export type RejectOfferFormData = Pick<Offer,
 'rejectReason'
+>;
+
+export type CancelOfferFormData = Pick<Offer,
+'cancelReason'
 >;

@@ -24,13 +24,14 @@ import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 import { formatCurrency, useDateDuration } from '@/utils/common';
 import { CreateCommentFormData } from '@/models/TourPost/PostComment';
 import MakeOfferModal from '@/components/custom/MakeOfferModal';
-import OfferListCard from '@/pages/Posts/Detail/components/OfferListCard';
+import ReceivedOfferListCard from '@/pages/Posts/Detail/components/ReceivedOfferListCard';
 import RatingCard from '@/pages/Posts/Detail/components/RatingCard';
 import { useOffersOfPost } from '@/hooks/offer';
 import { useCurrentUser } from '@/hooks/auth';
 import { usePostRatings } from '@/hooks/rating';
 import { SOMETHING_WRONG } from '@/utils/constants';
 import { OfferStatus } from '@/models/TourPost/Offer';
+import SentOfferListCard from '@/pages/Posts/Detail/components/SentOfferListCard';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   .shape({
@@ -257,13 +258,20 @@ export default function PostDetail() {
           </div>
           {
             isAuthor ? (
-              <OfferListCard
+              <ReceivedOfferListCard
                 offers={filteringOffers ?? []}
                 filteringOfferStatus={filteringOfferStatus}
                 setFilteringOfferStatus={setFilteringOfferStatus}
                 refetch={() => refetchOffers()}
               />
-            ) : null
+            ) : (
+              <SentOfferListCard
+                offers={filteringOffers ?? []}
+                filteringOfferStatus={filteringOfferStatus}
+                setFilteringOfferStatus={setFilteringOfferStatus}
+                refetch={() => refetchOffers()}
+              />
+            )
           }
           <div className="card px-5 py-5 mb-10">
             <h5 className="font-bold mb-5">
@@ -357,7 +365,7 @@ export default function PostDetail() {
       </div>
       <MakeOfferModal
         isOpen={showMakeOfferModal}
-        tourPostId={postId!}
+        post={post!}
         toggle={() => setShowMakeOfferModal(false)}
       />
     </Layout>

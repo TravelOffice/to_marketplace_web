@@ -27,7 +27,6 @@ export default function PostList(props: PostListProps) {
   } = queryResult;
 
   const generateLoadMoreButton = () => {
-    if (isFetching) return 'Tải thêm...';
     if (hasNextPage) return 'Tải thêm';
     return '';
   };
@@ -41,9 +40,10 @@ export default function PostList(props: PostListProps) {
   }, [data]);
 
   return status === 'loading' ? (
-    numberArrayOf(3).map((index) => (
-      <TourPostSkeleton key={index} />
-    ))
+    numberArrayOf(3)
+      .map((index) => (
+        <TourPostSkeleton key={index} />
+      ))
   ) : (
     <>
       <div>
@@ -67,7 +67,9 @@ export default function PostList(props: PostListProps) {
           }
         </button>
       </div>
-      <div>{isFetching && !isFetchingNextPage ? 'Đang tải...' : null}</div>
+      <div>
+        {isFetching ? (<TourPostSkeleton />) : null}
+      </div>
     </>
   );
 }
