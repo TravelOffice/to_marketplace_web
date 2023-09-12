@@ -3,7 +3,12 @@ import {
   useInfiniteQuery, useMutation, UseMutationOptions, useQuery,
 } from '@tanstack/react-query';
 import { NUMBER_ITEM_PER_PAGE, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
-import { CreateOfferFormData, Offer, RejectOfferFormData } from '@/models/TourPost/Offer';
+import {
+  CreateOfferFormData,
+  Offer,
+  OfferStatus,
+  RejectOfferFormData,
+} from '@/models/TourPost/Offer';
 import marketplaceApi from '@/services/marketplaceApi';
 import { PaginationPayload } from '@/services/BaseApi';
 
@@ -26,9 +31,9 @@ export const useCreateOfferMutation = (
   options,
 );
 
-export function useSentOfferOfOrganization() {
+export function useSentOfferOfOrganization(offerStatus?: OfferStatus) {
   return useInfiniteQuery({
-    queryKey: ['sent_offers_of_org'],
+    queryKey: ['sent_offers_of_org', offerStatus],
     queryFn: async ({
       signal,
       pageParam,
@@ -36,6 +41,7 @@ export function useSentOfferOfOrganization() {
       '/me/organizations/sent-offers',
       {
         queryParams: {
+          offerStatus,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
         },
@@ -50,9 +56,9 @@ export function useSentOfferOfOrganization() {
   });
 }
 
-export function useReceivedOfferOfOrganization() {
+export function useReceivedOfferOfOrganization(offerStatus?: OfferStatus) {
   return useInfiniteQuery({
-    queryKey: ['received_offers_of_org'],
+    queryKey: ['received_offers_of_org', offerStatus],
     queryFn: async ({
       signal,
       pageParam,
@@ -60,6 +66,7 @@ export function useReceivedOfferOfOrganization() {
       '/me/organizations/received-offers',
       {
         queryParams: {
+          offerStatus,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
         },
@@ -128,9 +135,9 @@ export const useRejectOfferMutation = (
   options,
 );
 
-export function useMySentOffers() {
+export function useMySentOffers(offerStatus?: OfferStatus) {
   return useInfiniteQuery({
-    queryKey: ['my_recemy_sent_offerived_offer'],
+    queryKey: ['my_sent_offers', offerStatus],
     queryFn: async ({
       signal,
       pageParam,
@@ -138,6 +145,7 @@ export function useMySentOffers() {
       '/me/sent-offers',
       {
         queryParams: {
+          offerStatus,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
         },
@@ -152,9 +160,9 @@ export function useMySentOffers() {
   });
 }
 
-export function useMyReceivedOffers() {
+export function useMyReceivedOffers(offerStatus?: OfferStatus) {
   return useInfiniteQuery({
-    queryKey: ['my_received_offer'],
+    queryKey: ['my_received_offers', offerStatus],
     queryFn: async ({
       signal,
       pageParam,
@@ -162,6 +170,7 @@ export function useMyReceivedOffers() {
       '/me/received-offers',
       {
         queryParams: {
+          offerStatus,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
         },

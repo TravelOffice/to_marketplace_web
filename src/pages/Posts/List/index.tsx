@@ -2,16 +2,17 @@ import React from 'react';
 import Layout from '@/components/base/Layout';
 import Input from '@/components/base/Input';
 import Tabs from '@/components/base/Tabs';
-import TourList from '@/pages/Posts/List/components/TourList';
+import { TourPostType } from '@/models/TourPost/TourPostType';
+import TourList from './components/TourList';
 
 const tabs = [
   {
     title: 'Tìm tour',
-    content: <TourList />,
+    content: <TourList postType={TourPostType.SELL_PASSENGER} />,
   },
   {
     title: 'Tìm khách',
-    content: <div>Leads</div>,
+    content: <TourList postType={TourPostType.BUY_PASSENGER} />,
   },
 ];
 

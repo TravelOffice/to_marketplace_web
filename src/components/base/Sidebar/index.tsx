@@ -30,8 +30,24 @@ export default function Sidebar() {
               Travel Office
             </h2>
           </Link>
-          <button type="button" className={classNames(isSidebarOpen ? 'block' : 'hidden', 'group-hover/sidebar:block')} onClick={toggleSidebar}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-tour="toggle-icon" className="text-primary toggle-icon d-none d-xl-block">
+          <button
+            type="button"
+            className={classNames(isSidebarOpen ? 'block' : 'hidden', 'group-hover/sidebar:block')}
+            onClick={toggleSidebar}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              data-tour="toggle-icon"
+              className="text-primary toggle-icon d-none d-xl-block"
+            >
               <circle cx="12" cy="12" r="10" />
               <circle cx="12" cy="12" r="3" />
             </svg>
@@ -42,13 +58,22 @@ export default function Sidebar() {
             <div className="w-5 h-5">
               <FiHome className="transition w-5 h-5" />
             </div>
-            <span className={classNames('flex-1 ms-5 text-sm group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}>Dashboard</span>
+            <span
+              className={classNames('flex-1 ms-5 text-sm group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}
+            >
+              Dashboard
+            </span>
           </SidebarItem>
           <SidebarItem path="/posts">
             <div className="w-5 h-5">
               <FiShare2 className="transition w-5 h-5" />
             </div>
-            <div className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}>Travel Connect</div>
+            <div
+              className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}
+            >
+              Travel
+              Connect
+            </div>
           </SidebarItem>
         </ul>
       </div>

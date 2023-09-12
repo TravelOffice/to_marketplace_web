@@ -79,8 +79,15 @@ export default function PostDetail() {
     }
   };
 
+  const [
+    filteringOfferStatus,
+    setFilteringOfferStatus,
+  ] = useState(OfferStatus.IN_PROCESS);
+  const filteringOffers = useMemo(() => offers?.filter(
+    (offer) => offer.offerStatus === filteringOfferStatus,
+  ), [offers, filteringOfferStatus]);
+
   const isAuthor = useMemo(() => currentUser?.id === post?.authorId, [currentUser, post]);
-  const inProcessOffers = useMemo(() => offers?.filter((offer) => offer.offerStatus === 'IN_PROCESS'), [offers]);
   const [isBookmarked, setBookmark] = useState(false);
   const [isFollowed, setFollow] = useState(false);
   useEffect(() => {
@@ -250,7 +257,12 @@ export default function PostDetail() {
           </div>
           {
             isAuthor ? (
-              <OfferListCard offers={inProcessOffers ?? []} refetch={() => refetchOffers()} />
+              <OfferListCard
+                offers={filteringOffers ?? []}
+                filteringOfferStatus={filteringOfferStatus}
+                setFilteringOfferStatus={setFilteringOfferStatus}
+                refetch={() => refetchOffers()}
+              />
             ) : null
           }
           <div className="card px-5 py-5 mb-10">

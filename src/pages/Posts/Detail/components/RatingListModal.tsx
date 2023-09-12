@@ -38,7 +38,7 @@ export default function RatingListModal(props: RatingListModalProps) {
       return ratings;
     }
     return ratings?.filter((rating) => Math.round(rating.star) === Number(ratingFilter));
-  }, [ratings, ratingFilter]);
+  }, [ratingFilter]);
   return (
     <Modal {...props} size="2xl">
       <ModalHeader>
