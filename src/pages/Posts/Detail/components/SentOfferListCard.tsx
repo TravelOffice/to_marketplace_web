@@ -1,9 +1,9 @@
 import React from 'react';
-import AcceptOfferModal from '@/pages/Posts/Detail/components/AcceptOfferModal';
-import RejectOfferModal from '@/pages/Posts/Detail/components/RejectOfferModal';
 import { Offer, OfferStatus } from '@/models/TourPost/Offer';
-import OfferCard from '@/pages/Posts/Detail/components/OfferCard';
-import FilterOfferButtons from '@/components/custom/FilterOfferButtons';
+import CancelOfferModal from '@/pages/Posts/Detail/components/CancelOfferModal';
+import SentOfferCard from '@/pages/Posts/Detail/components/SentOfferCard';
+import UpdateOfferModal from '@/pages/Posts/Detail/components/UpdateOfferModal';
+import FilterSentOfferButtons from '@/components/custom/FilterSentOfferButtons';
 
 export interface OfferListCardProps {
   offers: Offer[],
@@ -12,20 +12,20 @@ export interface OfferListCardProps {
   setFilteringOfferStatus: React.Dispatch<React.SetStateAction<OfferStatus>>,
 }
 
-export default function OfferListCard(props: OfferListCardProps) {
+export default function SentOfferListCard(props: OfferListCardProps) {
   const {
     offers,
     refetch,
     filteringOfferStatus,
     setFilteringOfferStatus,
   } = props;
-  const [acceptOffer, setAcceptOffer] = React.useState<Offer>();
-  const [rejectOffer, setRejectOffer] = React.useState<Offer>();
+  const [updateOffer, setUpdateOffer] = React.useState<Offer>();
+  const [cancelOffer, setCancelOffer] = React.useState<Offer>();
 
   return (
     <div className="card px-5 py-5 mb-10">
       <h5 className="font-bold mb-5">
-        Danh sách yêu cầu (
+        Yêu cầu đã gửi (
         {offers?.length}
         )
         {' '}
@@ -37,7 +37,7 @@ export default function OfferListCard(props: OfferListCardProps) {
           Làm mới
         </button>
       </h5>
-      <FilterOfferButtons
+      <FilterSentOfferButtons
         filteringOfferStatus={filteringOfferStatus}
         setFilteringOfferStatus={setFilteringOfferStatus}
       />
@@ -45,25 +45,25 @@ export default function OfferListCard(props: OfferListCardProps) {
         {
           offers?.sort((a, b) => b.commission - a.commission)
             .map((offer) => (
-              <OfferCard
+              <SentOfferCard
                 key={offer.code}
                 offer={offer}
-                acceptOffer={() => setAcceptOffer(offer)}
-                rejectOffer={() => setRejectOffer(offer)}
+                updateOffer={() => setUpdateOffer(offer)}
+                cancelOffer={() => setCancelOffer(offer)}
               />
             ))
         }
       </div>
-      <AcceptOfferModal
-        offer={acceptOffer!}
-        isOpen={!!acceptOffer}
-        toggle={() => setAcceptOffer(undefined)}
+      <UpdateOfferModal
+        offer={updateOffer!}
+        isOpen={!!updateOffer}
+        toggle={() => setUpdateOffer(undefined)}
       />
 
-      <RejectOfferModal
-        offer={rejectOffer!}
-        isOpen={!!rejectOffer}
-        toggle={() => setRejectOffer(undefined)}
+      <CancelOfferModal
+        offer={cancelOffer!}
+        isOpen={!!cancelOffer}
+        toggle={() => setCancelOffer(undefined)}
       />
     </div>
   );

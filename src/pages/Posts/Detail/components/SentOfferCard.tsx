@@ -3,17 +3,17 @@ import { Offer } from '@/models/TourPost/Offer';
 import { formatCurrency, generateUserAvatar, useDateDuration } from '@/utils/common';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 
-export interface OfferCardProps {
+interface OfferCardProps {
   offer: Offer,
-  acceptOffer: (offer: Offer) => void,
-  rejectOffer: (offer: Offer) => void,
+  updateOffer: (offer: Offer) => void,
+  cancelOffer: (offer: Offer) => void,
 }
 
-export default function OfferCard(props: OfferCardProps) {
+export default function SentOfferCard(props: OfferCardProps) {
   const {
     offer,
-    acceptOffer,
-    rejectOffer,
+    updateOffer,
+    cancelOffer,
   } = props;
   const { data: author } = useMarketplaceUser(offer.authorId, !!offer);
   return (
@@ -54,6 +54,17 @@ export default function OfferCard(props: OfferCardProps) {
             </span>
           </span>
         </div>
+        <div>
+          <span>
+            Giá/khách:
+            {' '}
+            <span className="font-medium">
+              {formatCurrency(offer.pricePerPax)}
+              {' '}
+              VND
+            </span>
+          </span>
+        </div>
         {
           offer.description ? (
             <div>
@@ -65,6 +76,24 @@ export default function OfferCard(props: OfferCardProps) {
                 </span>
               </span>
             </div>
+          ) : null
+        }
+        {
+          offer.offerStatus === 'REJECTED' ? (
+            <p>
+              Lý do từ chối:
+              {' '}
+              <span className="text-red-700">{offer.rejectReason}</span>
+            </p>
+          ) : null
+        }
+        {
+          offer.offerStatus === 'CANCELLED' ? (
+            <p>
+              Lý do hủy:
+              {' '}
+              <span className="text-red-700">{offer.cancelReason}</span>
+            </p>
           ) : null
         }
       </div>
@@ -80,16 +109,16 @@ export default function OfferCard(props: OfferCardProps) {
               <button
                 type="button"
                 className="w-full px-10 py-2 bg-primary text-white rounded"
-                onClick={() => acceptOffer(offer)}
+                onClick={() => updateOffer(offer)}
               >
-                Chấp nhận
+                Cập nhật
               </button>
               <button
                 type="button"
                 className="w-full px-10 py-2 border border-red-700 text-red-700 rounded me-3 dark:text-gray-200 dark:border-gray-200"
-                onClick={() => rejectOffer(offer)}
+                onClick={() => cancelOffer(offer)}
               >
-                Từ chối
+                Hủy
               </button>
             </>
           ) : null

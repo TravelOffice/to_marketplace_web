@@ -15,7 +15,7 @@ export default function OrganizationOfferCard(props: OfferCardProps) {
   } = props;
   const { data: author } = useMarketplaceUser(offer.authorId, !!offer);
   return (
-    <div key={offer.code} className="border-b last:border-0 flex py-5 gap-5">
+    <div key={offer.code} className="border-b last:border-0 flex px-5 py-5 gap-5">
       <img
         src={generateUserAvatar(author)}
         alt=""

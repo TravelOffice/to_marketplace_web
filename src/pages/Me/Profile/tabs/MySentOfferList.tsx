@@ -1,13 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Offer, OfferStatus } from '@/models/TourPost/Offer';
 import MyOfferCard from '@/pages/Me/Profile/components/MyOfferCard';
-import FilterOfferButtons from '@/components/custom/FilterOfferButtons';
 import { useMySentOffers } from '@/hooks/offer';
 import OfferSkeleton from '@/components/custom/Skeleton/OfferSkeleton';
 import { numberArrayOf } from '@/utils/arrays';
+import FilterSentOfferButtons from '@/components/custom/FilterSentOfferButtons';
 
-const generateLoadMoreButton = (isFetching: boolean, hasNextPage?: boolean) => {
-  if (isFetching) return 'Tải thêm...';
+const generateLoadMoreButton = (hasNextPage?: boolean) => {
   if (hasNextPage) return 'Tải thêm';
   return '';
 };
@@ -36,7 +35,7 @@ export default function MySentOfferList() {
   return (
     <>
       <div className="px-5 py-5">
-        <FilterOfferButtons
+        <FilterSentOfferButtons
           filteringOfferStatus={filteringOfferStatus}
           setFilteringOfferStatus={setFilteringOfferStatus}
         />
@@ -66,11 +65,18 @@ export default function MySentOfferList() {
                 disabled={!hasNextPage || isFetchingNextPage}
               >
                 {
-                  generateLoadMoreButton(isFetching, hasNextPage)
+                  generateLoadMoreButton(hasNextPage)
                 }
               </button>
             </div>
-            <div>{isFetching && !isFetchingNextPage ? 'Đang tải...' : null}</div>
+            <div>
+              {isFetching ? (
+                numberArrayOf(3)
+                  .map((index) => (
+                    <OfferSkeleton key={index} />
+                  ))
+              ) : null}
+            </div>
           </>
         )
       }

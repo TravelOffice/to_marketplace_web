@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { Offer, OfferStatus } from '@/models/TourPost/Offer';
 import OrganizationOfferCard from '@/pages/Me/Organization/components/OrganizationOfferCard';
-import FilterOfferButtons from '@/components/custom/FilterOfferButtons';
 import { useReceivedOfferOfOrganization } from '@/hooks/offer';
 import OfferSkeleton from '@/components/custom/Skeleton/OfferSkeleton';
 import { numberArrayOf } from '@/utils/arrays';
+import FilterReceivedOfferButtons from '@/components/custom/FilterReceivedOfferButtons';
 
 export default function ReceivedOfferListOfOrganization() {
   const [filteringOfferStatus, setFilteringOfferStatus] = useState(OfferStatus.IN_PROCESS);
@@ -18,7 +18,6 @@ export default function ReceivedOfferListOfOrganization() {
   } = useReceivedOfferOfOrganization(filteringOfferStatus);
 
   const generateLoadMoreButton = () => {
-    if (isFetching) return 'Tải thêm...';
     if (hasNextPage) return 'Tải thêm';
     return '';
   };
@@ -34,7 +33,7 @@ export default function ReceivedOfferListOfOrganization() {
   return (
     <>
       <div className="px-5 py-5">
-        <FilterOfferButtons
+        <FilterReceivedOfferButtons
           filteringOfferStatus={filteringOfferStatus}
           setFilteringOfferStatus={setFilteringOfferStatus}
         />
@@ -68,7 +67,14 @@ export default function ReceivedOfferListOfOrganization() {
                 }
               </button>
             </div>
-            <div>{isFetching && !isFetchingNextPage ? 'Đang tải...' : null}</div>
+            <div>
+              {isFetching ? (
+                numberArrayOf(3)
+                  .map((index) => (
+                    <OfferSkeleton key={index} />
+                  ))
+              ) : null}
+            </div>
           </>
         )
       }
