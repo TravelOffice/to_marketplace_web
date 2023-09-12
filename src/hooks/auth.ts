@@ -8,6 +8,7 @@ import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 export interface AuthState {
   currentUser: MarketplaceUser | undefined,
   setCurrentUser: (user: MarketplaceUser) => void,
+  updateCurrentUser: (data: Partial<MarketplaceUser>) => void,
   accessToken: string | null,
   logIn: (token: string) => void,
   logOut: () => void,
@@ -23,6 +24,15 @@ export const useAuthStore = create<AuthState>()(
       },
       logOut: () => set(() => ({ accessToken: null })),
       setCurrentUser: (user: MarketplaceUser) => set(() => ({ currentUser: user })),
+      updateCurrentUser: (data: Partial<MarketplaceUser>) => set((state) => {
+        if (!state.currentUser) return state;
+        return {
+          currentUser: {
+            ...state.currentUser,
+            ...data,
+          },
+        };
+      }),
     }),
     {
       name: 'auth-storage',
@@ -64,3 +74,5 @@ export function useAuth() {
 }
 
 export const useCurrentUser = () => useAuthStore((state) => state.currentUser);
+
+export const useUpdateCurrentUser = () => useAuthStore((state) => state.updateCurrentUser);

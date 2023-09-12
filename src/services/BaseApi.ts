@@ -5,7 +5,7 @@ export interface ApiRequestConfig {
   headers?: any,
   queryParams?: any,
   data?: any,
-  signal: any,
+  signal?: any,
 }
 
 export type PaginationPayload<T extends Object = any> = {

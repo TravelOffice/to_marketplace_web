@@ -31,3 +31,5 @@ export type UserWithRoles = User & { roles: string[] };
 export type CreateMultipleUsersPayload = {
   users: Array<UserWithRoles>,
 };
+
+export type UpdateProfileFormData = Pick<MarketplaceUser, 'name' | 'phoneNumber' | 'description'>;
