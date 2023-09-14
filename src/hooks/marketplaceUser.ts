@@ -1,8 +1,13 @@
 import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import { CREATE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
-import { CreateMultipleUsersPayload, MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import {
+  CreateMultipleUsersPayload,
+  MarketplaceUser,
+  UpdateProfileFormData,
+} from '@/models/MarketplaceUser/MarketplaceUser';
 import marketplaceApi from '@/services/marketplaceApi';
+import { removeEmptyFields } from '@/utils/common';
 
 export function useMarketplaceUsers() {
   return useQuery(
@@ -97,6 +102,24 @@ export function useAddUsersMutation(
     async (payload: CreateMultipleUsersPayload) => {
       await marketplaceApi.post('/users', payload);
     },
+    options,
+  );
+}
+
+export function useUpdateProfileMutation(
+  options: UseMutationOptions<MarketplaceUser, Error, UpdateProfileFormData>,
+) {
+  return useMutation(
+    (payload: UpdateProfileFormData) => marketplaceApi.put<MarketplaceUser>('/me', removeEmptyFields(payload)),
+    options,
+  );
+}
+
+export function useUpdateUserAvatarMutation(
+  options: UseMutationOptions<MarketplaceUser, Error, string>,
+) {
+  return useMutation(
+    (avatar: string) => marketplaceApi.put<MarketplaceUser>('/me', { avatar: encodeURI(avatar) }),
     options,
   );
 }
