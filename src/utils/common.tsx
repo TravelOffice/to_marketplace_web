@@ -1,5 +1,8 @@
 import moment from 'moment';
+import axios, { AxiosProgressEvent } from 'axios';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import marketplaceApi from '@/services/marketplaceApi';
+import { PresignedUrl } from '@/models/PresignedUrl';
 
 export const useDateDuration = (data: string | number) => {
   const momentOne = moment();
@@ -78,4 +81,38 @@ export function extractFileExtension(file: File) {
   const { name } = file;
   const lastDotIndex = name.lastIndexOf('.');
   return name.substring(lastDotIndex + 1);
+}
+
+async function generatePreSignedUrl(file: File) {
+  return marketplaceApi.get<PresignedUrl>('/presigned-url', {
+    queryParams: {
+      fileName: file.name,
+      fileType: file.type,
+    },
+  });
+}
+
+/**
+ * Upload image to storage
+ * @param file the file to upload
+ * @param quality quality of the compressed image (0 - 1)
+ * @param onProgress callback to update upload progress
+ */
+export async function uploadImage(
+  file: File,
+  quality: number,
+  onProgress?: (progress: number) => void,
+) {
+  const compressedImage = await compressImage(file, quality);
+  const presignedUrl = await generatePreSignedUrl(compressedImage);
+  await axios.put(presignedUrl.url, compressedImage, {
+    headers: {
+      'Content-Type': 'image/png',
+    },
+    onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+      if (!progressEvent.progress) return;
+      onProgress?.(progressEvent.progress);
+    },
+  });
+  return presignedUrl;
 }

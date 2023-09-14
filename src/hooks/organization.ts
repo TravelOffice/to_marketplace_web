@@ -1,18 +1,19 @@
 import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
 import marketplaceApi from '@/services/marketplaceApi';
-import { DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
+import {
+  DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
+} from '@/utils/constants';
 import {
   CreateOrganizationFormData,
   CreateOrganizationPayload,
   Organization,
 } from '@/models/Organization/Organization';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
-import { useAuth } from '@/hooks/auth';
 import backendApi from '@/services/backendApi';
 import { User } from '@/models/User/User';
 import { OrgStatistic } from '@/models/Organization/OrgStatistic';
+import { uploadImage } from '@/utils/common';
 
 export function useOrganizations() {
   return useQuery(
@@ -40,24 +41,6 @@ export function useOrganizationByCurrentUser(currentUser: MarketplaceUser | unde
   });
 }
 
-export function useAcceptTermStatus(): 'checking' | 'yes' | 'no' {
-  const { currentUser } = useAuth();
-  const [firstFetch, setFirstFetch] = useState(false);
-  const {
-    data: organization,
-    isFetched,
-  } = useOrganizationByCurrentUser(currentUser);
-  useEffect(() => {
-    if (isFetched && !firstFetch) {
-      setFirstFetch(true);
-    }
-  }, [isFetched, firstFetch]);
-  return useMemo(() => {
-    if (!firstFetch) return 'checking';
-    return organization ? 'yes' : 'no';
-  }, [organization, firstFetch]);
-}
-
 export function useAllUsers() {
   return useQuery({
     queryKey: ['allUsers'],
@@ -70,14 +53,21 @@ export function useCreateOrganization(
 ) {
   return useMutation(
     async (formData: CreateOrganizationFormData) => {
-      // TODO: Upload logo
       const {
-        profilePictureFile,
+        profilePictureFiles,
         ...rest
       } = formData;
+
+      let profilePictureUrl: string | undefined;
+      if (profilePictureFiles && profilePictureFiles.length > 0) {
+        const uploadedUrl = await uploadImage(profilePictureFiles[0], 0.8);
+        const { cdn } = uploadedUrl;
+        profilePictureUrl = cdn;
+      }
+
       const createOrganizationPayload: CreateOrganizationPayload = {
         ...rest,
-        profilePicture: 'https://picsum.photos/300/300',
+        profilePicture: profilePictureUrl,
       };
       return marketplaceApi.post<Organization>('/organizations', createOrganizationPayload);
     },
@@ -124,5 +114,14 @@ export function useOrganizationStatistic(organizationId: string, enabled: boolea
     {
       enabled,
     },
+  );
+}
+
+export function useAcceptTermsMutation(
+  options: UseMutationOptions<unknown, Error, string>,
+) {
+  return useMutation(
+    async (termsVersion: string) => marketplaceApi.post('/onboarding/accept-terms', { version: termsVersion }),
+    options,
   );
 }

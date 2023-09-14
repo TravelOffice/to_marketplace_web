@@ -1,3 +1,5 @@
+export const APP_VERSION = '1.0.0';
+
 export const CREATE_SUCCESS = 'Tạo thành công';
 
 export const UPDATE_SUCCESS = 'Cập nhật thành công';

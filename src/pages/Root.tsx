@@ -6,15 +6,17 @@ import Navbar from '@/components/base/Navbar';
 import { useAuth } from '@/hooks/auth';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import 'moment/dist/locale/vi';
-import { useAcceptTermStatus } from '@/hooks/organization';
 import marketplaceApi from '@/services/marketplaceApi';
+import { useOnboardingStatus } from '@/hooks/onboarding';
 
 export default function Root() {
   const {
     isLoggedIn,
     setCurrentUser,
   } = useAuth();
-  const acceptTerm = useAcceptTermStatus();
+
+  const onboardingStatus = useOnboardingStatus();
+  console.log(onboardingStatus);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -33,16 +35,16 @@ export default function Root() {
     return <div />;
   }
 
-  if (acceptTerm === 'no') {
-    return <Navigate to="/onboarding/term-of-conditions" />;
-  }
-
-  if (acceptTerm === 'checking') {
+  if (onboardingStatus === 'checking') {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900" />
       </div>
     );
+  }
+
+  if (onboardingStatus !== 'completed') {
+    return <Navigate to="/onboarding/term-of-conditions" />;
   }
 
   return (

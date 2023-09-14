@@ -1,7 +1,30 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useAcceptTermsMutation, useOrganizationByCurrentUser } from '@/hooks/organization';
+import { APP_VERSION, SOMETHING_WRONG } from '@/utils/constants';
+import { useCurrentUser } from '@/hooks/auth';
 
 export default function TermOfConditions() {
+  const currentUser = useCurrentUser();
+  const { data: organization } = useOrganizationByCurrentUser(currentUser);
+  const { mutate } = useAcceptTermsMutation({
+    onSuccess: () => {
+      if (organization) {
+        window.location.href = '/';
+      } else {
+        window.location.href = '/onboarding';
+      }
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+
+  const handleAcceptTerms = useCallback(() => {
+    mutate(APP_VERSION);
+  }, []);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-50 z-30 dark:bg-[#161d31]">
       <div className="flex flex-col bg-white rounded-lg h-3/4 w-1/2 px-10 py-10 shadow-xl dark:dark:bg-[#283046]">
@@ -340,12 +363,16 @@ export default function TermOfConditions() {
           </div>
         </div>
         <div className="flex justify-end">
-          <button type="button" className="bg-gray-200 rounded-lg text-gray-900 font-medium text-sm px-8 py-2.5 hover:shadow-lg transition-shadow">
+          <button type="button" className="bg-gray-200 rounded text-gray-900 font-medium text-sm px-8 py-2.5 hover:shadow-lg transition-shadow">
             Huỷ
           </button>
-          <Link to="/onboarding" type="button" className="px-8 py-2.5 ms-3 bg-primary text-white rounded-lg font-medium text-sm hover:shadow-lg transition-shadow">
+          <button
+            type="button"
+            className="px-8 py-2.5 ms-3 bg-primary text-white rounded font-medium text-sm hover:shadow-lg transition-shadow"
+            onClick={() => handleAcceptTerms()}
+          >
             Tôi đồng ý
-          </Link>
+          </button>
         </div>
       </div>
     </div>
