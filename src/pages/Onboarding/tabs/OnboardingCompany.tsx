@@ -18,7 +18,7 @@ const schema: ObjectSchema<CreateOrganizationFormData> = yup.object().shape({
   name: yup.string().required('Vui lòng nhập tên công ty'),
   email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
   phoneNumber: yup.string().required('Vui lòng nhập số điện thoại'),
-  profilePictureFile: yup.mixed(),
+  profilePictureFiles: yup.mixed(),
   address: yup.string(),
   employeesCount: yup.number().required('Vui lòng nhập số lượng nhân viên'),
   foundedYear: yup.number().required('Vui lòng nhập năm thành lập'),
@@ -35,7 +35,7 @@ const defaultValues: CreateOrganizationFormData = {
   name: '',
   email: '',
   phoneNumber: '',
-  profilePictureFile: undefined,
+  profilePictureFiles: undefined,
   employeesCount: 10,
   foundedYear: 2021,
   website: undefined,
@@ -94,9 +94,9 @@ export default function OnboardingCompany(props: OnboardingCompanyProps) {
               type="file"
               accept="image/*"
               placeholder="Chọn hình ảnh"
-              {...register('profilePictureFile')}
+              {...register('profilePictureFiles')}
             />
-            {errors.profilePictureFile && <p className="text-red-700 text-xs italic mt-1">{errors.profilePictureFile.message}</p>}
+            {errors.profilePictureFiles && <p className="text-red-700 text-xs italic mt-1">{errors.profilePictureFiles.message}</p>}
           </div>
           <div>
             <label className="block mb-2 text-sm text-secondary dark:text-white" htmlFor="title">

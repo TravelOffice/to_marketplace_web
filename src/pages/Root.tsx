@@ -6,15 +6,16 @@ import Navbar from '@/components/base/Navbar';
 import { useAuth } from '@/hooks/auth';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import 'moment/dist/locale/vi';
-import { useAcceptTermStatus } from '@/hooks/organization';
 import marketplaceApi from '@/services/marketplaceApi';
+import { useOnboardingStatus } from '@/hooks/onboarding';
 
 export default function Root() {
   const {
     isLoggedIn,
     setCurrentUser,
   } = useAuth();
-  const acceptTerm = useAcceptTermStatus();
+
+  const onboardingStatus = useOnboardingStatus();
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -29,15 +30,13 @@ export default function Root() {
     };
   }, [isLoggedIn, setCurrentUser]);
 
+  // Render nothing if not logged in
   if (!isLoggedIn) {
     return <div />;
   }
 
-  if (acceptTerm === 'no') {
-    return <Navigate to="/onboarding/term-of-conditions" />;
-  }
-
-  if (acceptTerm === 'checking') {
+  // Render loading screen
+  if (onboardingStatus === 'checking') {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900" />
@@ -45,6 +44,12 @@ export default function Root() {
     );
   }
 
+  // Navigate to onboarding if not completed yet or skipped
+  if (onboardingStatus !== 'skip_checking' && onboardingStatus !== 'completed') {
+    return <Navigate to="/onboarding/term-of-conditions" />;
+  }
+
+  // Render the app
   return (
     <div className="bg-gray-100 dark:bg-[#161d31]">
       <Sidebar />
