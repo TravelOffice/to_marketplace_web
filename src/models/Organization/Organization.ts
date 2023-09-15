@@ -1,4 +1,5 @@
 export interface Organization {
+  code: string,
   name: string,
   email: string,
   phoneNumber: string,

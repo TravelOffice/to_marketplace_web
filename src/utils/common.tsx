@@ -1,8 +1,9 @@
 import moment from 'moment';
 import axios, { AxiosProgressEvent } from 'axios';
+import HTMLReactParser from 'html-react-parser';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import marketplaceApi from '@/services/marketplaceApi';
-import { PresignedUrl } from '@/models/PresignedUrl';
+import { PresignedUrl, PresignedUrlType } from '@/models/PresignedUrl';
 
 export const useDateDuration = (data: string | number) => {
   const momentOne = moment();
@@ -31,9 +32,10 @@ export const generateUserAvatar = (user?: MarketplaceUser) => {
  */
 export function removeEmptyFields<T extends Record<string, any>>(obj: T) {
   const newObj = { ...obj };
-  Object.keys(newObj).forEach((key) => {
-    if (!newObj[key]) delete newObj[key];
-  });
+  Object.keys(newObj)
+    .forEach((key) => {
+      if (!newObj[key]) delete newObj[key];
+    });
   return newObj;
 }
 
@@ -51,7 +53,10 @@ export function compressImage(file: File, quality: number) {
       img.src = event.target.result;
       img.onload = () => {
         const elem = document.createElement('canvas');
-        const { width, height } = img;
+        const {
+          width,
+          height,
+        } = img;
         const scaleFactor = width / height;
         elem.width = 300;
         elem.height = 300 / scaleFactor;
@@ -83,12 +88,12 @@ export function extractFileExtension(file: File) {
   return name.substring(lastDotIndex + 1);
 }
 
-async function generatePreSignedUrl(file: File) {
+async function generatePreSignedUrl(file: File, presignedUrlType: PresignedUrlType) {
   return marketplaceApi.get<PresignedUrl>('/presigned-url', {
     queryParams: {
       fileName: file.name,
       fileType: file.type,
-      presignedUrlType: 'ORG_PROFILE_PICTURE',
+      presignedUrlType,
     },
   });
 }
@@ -97,15 +102,17 @@ async function generatePreSignedUrl(file: File) {
  * Upload image to storage
  * @param file the file to upload
  * @param quality quality of the compressed image (0 - 1)
+ * @param presignedUrlType The type of pre-signed url
  * @param onProgress callback to update upload progress
  */
 export async function uploadImage(
   file: File,
   quality: number,
+  presignedUrlType: PresignedUrlType,
   onProgress?: (progress: number) => void,
 ) {
   const compressedImage = await compressImage(file, quality);
-  const presignedUrl = await generatePreSignedUrl(compressedImage);
+  const presignedUrl = await generatePreSignedUrl(compressedImage, presignedUrlType);
   await axios.put(presignedUrl.url, compressedImage, {
     headers: {
       'Content-Type': file.type,
@@ -117,3 +124,5 @@ export async function uploadImage(
   });
   return presignedUrl;
 }
+
+export const parseHtml = (htmlContent: string) => HTMLReactParser(htmlContent);

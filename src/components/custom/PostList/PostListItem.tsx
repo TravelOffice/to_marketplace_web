@@ -9,7 +9,7 @@ import {
 import { toast } from 'react-toastify';
 import RatingBar from '@/components/base/RatingBar';
 import { TourPost } from '@/models/TourPost/TourPost';
-import { useDateDuration } from '@/utils/common';
+import { formatCurrency, parseHtml, useDateDuration } from '@/utils/common';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 import logo from '@/assets/images/logo/horizontal-logo.svg';
 import {
@@ -107,27 +107,35 @@ export default function PostListItem(props: PostListItemProps) {
             )
           }
         </div>
-        <p
+        <div
           className="flex-1 text-sm text-gray-500 mb-2 text-justify dark:text-white whitespace-pre-wrap"
         >
           <span className="text-ellipsis line-clamp-[13]">
-            {post.description}
+            {parseHtml(post?.description ?? '')}
           </span>
           <Link to={`/posts/${post.code}`} className="text-primary flex items-center">
             Xem chi tiết
             {' '}
             <FiArrowRight />
           </Link>
-        </p>
+        </div>
         <div className="text-sm mb-1">
           <span className="text-gray-500 dark:text-white">Điểm đến: </span>
           <span className="font-bold">{post.endingLocation}</span>
         </div>
-        <div className="text-sm">
+        <div className="text-sm mb-1">
           <span className="text-gray-500 dark:text-white">Ngày khởi hành: </span>
           <span className="font-bold">
             {moment(post.departureDate)
               .format('DD/MM/YYYY')}
+          </span>
+        </div>
+        <div className="text-sm">
+          <span className="text-gray-500 dark:text-white">Chiết khấu: </span>
+          <span className="font-bold">
+            {formatCurrency(post.commission)}
+            {' '}
+            đ
           </span>
         </div>
         <div className="flex justify-between items-center mt-4 text-sm text-secondary">

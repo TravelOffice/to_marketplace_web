@@ -7,13 +7,19 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { CREATE_SUCCESS, NUMBER_ITEM_PER_PAGE, SOMETHING_WRONG } from '@/utils/constants';
-import { EditPostFormData, TourPost } from '@/models/TourPost/TourPost';
+import {
+  CREATE_SUCCESS,
+  NUMBER_ITEM_PER_PAGE,
+  SOMETHING_WRONG,
+  UPDATE_SUCCESS,
+} from '@/utils/constants';
+import { CreatePostFormData, EditPostFormData, TourPost } from '@/models/TourPost/TourPost';
 import marketplaceApi from '@/services/marketplaceApi';
 import { PaginationPayload } from '@/services/BaseApi';
 import { FollowedTourPost } from '@/models/TourPost/FollowedTourPost';
 import { BookmarkedTourPost } from '@/models/TourPost/BookmarkedTourPost';
 import { TourPostType } from '@/models/TourPost/TourPostType';
+import { PresignedUrl, PresignedUrlType } from '@/models/PresignedUrl';
 
 export function useMyPosts() {
   return useInfiniteQuery({
@@ -109,29 +115,67 @@ export function usePost(id: string) {
   );
 }
 
-export function useCreatePost(post: TourPost) {
+async function uploadImage(file: File, type: PresignedUrlType) {
+  // Get pre-signed url by calling api
+  const response = await marketplaceApi.get<PresignedUrl>('/presigned-url', {
+    queryParams: {
+      type,
+    },
+  });
+  const {
+    url,
+  } = response;
+
+  // Upload to given url
+  await marketplaceApi.put(url, file, {
+    headers: {
+      'Content-Type': file.type,
+    },
+  });
+  return response;
+}
+
+export const useCreatePostMutation = () => {
+  const navigate = useNavigate();
   return useMutation(
-    () => marketplaceApi.post<TourPost>('/post', post),
     {
-      onSuccess: () => {
-        // Show success toast
+      mutationFn: async (post: CreatePostFormData) => {
+        const {
+          image,
+          ...rest
+        } = post;
+        const presignedUrl = await uploadImage(image, PresignedUrlType.POST_THUMBNAIL);
+        const {
+          url,
+          cdn,
+        } = presignedUrl;
+        return marketplaceApi.post<TourPost>('/posts', {
+          ...rest,
+          thumbnail: {
+            url,
+            cdn,
+          },
+        });
+      },
+      onSuccess: (newPost) => {
         toast.success(CREATE_SUCCESS);
-        // Go to edit tour post page
+        navigate(`/posts/${newPost.code}`);
       },
       onError: () => {
         toast.error(SOMETHING_WRONG);
       },
     },
   );
-}
+};
 
 export const useUpdatePostMutation = (postId: string) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   return useMutation(
     {
-      mutationFn: (post: EditPostFormData) => marketplaceApi.put<TourPost>(`/posts/${postId}`, post),
-      onSuccess: (newPost) => {
+      mutationFn: async (post: EditPostFormData) => marketplaceApi.put<TourPost>(`/posts/${postId}`, post),
+      onSuccess: (newPost: TourPost) => {
+        toast.success(UPDATE_SUCCESS);
         queryClient.setQueryData(['posts', postId], (input: TourPost | undefined) => ({
           ...input,
           ...newPost,
@@ -144,6 +188,16 @@ export const useUpdatePostMutation = (postId: string) => {
     },
   );
 };
+
+export function useUpdatePostThumbnailMutation(
+  postId: string,
+  options: UseMutationOptions<TourPost, Error, string>,
+) {
+  return useMutation(
+    (image: string) => marketplaceApi.put<TourPost>(`/posts/${postId}`, { thumbnail: encodeURI(image) }),
+    options,
+  );
+}
 
 export function useMyBookmarkedPosts() {
   return useInfiniteQuery({

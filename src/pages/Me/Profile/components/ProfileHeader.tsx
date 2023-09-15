@@ -9,6 +9,7 @@ import { useOrganizationByCurrentUser } from '@/hooks/organization';
 import { useUpdateUserAvatarMutation } from '@/hooks/marketplaceUser';
 import { UPDATE_AVATAR_ERROR, UPDATE_AVATAR_SUCCESS } from '@/utils/constants';
 import EditableAvatar from '@/components/custom/EditableAvatar';
+import { PresignedUrlType } from '@/models/PresignedUrl.ts';
 
 export default function ProfileHeader() {
   const [showModal, setShowModal] = useState(false);
@@ -38,6 +39,7 @@ export default function ProfileHeader() {
     >
       <EditableAvatar
         defaultAvatar={generateUserAvatar(currentUser)}
+        presignedUrlType={PresignedUrlType.USER_AVATAR}
         onAvatarUploaded={onAvatarChanged}
         generateFilename={(file) => `avatar_${currentUser?.username}-${Date.now()}.${extractFileExtension(file)}`}
       />

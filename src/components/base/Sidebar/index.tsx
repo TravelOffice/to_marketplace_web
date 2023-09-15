@@ -1,7 +1,8 @@
 import React from 'react';
-import { FiHome, FiShare2 } from 'react-icons/fi';
+import { FiHome, FiShare2, FiUser } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import { BsBuildings } from 'react-icons/bs';
 import logo from '@/assets/images/logo/logo.svg';
 import SidebarItem from '@/components/base/Sidebar/SidebarItem';
 import { useLayoutStore } from '@/hooks/layout';
@@ -18,7 +19,9 @@ export default function Sidebar() {
         isSidebarOpen ? 'w-64' : 'w-20',
       )}
     >
-      <div className="h-full px-3.5 py-5 overflow-y-auto whitespace-nowrap bg-gray-50 dark:bg-gray-800">
+      <div
+        className="h-full px-3.5 py-5 overflow-y-auto whitespace-nowrap bg-gray-50 dark:bg-gray-800"
+      >
         <div className="flex items-center">
           <Link to="/" className="flex w-full items-center ms-2">
             <img src={logo} alt="" className="w-10 h-10" />
@@ -61,7 +64,7 @@ export default function Sidebar() {
             <span
               className={classNames('flex-1 ms-5 text-sm group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}
             >
-              Dashboard
+              Trang chủ
             </span>
           </SidebarItem>
           <SidebarItem path="/posts">
@@ -73,6 +76,26 @@ export default function Sidebar() {
             >
               Travel
               Connect
+            </div>
+          </SidebarItem>
+          <SidebarItem path="/me/profile">
+            <div className="w-5 h-5">
+              <FiUser className="transition w-5 h-5" />
+            </div>
+            <div
+              className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}
+            >
+              Thông tin cá nhân
+            </div>
+          </SidebarItem>
+          <SidebarItem path="/me/organization">
+            <div className="w-5 h-5">
+              <BsBuildings className="transition w-5 h-5" />
+            </div>
+            <div
+              className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}
+            >
+              Thông tin công ty
             </div>
           </SidebarItem>
         </ul>

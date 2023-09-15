@@ -8,11 +8,14 @@ export interface TourPost {
   pricePerPax: number, // Price per pax of the offer
   commission: number, // Commission rate per pax of the offer
   // Lead code / tour template code (pk, sk) of the tenant that this tour post is linked to
-  linkedToTargetKeys?: { pk: string, sk: string },
+  linkedToTargetKeys?: {
+    code: string,
+    type: 'TOUR_TEMPLATE' | 'LEAD',
+  },
   organization: string, // The ID of organization
   authorId: string, // Alias id of marketplace user that is auto-generated or set by user
   status: TourPostStatus, // Status of the tour post
-  expiry?: number, // Expiry time of the tour post. If undefined, the post will never expire
+  expiry?: string, // Expiry time of the tour post. If undefined, the post will never expire
   endingLocation: string // The ending location
   departureDate: string // The departure date
   thumbnail: string // The thumnail of the post
@@ -35,12 +38,28 @@ export interface TourPost {
   updatedAt: number,
 }
 
-export type EditPostFormData = Pick<TourPost,
+export type CreatePostFormData = Pick<TourPost,
+'linkedToTargetKeys' |
 'name' |
 'description' |
 'type' |
 'pricePerPax' |
 'commission' |
 'endingLocation' |
-'departureDate'
+'departureDate' |
+'maximumPaxToTrade' |
+'expiry'
+> & {
+  image: File
+};
+
+export type EditPostFormData = Pick<TourPost,
+'name' |
+'description' |
+'pricePerPax' |
+'commission' |
+'endingLocation' |
+'departureDate' |
+'maximumPaxToTrade' |
+'expiry'
 >;
