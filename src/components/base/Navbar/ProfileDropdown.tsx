@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCurrentUser } from '@/hooks/auth';
+import { useAuthStore, useCurrentUser } from '@/hooks/auth';
 import { generateUserAvatar } from '@/utils/common';
 
 export default function ProfileDropdown() {
   const currentUser = useCurrentUser();
   const [isOpen, setIsOpen] = useState(false);
+  const logOut = useAuthStore((state) => state.logOut);
+  const handleLogOut = useCallback(() => {
+    logOut();
+    window.location.href = `${import.meta.env.VITE_SSO}/sign-out?redirect_uri=${window.location.origin}`;
+  }, [logOut]);
   return (
     <div className="ml-3 relative">
       <div>
@@ -51,13 +56,14 @@ export default function ProfileDropdown() {
             >
               Cài đặt
             </a>
-            <a
-              href="/"
-              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+            <button
+              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
               role="menuitem"
+              type="button"
+              onClick={handleLogOut}
             >
               Đăng xuất
-            </a>
+            </button>
           </div>
         )
       }

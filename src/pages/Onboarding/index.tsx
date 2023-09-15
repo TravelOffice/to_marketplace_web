@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import Stepper, { Step } from '@/pages/Onboarding/components/Stepper';
-import Layout from '@/components/base/Layout';
 import OnboardingCompany from '@/pages/Onboarding/tabs/OnboardingCompany';
 import OnboardingAddUsers from '@/pages/Onboarding/tabs/OnboardingAddUsers';
 import OnboardingReview from '@/pages/Onboarding/tabs/OnboardingReview';
@@ -33,15 +32,13 @@ export default function Onboarding() {
   }, [currentStep]);
 
   return (
-    <Layout>
-      <div className="fixed z-40 inset-0 bg-gray-50 dark:bg-[#161d31]">
-        <div className="max-w-4xl mx-auto mt-16">
-          <Stepper steps={steps} currentStep={currentStep} />
-        </div>
-        <div>
-          {renderedTab}
-        </div>
+    <div className="z-40 bg-gray-50 dark:bg-[#161d31]">
+      <div className="max-w-4xl mx-auto mt-16">
+        <Stepper steps={steps} currentStep={currentStep} />
       </div>
-    </Layout>
+      <div>
+        {renderedTab}
+      </div>
+    </div>
   );
 }

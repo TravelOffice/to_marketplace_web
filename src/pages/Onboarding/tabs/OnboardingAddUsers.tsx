@@ -102,7 +102,7 @@ export default function OnboardingAddUsers(props: OnboardingAddUsersProps) {
           />
         </div>
       </div>
-      <div className="max-h-[50vh] overflow-y-auto">
+      <div className="overflow-y-auto">
         {
           isLoading && (
             <div className="text-center">

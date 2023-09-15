@@ -22,7 +22,7 @@ export const useAuthStore = create<AuthState>()(
       logIn: (token: string) => {
         set(() => ({ accessToken: token }));
       },
-      logOut: () => set(() => ({ accessToken: null })),
+      logOut: () => set(() => ({ accessToken: null, currentUser: undefined })),
       setCurrentUser: (user: MarketplaceUser) => set(() => ({ currentUser: user })),
       updateCurrentUser: (data: Partial<MarketplaceUser>) => set((state) => {
         if (!state.currentUser) return state;

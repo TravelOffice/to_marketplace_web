@@ -45,7 +45,6 @@ export default function MakeOfferModal(props: MakeOfferModalProps) {
   const {
     toggle,
   } = rest;
-  console.log(post);
   const {
     handleSubmit,
     formState: { errors },
