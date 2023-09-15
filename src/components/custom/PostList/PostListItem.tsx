@@ -82,7 +82,7 @@ export default function PostListItem(props: PostListItemProps) {
       className="bg-white dark:bg-[#283046] flex w-full py-4 px-6 border-b last:border-b-0 dark:border-gray-700"
       {...rest}
     >
-      <div className="h-full w-48">
+      <div className="w-48 flex flex-col justify-between">
         <img src={post.thumbnail ?? logo} alt="" className="rounded-lg w-48 h-48 mb-2" />
         {renderAction(post)}
       </div>

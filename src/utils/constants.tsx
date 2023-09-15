@@ -16,6 +16,8 @@ export const SOMETHING_WRONG = 'Đã có lỗi xảy ra';
 
 export const NUMBER_ITEM_PER_PAGE = 10;
 
+export const NUMBER_ITEM_PER_TOUR_PAGE = 5;
+
 export const UPDATE_AVATAR_SUCCESS = 'Cập nhật ảnh đại diện thành công';
 
 export const UPDATE_AVATAR_ERROR = 'Cập nhật ảnh đại diện không thành công';

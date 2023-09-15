@@ -1,0 +1,29 @@
+import React from 'react';
+import Tabs, { Tab } from '@/components/base/Tabs';
+import TourListCard from './TourListCard';
+
+const tabs: Tab[] = [
+  {
+    title: 'TÌM KHÁCH',
+    content: <TourListCard />,
+  },
+  {
+    title: 'TÌM TOUR',
+    // TODO: Add in next PR
+    content: <TourListCard />,
+  },
+];
+
+export default function SharedToursForPosting() {
+  return (
+    <div className="bg-white dark:bg-[#283046] dark:text-white">
+      <Tabs
+        tabs={tabs}
+        sticky
+        divider={false}
+        itemClassName="w-fit"
+        stickyClassName="top-32 bg-white rounded-t dark:bg-[#283046]"
+      />
+    </div>
+  );
+}
