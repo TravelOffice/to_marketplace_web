@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import Select from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
-import { Form, useParams } from 'react-router-dom';
+import { Form, useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import Layout from '@/components/base/Layout';
@@ -13,7 +12,6 @@ import Label from '@/components/base/Label';
 import '@/styles/extended/react-select.css';
 import { EditPostFormData } from '@/models/TourPost/TourPost';
 import { usePost, useUpdatePostMutation } from '@/hooks/post';
-import { tourPostTypes } from '@/models/TourPost/TourPostType';
 
 const schema: ObjectSchema<EditPostFormData> = yup.object()
   .shape({
@@ -21,9 +19,6 @@ const schema: ObjectSchema<EditPostFormData> = yup.object()
       .required('Vui lòng nhập tiêu đề'),
     description: yup.string()
       .required('Vui lòng nhập mô tả'),
-    type: yup.string()
-      .oneOf(tourPostTypes)
-      .required('Vui lòng chọn loại'),
     pricePerPax: yup.number()
       .required('Vui lòng nhập giá mỗi khách'),
     commission: yup.number()
@@ -32,20 +27,14 @@ const schema: ObjectSchema<EditPostFormData> = yup.object()
       .required('Vui lòng nhập thời gian khởi hành'),
     endingLocation: yup.string()
       .required('Vui lòng nhập điểm đến'),
+    maximumPaxToTrade: yup.number()
+      .min(-1, 'Số lượng khách không hợp lệ'),
+    expiry: yup.string()
+      .required('Vui lòng nhập thời gian hết hạn'),
   });
 
-const postTypeOptions = [
-  {
-    value: 'SELL_PASSENGER',
-    label: 'Bán khách',
-  },
-  {
-    value: 'BUY_PASSENGER',
-    label: 'Tìm khách',
-  },
-];
-
 export default function EditPost() {
+  const navigate = useNavigate();
   const { postId } = useParams();
   const { data: post } = usePost(postId!);
   const {
@@ -61,7 +50,18 @@ export default function EditPost() {
   );
   const { mutate } = useUpdatePostMutation(post?.code!);
   useEffect(() => {
-    reset(post);
+    if (post) {
+      reset({
+        name: post.name,
+        description: post.description,
+        pricePerPax: post.pricePerPax,
+        commission: post.commission,
+        departureDate: post.departureDate,
+        expiry: post.expiry,
+        maximumPaxToTrade: post.maximumPaxToTrade,
+        endingLocation: post.endingLocation,
+      });
+    }
   }, [post]);
 
   const onEditPost = (data: EditPostFormData) => {
@@ -83,37 +83,59 @@ export default function EditPost() {
             {errors.name
               && <p className="text-red-700 text-xs italic mt-1">{errors.name.message}</p>}
 
-            <Label title="Loại" required htmlFor="type" />
-            <Controller
-              control={control}
-              name="type"
-              render={({
-                field: {
-                  value,
-                  onChange,
-                  ...rest
-                },
-              }) => (
-                <Select
-                  className="mb-5"
-                  options={postTypeOptions}
-                  classNamePrefix="react-select"
-                  theme={(theme) => ({
-                    ...theme,
-                    colors: {
-                      ...theme.colors,
-                      primary25: 'rgba(253,146,34,0.05)',
-                      primary: '#FD9222',
-                    },
-                  })}
-                  classNames={{
-                    control: (state) => (state.isFocused ? 'border-primary ring-1 ring-primary' : 'border-gray-300'),
-                    option: (state) => (state.isFocused ? 'bg-primary text-white' : ''),
-                  }}
-                  {...rest}
-                />
-              )}
+            <Label title="Ngày khởi hành" required htmlFor="departureDate" />
+            <input
+              type="date"
+              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              {...register('departureDate')}
             />
+            {errors.departureDate
+              && <p className="text-red-700 text-xs italic mt-1">{errors.departureDate.message}</p>}
+
+            <Label title="Điểm đến" required htmlFor="endingLocation" />
+            <input
+              type="text"
+              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              {...register('endingLocation')}
+            />
+            {errors.endingLocation
+              && <p className="text-red-700 text-xs italic mt-1">{errors.endingLocation.message}</p>}
+
+            <Label title="Giá/khách" required htmlFor="pricePerPax" />
+            <input
+              type="number"
+              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              {...register('pricePerPax')}
+            />
+            {errors.pricePerPax
+              && <p className="text-red-700 text-xs italic mt-1">{errors.pricePerPax.message}</p>}
+
+            <Label title="Số lượng khách" required htmlFor="maximumPaxToTrade" />
+            <input
+              type="number"
+              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              {...register('maximumPaxToTrade')}
+            />
+            {errors.maximumPaxToTrade
+              && <p className="text-red-700 text-xs italic mt-1">{errors.maximumPaxToTrade.message}</p>}
+
+            <Label title="Chiết khấu" required htmlFor="commision" />
+            <input
+              type="number"
+              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              {...register('commission')}
+            />
+            {errors.commission
+              && <p className="text-red-700 text-xs italic mt-1">{errors.commission.message}</p>}
+
+            <Label title="Thời gian kết thúc" required htmlFor="expiry" />
+            <input
+              type="date"
+              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+              {...register('expiry')}
+            />
+            {errors.expiry
+              && <p className="text-red-700 text-xs italic mt-1">{errors.expiry.message}</p>}
 
             <Label title="Chi tiết" required />
             <Controller
@@ -128,7 +150,7 @@ export default function EditPost() {
                     // eslint-disable-next-line no-console
                     console.log('Editor is ready to use!', editor);
                   }}
-                  onChange={onChange}
+                  onChange={(_event, editor) => onChange(editor.getData())}
                 />
               )}
             />
@@ -143,8 +165,9 @@ export default function EditPost() {
               <button
                 type="button"
                 className="bg-gray-200 rounded-lg text-gray-900 font-medium text-sm px-8 py-2.5 ms-3 hover:shadow-lg"
+                onClick={() => navigate(-1)}
               >
-                Hủy
+                Quay lại
               </button>
             </div>
           </Form>

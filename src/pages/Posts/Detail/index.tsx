@@ -1,4 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 import { LiaHandshake } from 'react-icons/lia';
 import { Form, useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
@@ -10,6 +12,7 @@ import {
   BsBell, BsBookmark, BsFillBellFill, BsFillBookmarkCheckFill,
 } from 'react-icons/bs';
 import { toast } from 'react-toastify';
+import { useQueryClient } from '@tanstack/react-query';
 import Layout from '@/components/base/Layout';
 import Comment from '@/pages/Posts/Detail/components/Comment';
 import {
@@ -18,10 +21,13 @@ import {
   useFollowPostMutation,
   usePost,
   useUnfollowPostMutation,
+  useUpdatePostThumbnailMutation,
 } from '@/hooks/post';
 import { useComments, useCreateCommentMutation } from '@/hooks/comment';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
-import { formatCurrency, useDateDuration } from '@/utils/common';
+import {
+  extractFileExtension, formatCurrency, parseHtml, useDateDuration,
+} from '@/utils/common';
 import { CreateCommentFormData } from '@/models/TourPost/PostComment';
 import MakeOfferModal from '@/components/custom/MakeOfferModal';
 import ReceivedOfferListCard from '@/pages/Posts/Detail/components/ReceivedOfferListCard';
@@ -29,9 +35,12 @@ import RatingCard from '@/pages/Posts/Detail/components/RatingCard';
 import { useOffersOfPost } from '@/hooks/offer';
 import { useCurrentUser } from '@/hooks/auth';
 import { usePostRatings } from '@/hooks/rating';
-import { SOMETHING_WRONG } from '@/utils/constants';
+import { SOMETHING_WRONG, UPDATE_AVATAR_ERROR, UPDATE_AVATAR_SUCCESS } from '@/utils/constants';
 import { OfferStatus } from '@/models/TourPost/Offer';
 import SentOfferListCard from '@/pages/Posts/Detail/components/SentOfferListCard';
+import { TourPost } from '@/models/TourPost/TourPost.ts';
+import { PresignedUrlType } from '@/models/PresignedUrl.ts';
+import EditableImage from '@/components/custom/EditableImage';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   .shape({
@@ -42,6 +51,7 @@ const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   });
 
 export default function PostDetail() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showMakeOfferModal, setShowMakeOfferModal] = React.useState(false);
   const currentUser = useCurrentUser();
@@ -169,6 +179,25 @@ export default function PostDetail() {
     return !ratings?.find((rating) => rating.authorId === currentUser?.id);
   }, [currentUser, post, ratings]);
 
+  // Mutation to update post thumbnail
+  const updateAvatarMutation = useUpdatePostThumbnailMutation(post?.code!, {
+    onSuccess: (updatedPost) => {
+      toast.success(UPDATE_AVATAR_SUCCESS);
+      queryClient.setQueryData(['posts', postId], (input: TourPost | undefined) => ({
+        ...input!,
+        thumbnail: updatedPost.thumbnail,
+      }));
+    },
+    onError: () => {
+      toast.error(UPDATE_AVATAR_ERROR);
+    },
+  });
+
+  // Handle thumbnail changed
+  const onThumbnailChanged = useCallback((avatar: string) => {
+    updateAvatarMutation.mutate(avatar);
+  }, []);
+
   return (
     <Layout>
       <div className="mx-8 pt-32 mt-1 grid grid-cols-7 gap-6">
@@ -182,11 +211,11 @@ export default function PostDetail() {
                 {useDateDuration(post?.createdAt!)}
               </span>
             </span>
-            <p
-              className="text-sm text-secondary mb-5 mt-5 dark:text-white whitespace-pre-wrap break-words"
+            <div
+              className="mb-5 mt-5 dark:text-white"
             >
-              {post?.description}
-            </p>
+              {parseHtml(post?.description ?? '')}
+            </div>
             <div className="flex justify-between items-center mt-4 text-sm text-secondary">
               <div className="flex items-center gap-2 dark:text-white">
                 <LiaHandshake className="w-6 h-6 text-primary" />
@@ -264,14 +293,17 @@ export default function PostDetail() {
                 setFilteringOfferStatus={setFilteringOfferStatus}
                 refetch={() => refetchOffers()}
               />
-            ) : (
+            ) : null
+          }
+          {
+            !isAuthor && filteringOffers?.length ? (
               <SentOfferListCard
                 offers={filteringOffers ?? []}
                 filteringOfferStatus={filteringOfferStatus}
                 setFilteringOfferStatus={setFilteringOfferStatus}
                 refetch={() => refetchOffers()}
               />
-            )
+            ) : null
           }
           <div className="card px-5 py-5 mb-10">
             <h5 className="font-bold mb-5">
@@ -317,6 +349,19 @@ export default function PostDetail() {
           </div>
         </div>
         <div className="col-span-2">
+          <div className="mb-10">
+            {
+              isAuthor && post ? (
+                <EditableImage
+                  defaultImg={post?.thumbnail}
+                  presignedUrlType={PresignedUrlType.POST_THUMBNAIL}
+                  onImgUploaded={onThumbnailChanged}
+                  generateFilename={(file) => `profile_${post?.code}-${Date.now()}.${extractFileExtension(file)}`}
+                />
+              ) : (
+                <img src={post?.thumbnail} alt="" className="w-full h-full mb-2" />)
+            }
+          </div>
           <div className="card px-5 py-5 mb-10">
             <h5 className="font-bold mb-5">Thông tin</h5>
             <div className="flex justify-between mb-4">

@@ -1,9 +1,7 @@
 import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import marketplaceApi from '@/services/marketplaceApi';
-import {
-  DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS,
-} from '@/utils/constants';
+import { DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import {
   CreateOrganizationFormData,
   CreateOrganizationPayload,
@@ -14,6 +12,7 @@ import backendApi from '@/services/backendApi';
 import { User } from '@/models/User/User';
 import { OrgStatistic } from '@/models/Organization/OrgStatistic';
 import { uploadImage } from '@/utils/common';
+import { PresignedUrlType } from '@/models/PresignedUrl.ts';
 
 export function useOrganizations() {
   return useQuery(
@@ -60,7 +59,11 @@ export function useCreateOrganization(
 
       let profilePictureUrl: string | undefined;
       if (profilePictureFiles && profilePictureFiles.length > 0) {
-        const uploadedUrl = await uploadImage(profilePictureFiles[0], 0.8);
+        const uploadedUrl = await uploadImage(
+          profilePictureFiles[0],
+          0.8,
+          PresignedUrlType.ORG_PROFILE_PICTURE,
+        );
         const { cdn } = uploadedUrl;
         profilePictureUrl = cdn;
       }
@@ -122,6 +125,16 @@ export function useAcceptTermsMutation(
 ) {
   return useMutation(
     async (termsVersion: string) => marketplaceApi.post('/onboarding/accept-terms', { version: termsVersion }),
+    options,
+  );
+}
+
+export function useUpdateOrgProfilePictureMutation(
+  organizationName: string,
+  options: UseMutationOptions<Organization, Error, string>,
+) {
+  return useMutation(
+    (image: string) => marketplaceApi.put<Organization>(`/organizations/${organizationName}`, { profilePicture: encodeURI(image) }),
     options,
   );
 }

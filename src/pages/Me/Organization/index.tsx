@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { toast } from 'react-toastify';
 import Tabs from '@/components/base/Tabs';
 import Layout from '@/components/base/Layout';
 import OrganizationPostList from '@/pages/Me/Organization/tabs/OrganizationPostList';
-import { useOrganizationByCurrentUser, useOrganizationStatistic } from '@/hooks/organization';
+import {
+  useOrganizationByCurrentUser,
+  useOrganizationStatistic,
+  useUpdateOrgProfilePictureMutation,
+} from '@/hooks/organization';
 import { useCurrentUser } from '@/hooks/auth';
 import OrganizationMembers from '@/pages/Me/Organization/tabs/OrganizationMembers';
-import ReceivedOfferListOfOrganization from '@/pages/Me/Organization/tabs/ReceivedOfferListOfOrganization';
+import ReceivedOfferListOfOrganization
+  from '@/pages/Me/Organization/tabs/ReceivedOfferListOfOrganization';
 import SentOfferListOfOrganization from '@/pages/Me/Organization/tabs/SentOfferListOfOrganization';
+import EditableAvatar from '@/components/custom/EditableAvatar';
+import { extractFileExtension } from '@/utils/common';
+import { SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
+import { PresignedUrlType } from '@/models/PresignedUrl';
 
 const tabs = [
   {
@@ -29,21 +39,41 @@ const tabs = [
 
 export default function MyOrganization() {
   const currentUser = useCurrentUser();
-  const { data } = useOrganizationByCurrentUser(currentUser);
-  const { data: statistic } = useOrganizationStatistic(data?.name!, !!data);
+  const { data: organization } = useOrganizationByCurrentUser(currentUser);
+  const { data: statistic } = useOrganizationStatistic(currentUser?.organization!, !!currentUser);
+  // Mutation to update organization profile picture
+  const updateProfileMutaion = useUpdateOrgProfilePictureMutation(organization?.code!, {
+    onSuccess: () => {
+      toast.success(UPDATE_SUCCESS);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+
+  // Handle avatar changed
+  const onProfilePictureChange = useCallback((image: string) => {
+    updateProfileMutaion.mutate(image);
+  }, []);
+
   return (
     <Layout>
       <div className="mx-8 pt-32 mt-1">
         <div className="card flex items-center shadow-2xl rounded px-5 py-5 mb-10">
-          <img
-            src="https://picsum.photos/800/800"
-            alt=""
-            className="w-32 h-32 rounded-full mx-auto"
-          />
+          {
+            organization?.profilePicture ? (
+              <EditableAvatar
+                defaultAvatar={organization.profilePicture}
+                presignedUrlType={PresignedUrlType.ORG_PROFILE_PICTURE}
+                onAvatarUploaded={onProfilePictureChange}
+                generateFilename={(file) => `profile_${organization.code}-${Date.now()}.${extractFileExtension(file)}`}
+              />
+            ) : null
+          }
           <div className="flex-1 mx-5">
-            <h5 className="font-semibold text-lg mb-2">{data?.name}</h5>
+            <h5 className="font-semibold text-lg mb-2">{organization?.name}</h5>
             <p className="text-sm">
-              {data?.website}
+              {organization?.website}
             </p>
           </div>
           <div className="flex items-center gap-5">
