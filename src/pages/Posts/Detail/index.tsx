@@ -38,8 +38,8 @@ import { usePostRatings } from '@/hooks/rating';
 import { SOMETHING_WRONG, UPDATE_AVATAR_ERROR, UPDATE_AVATAR_SUCCESS } from '@/utils/constants';
 import { OfferStatus } from '@/models/TourPost/Offer';
 import SentOfferListCard from '@/pages/Posts/Detail/components/SentOfferListCard';
-import { TourPost } from '@/models/TourPost/TourPost.ts';
-import { PresignedUrlType } from '@/models/PresignedUrl.ts';
+import { TourPost } from '@/models/TourPost/TourPost';
+import { PresignedUrlType } from '@/models/PresignedUrl';
 import EditableImage from '@/components/custom/EditableImage';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
@@ -98,7 +98,9 @@ export default function PostDetail() {
     (offer) => offer.offerStatus === filteringOfferStatus,
   ), [offers, filteringOfferStatus]);
 
-  const isAuthor = useMemo(() => currentUser?.id === post?.authorId, [currentUser, post]);
+  const isAuthor = useMemo(() => post && currentUser?.id === post?.authorId, [currentUser, post]);
+  const canOffer = useMemo(() => post
+    && currentUser?.organization !== post?.organization, [currentUser, post]);
   const [isBookmarked, setBookmark] = useState(false);
   const [isFollowed, setFollow] = useState(false);
   useEffect(() => {
@@ -296,7 +298,7 @@ export default function PostDetail() {
             ) : null
           }
           {
-            !isAuthor && filteringOffers?.length ? (
+            canOffer ? (
               <SentOfferListCard
                 offers={filteringOffers ?? []}
                 filteringOfferStatus={filteringOfferStatus}

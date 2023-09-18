@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Offer } from '@/models/TourPost/Offer';
 import { formatCurrency, generateUserAvatar, useDateDuration } from '@/utils/common';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
@@ -25,9 +26,12 @@ export default function SentOfferCard(props: OfferCardProps) {
       />
       <div className="flex-1">
         <div>
-          <h5 className="font-semibold text-lg">
+          <Link
+            to="/me/profile"
+            className="font-semibold"
+          >
             {author?.name}
-          </h5>
+          </Link>
         </div>
         <div className="text-sm italic">
           {useDateDuration(offer.createdAt)}

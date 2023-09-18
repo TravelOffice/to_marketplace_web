@@ -8,9 +8,16 @@ import { PresignedUrl, PresignedUrlType } from '@/models/PresignedUrl';
 export const useDateDuration = (data: string | number) => {
   const momentOne = moment();
   const momentTwo = moment(data);
+  const suffix = momentOne.isAfter(momentTwo) ? 'trước' : 'nữa';
   return `${moment
     .duration(momentOne.diff(momentTwo))
-    .humanize()} trước`;
+    .humanize()} ${suffix}`;
+};
+
+export const useExpiredDate = (data: string | number) => {
+  const now = moment();
+  const checkingDate = moment(data);
+  return checkingDate.isBefore(now);
 };
 
 export const formatCurrency = (amount: number) => {

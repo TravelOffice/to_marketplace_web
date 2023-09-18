@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiEdit3 } from 'react-icons/fi';
+import { FiEdit3, FiPhone } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { extractFileExtension, generateUserAvatar } from '@/utils/common';
 import { useCurrentUser, useUpdateCurrentUser } from '@/hooks/auth';
@@ -9,9 +9,9 @@ import { useOrganizationByCurrentUser } from '@/hooks/organization';
 import { useUpdateUserAvatarMutation } from '@/hooks/marketplaceUser';
 import { UPDATE_AVATAR_ERROR, UPDATE_AVATAR_SUCCESS } from '@/utils/constants';
 import EditableAvatar from '@/components/custom/EditableAvatar';
-import { PresignedUrlType } from '@/models/PresignedUrl.ts';
+import { PresignedUrlType } from '@/models/PresignedUrl';
 
-export default function ProfileHeader() {
+export default function MyProfileHeader() {
   const [showModal, setShowModal] = useState(false);
   const currentUser = useCurrentUser();
   const { data: organization } = useOrganizationByCurrentUser(currentUser);
@@ -47,13 +47,17 @@ export default function ProfileHeader() {
         <h5 className="font-semibold text-lg mb-2">{currentUser?.name}</h5>
         <Link
           to="/me/organization"
-          className="text-secondary mb-4 hover:underline hover:text-primary dark:text-white transition-colors"
+          className="text-secondary mb-2 hover:underline hover:text-primary dark:text-white transition-colors"
         >
           {organization?.name}
         </Link>
-        <p className="text-sm mt-4 ">
+        <p className="text-sm mt-2">
           {currentUser?.description}
         </p>
+        <div className="flex items-center italic text-sm">
+          <FiPhone className="mr-1" />
+          {currentUser?.phoneNumber}
+        </div>
       </div>
       <button
         type="button"

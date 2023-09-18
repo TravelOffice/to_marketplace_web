@@ -9,7 +9,9 @@ import {
 import { toast } from 'react-toastify';
 import RatingBar from '@/components/base/RatingBar';
 import { TourPost } from '@/models/TourPost/TourPost';
-import { formatCurrency, parseHtml, useDateDuration } from '@/utils/common';
+import {
+  formatCurrency, parseHtml, useDateDuration, useExpiredDate,
+} from '@/utils/common';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 import logo from '@/assets/images/logo/horizontal-logo.svg';
 import {
@@ -19,6 +21,7 @@ import {
   useUnfollowPostMutation,
 } from '@/hooks/post';
 import { SOMETHING_WRONG } from '@/utils/constants';
+import { useCurrentUser } from '@/hooks/auth';
 
 export interface PostListItemProps extends React.HTMLAttributes<HTMLDivElement> {
   post: TourPost,
@@ -34,6 +37,7 @@ export default function PostListItem(props: PostListItemProps) {
   const { data: author } = useMarketplaceUser(post?.authorId!, !!post);
   const [isBookmarked, setBookmark] = useState(false);
   const [isFollowed, setFollow] = useState(false);
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     if (post?.isBookmarked !== undefined) {
@@ -77,6 +81,13 @@ export default function PostListItem(props: PostListItemProps) {
     },
   });
 
+  const renderExipry = () => {
+    if (!post?.expiry) return null;
+    let prefix = 'Hết hạn sau';
+    if (useExpiredDate(post?.expiry)) prefix = 'Đã hết hạn';
+    return `${prefix} ${useDateDuration(post.expiry)}`;
+  };
+
   return (
     <div
       className="bg-white dark:bg-[#283046] flex w-full py-4 px-6 border-b last:border-b-0 dark:border-gray-700"
@@ -87,10 +98,15 @@ export default function PostListItem(props: PostListItemProps) {
         {renderAction(post)}
       </div>
       <div className="flex flex-col flex-1 text-left ps-5 break-words overflow-hidden">
-        <Link to={`/posts/${post.code}`} className="font-bold text-lg">{post.name}</Link>
+        <div className="flex justify-between">
+          <Link to={`/posts/${post.code}`} className="font-bold text-lg">{post.name}</Link>
+          <span className="text-gray-400 text-sm italic">
+            {renderExipry()}
+          </span>
+        </div>
         <span className="text-sm font-light text-secondary dark:text-white mb-2">
           <Link
-            to={`/users/${author?.id}`}
+            to={currentUser?.id === post.authorId ? '/me/profile' : `/users/${encodeURIComponent(author?.id!)}`}
             className="font-semibold text-primary"
           >
             {author?.name}
@@ -110,7 +126,7 @@ export default function PostListItem(props: PostListItemProps) {
         <div
           className="flex-1 text-sm text-gray-500 mb-2 text-justify dark:text-white whitespace-pre-wrap"
         >
-          <span className="text-ellipsis line-clamp-[13]">
+          <span className="text-ellipsis line-clamp-[3]">
             {parseHtml(post?.description ?? '')}
           </span>
           <Link to={`/posts/${post.code}`} className="text-primary flex items-center">
@@ -128,6 +144,20 @@ export default function PostListItem(props: PostListItemProps) {
           <span className="font-bold">
             {moment(post.departureDate)
               .format('DD/MM/YYYY')}
+          </span>
+        </div>
+        <div className="text-sm mb-1">
+          <span className="text-gray-500 dark:text-white">Giá/khách: </span>
+          <span className="font-bold">
+            {formatCurrency(post.pricePerPax)}
+            {' '}
+            đ
+          </span>
+        </div>
+        <div className="text-sm mb-1">
+          <span className="text-gray-500 dark:text-white">Số lượng khách: </span>
+          <span className="font-bold">
+            {post.maximumPaxToTrade === -1 ? 'Không giới hạn' : post.maximumPaxToTrade}
           </span>
         </div>
         <div className="text-sm">

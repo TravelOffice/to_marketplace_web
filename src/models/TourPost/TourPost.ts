@@ -48,9 +48,11 @@ export type CreatePostFormData = Pick<TourPost,
 'endingLocation' |
 'departureDate' |
 'maximumPaxToTrade' |
-'expiry'
+'expiry' |
+'autoClose'
 > & {
-  image: File
+  thumbnails?: FileList,
+  limitedPax: boolean,
 };
 
 export type EditPostFormData = Pick<TourPost,
@@ -61,5 +63,8 @@ export type EditPostFormData = Pick<TourPost,
 'endingLocation' |
 'departureDate' |
 'maximumPaxToTrade' |
-'expiry'
->;
+'expiry' |
+'autoClose'
+> & {
+  limitedPax: boolean
+};
