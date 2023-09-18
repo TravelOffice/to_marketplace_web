@@ -1,17 +1,40 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Form, useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
+import Select from 'react-select';
 import Layout from '@/components/base/Layout';
 import '@/styles/extended/ckeditor.css';
 import Label from '@/components/base/Label';
 import '@/styles/extended/react-select.css';
 import { EditPostFormData } from '@/models/TourPost/TourPost';
 import { usePost, useUpdatePostMutation } from '@/hooks/post';
+
+const autoCloseOptions = [
+  {
+    value: true,
+    label: 'Tự động đóng',
+  },
+  {
+    value: false,
+    label: 'Đóng thủ công',
+  },
+];
+
+const limitedPaxOptions = [
+  {
+    value: true,
+    label: 'Có giới hạn',
+  },
+  {
+    value: false,
+    label: 'Không giới hạn',
+  },
+];
 
 const schema: ObjectSchema<EditPostFormData> = yup.object()
   .shape({
@@ -31,6 +54,10 @@ const schema: ObjectSchema<EditPostFormData> = yup.object()
       .min(-1, 'Số lượng khách không hợp lệ'),
     expiry: yup.string()
       .required('Vui lòng nhập thời gian hết hạn'),
+    autoClose: yup.boolean()
+      .required(),
+    limitedPax: yup.boolean()
+      .required(),
   });
 
 export default function EditPost() {
@@ -58,84 +85,211 @@ export default function EditPost() {
         commission: post.commission,
         departureDate: post.departureDate,
         expiry: post.expiry,
-        maximumPaxToTrade: post.maximumPaxToTrade,
+        maximumPaxToTrade: post.maximumPaxToTrade! > 0 ? post.maximumPaxToTrade : 1,
         endingLocation: post.endingLocation,
+        limitedPax: post.maximumPaxToTrade !== -1,
+        autoClose: post.autoClose,
       });
     }
   }, [post]);
 
   const onEditPost = (data: EditPostFormData) => {
-    mutate(data);
+    const {
+      limitedPax,
+      ...rest
+    } = data;
+    mutate({
+      ...rest,
+      maximumPaxToTrade: limitedPax ? rest.maximumPaxToTrade : -1,
+    } as EditPostFormData);
   };
 
+  const [limitedPax] = useWatch({
+    control,
+    name: ['limitedPax'],
+  });
+
+  const isEdiableMaximumPaxToTrade = useMemo(() => {
+    if (limitedPax == null) return post?.maximumPaxToTrade !== -1;
+    return limitedPax;
+  }, [limitedPax, post]);
   return (
     <Layout>
       <div className="container mx-auto px-6 pt-20">
         <div className="border-[1px] rounded px-5 py-5 mt-10 mb-10">
           <h5 className="font-bold">Chỉnh sửa bài đăng</h5>
           <Form className="mt-5" onSubmit={handleSubmit(onEditPost)}>
-            <Label title="Tiêu đề" required htmlFor="name" />
-            <input
-              type="text"
-              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-              {...register('name')}
-            />
-            {errors.name
-              && <p className="text-red-700 text-xs italic mt-1">{errors.name.message}</p>}
+            <div className="flex flex-wrap -mx-3 mb-5">
+              <div className="w-full md:w px-3 mb-6 md:mb-0">
+                <Label title="Tiêu đề" required htmlFor="name" />
+                <input
+                  type="text"
+                  className="border-[1px] w-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  {...register('name')}
+                />
+                {errors.name
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.name.message}</p>}
+              </div>
+            </div>
+            <div className="flex flex-wrap -mx-3 mb-5">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <Label title="Ngày khởi hành" required htmlFor="departureDate" />
+                <input
+                  type="date"
+                  className="border-[1px] w-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  {...register('departureDate')}
+                />
+                {errors.departureDate
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.departureDate.message}</p>}
+              </div>
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <Label title="Điểm đến" required htmlFor="endingLocation" />
+                <input
+                  type="text"
+                  className="border-[1px] w-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  {...register('endingLocation')}
+                />
+                {errors.endingLocation
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.endingLocation.message}</p>}
+              </div>
+            </div>
 
-            <Label title="Ngày khởi hành" required htmlFor="departureDate" />
-            <input
-              type="date"
-              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-              {...register('departureDate')}
-            />
-            {errors.departureDate
-              && <p className="text-red-700 text-xs italic mt-1">{errors.departureDate.message}</p>}
+            <div className="flex flex-wrap -mx-3 mb-5">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <Label title="Giá/khách" required htmlFor="pricePerPax" />
+                <input
+                  type="number"
+                  className="border-[1px] w-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  {...register('pricePerPax')}
+                />
+                {errors.pricePerPax
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.pricePerPax.message}</p>}
+              </div>
+              <div className="w-full md:w-1/2 px-3 mb-5 md:mb-0">
+                <Label title="Chiết khấu" required htmlFor="commision" />
+                <input
+                  type="number"
+                  className="border-[1px] w-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  {...register('commission')}
+                />
+                {errors.commission
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.commission.message}</p>}
+              </div>
+            </div>
 
-            <Label title="Điểm đến" required htmlFor="endingLocation" />
-            <input
-              type="text"
-              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-              {...register('endingLocation')}
-            />
-            {errors.endingLocation
-              && <p className="text-red-700 text-xs italic mt-1">{errors.endingLocation.message}</p>}
+            <div className="flex flex-wrap -mx-3 mb-5">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <Label title="Giới hạn số lượng khách" htmlFor="autoClose" />
+                <Controller
+                  control={control}
+                  name="limitedPax"
+                  render={({
+                    field: {
+                      onChange,
+                      value,
+                    },
+                  }) => (
+                    <Select
+                      name="limitedPax"
+                      onChange={(e) => {
+                        if (e) {
+                          onChange(e.value);
+                        }
+                      }}
+                      options={limitedPaxOptions}
+                      value={limitedPaxOptions.find((option) => option.value === value)}
+                      defaultValue={limitedPaxOptions.find(
+                        (option) => option.value === (post?.maximumPaxToTrade === -1),
+                      )}
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary25: 'rgba(253,146,34,0.05)',
+                          primary: '#FD9222',
+                        },
+                      })}
+                      classNames={{
+                        control: (state) => (state.isFocused ? 'border-primary ring-1 ring-primary' : 'border-gray-300'),
+                        option: (state) => (state.isFocused ? 'bg-primary text-white' : ''),
+                      }}
+                    />
+                  )}
+                />
+                {errors.limitedPax
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.limitedPax.message}</p>}
+              </div>
+              {
+                isEdiableMaximumPaxToTrade ? (
+                  <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <Label title="Số lượng khách" required htmlFor="maximumPaxToTrade" />
+                    <input
+                      disabled={!isEdiableMaximumPaxToTrade}
+                      type="number"
+                      className="border-[1px] w-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                      {...register('maximumPaxToTrade')}
+                    />
+                    {errors.maximumPaxToTrade
+                      && <p className="text-red-700 text-xs italic mt-1">{errors.maximumPaxToTrade.message}</p>}
+                  </div>
+                ) : null
+              }
+            </div>
 
-            <Label title="Giá/khách" required htmlFor="pricePerPax" />
-            <input
-              type="number"
-              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-              {...register('pricePerPax')}
-            />
-            {errors.pricePerPax
-              && <p className="text-red-700 text-xs italic mt-1">{errors.pricePerPax.message}</p>}
-
-            <Label title="Số lượng khách" required htmlFor="maximumPaxToTrade" />
-            <input
-              type="number"
-              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-              {...register('maximumPaxToTrade')}
-            />
-            {errors.maximumPaxToTrade
-              && <p className="text-red-700 text-xs italic mt-1">{errors.maximumPaxToTrade.message}</p>}
-
-            <Label title="Chiết khấu" required htmlFor="commision" />
-            <input
-              type="number"
-              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-              {...register('commission')}
-            />
-            {errors.commission
-              && <p className="text-red-700 text-xs italic mt-1">{errors.commission.message}</p>}
-
-            <Label title="Thời gian kết thúc" required htmlFor="expiry" />
-            <input
-              type="date"
-              className="mb-5 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-              {...register('expiry')}
-            />
-            {errors.expiry
-              && <p className="text-red-700 text-xs italic mt-1">{errors.expiry.message}</p>}
+            <div className="flex flex-wrap -mx-3 mb-5">
+              <div className="w-full h-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <Label title="Cài đặt bài đăng khi hêt hạn" htmlFor="autoClose" />
+                <Controller
+                  control={control}
+                  name="autoClose"
+                  render={({
+                    field: {
+                      onChange,
+                      value,
+                    },
+                  }) => (
+                    <Select
+                      name="autoClose"
+                      options={autoCloseOptions}
+                      onChange={(e) => {
+                        if (e) {
+                          onChange(e.value);
+                        }
+                      }}
+                      value={autoCloseOptions.find((option) => option.value === value)}
+                      defaultValue={autoCloseOptions.find(
+                        (option) => option.value === post?.autoClose,
+                      )}
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary25: 'rgba(253,146,34,0.05)',
+                          primary: '#FD9222',
+                        },
+                      })}
+                      classNames={{
+                        control: (state) => (state.isFocused ? 'border-primary ring-1 ring-primary dark:bg-dark' : 'border-gray-300 dark:bg-black'),
+                        option: (state) => (state.isFocused ? 'bg-primary text-white' : ''),
+                        menu: () => 'bg-white dark:bg-dark',
+                      }}
+                    />
+                  )}
+                />
+                {errors.autoClose
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.autoClose.message}</p>}
+              </div>
+              <div className="w-full h-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <Label title="Thời gian kết thúc" required htmlFor="expiry" />
+                <input
+                  type="date"
+                  className="border-[1px] w-full p-2.5 text-gray-900 text-sm rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  {...register('expiry')}
+                />
+                {errors.expiry
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.expiry.message}</p>}
+              </div>
+            </div>
 
             <Label title="Chi tiết" required />
             <Controller

@@ -6,7 +6,7 @@ const userRoutes: RouteObject = {
     {
       path: ':userId',
       async lazy() {
-        const Component = await import('@/pages/Me/Profile');
+        const Component = await import('@/pages/Users/Profile');
         return { Component: Component.default };
       },
     },

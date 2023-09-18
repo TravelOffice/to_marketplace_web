@@ -5,7 +5,7 @@ import MyPostList from '@/pages/Me/Profile/tabs/MyPostList';
 import MyBookmarkedPostList from '@/pages/Me/Profile/tabs/MyBookmarkedPostList';
 import MyFollowPostList from '@/pages/Me/Profile/tabs/MyFollowPostList';
 import MyReceivedOfferList from '@/pages/Me/Profile/tabs/MyReceivedOfferList';
-import ProfileHeader from '@/pages/Me/Profile/components/ProfileHeader';
+import MyProfileHeader from '@/pages/Me/Profile/components/MyProfileHeader';
 import MySentOfferList from './tabs/MySentOfferList';
 
 const tabs: Tab[] = [
@@ -35,7 +35,7 @@ export default function Profile() {
   return (
     <Layout>
       <div className="mx-8 pt-32">
-        <ProfileHeader />
+        <MyProfileHeader />
         <div className="bg-white dark:bg-[#283046] dark:text-white mt-10">
           <Tabs
             tabs={tabs}

@@ -1,6 +1,4 @@
-import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
-import { CREATE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import {
   CreateMultipleUsersPayload,
   MarketplaceUser,
@@ -30,31 +28,6 @@ export function useMarketplaceUser(userId: string, enabled?: boolean) {
   );
 }
 
-export function useCreateMarketplaceUser(marketplaceUser: MarketplaceUser) {
-  return useMutation(
-    () => marketplaceApi.post('/users=', marketplaceUser),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(CREATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
-  );
-}
-
-export function useUpdateMarketplaceUser(
-  id: string,
-  options?: UseMutationOptions<MarketplaceUser, Error, Partial<MarketplaceUser>>,
-) {
-  return useMutation(
-    (data: Partial<MarketplaceUser>) => marketplaceApi.put<MarketplaceUser>(`/users/${id}`, data),
-    options,
-  );
-}
-
 export function useUpdateMarketplaceUserRole(
   id: string,
   options?: UseMutationOptions<MarketplaceUser, Error, string>,
@@ -62,21 +35,6 @@ export function useUpdateMarketplaceUserRole(
   return useMutation(
     (role: string) => marketplaceApi.put<MarketplaceUser>(`/users/${id}`, { roles: [role] }),
     options,
-  );
-}
-
-export function useUpdateProfile(marketplaceUser: MarketplaceUser) {
-  return useMutation(
-    () => marketplaceApi.put('me', marketplaceUser),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
   );
 }
 

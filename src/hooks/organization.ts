@@ -2,17 +2,13 @@ import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import marketplaceApi from '@/services/marketplaceApi';
 import { DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
-import {
-  CreateOrganizationFormData,
-  CreateOrganizationPayload,
-  Organization,
-} from '@/models/Organization/Organization';
+import { CreateOrganizationFormData, CreateOrganizationPayload, Organization } from '@/models/Organization/Organization';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import backendApi from '@/services/backendApi';
 import { User } from '@/models/User/User';
 import { OrgStatistic } from '@/models/Organization/OrgStatistic';
 import { uploadImage } from '@/utils/common';
-import { PresignedUrlType } from '@/models/PresignedUrl.ts';
+import { PresignedUrlType } from '@/models/PresignedUrl';
 
 export function useOrganizations() {
   return useQuery(

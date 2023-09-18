@@ -1,17 +1,10 @@
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import {
-  useInfiniteQuery,
-  useMutation,
-  UseMutationOptions,
-  useQuery,
-  useQueryClient,
+  useInfiniteQuery, useMutation, UseMutationOptions, useQuery, useQueryClient,
 } from '@tanstack/react-query';
 import {
-  CREATE_SUCCESS,
-  NUMBER_ITEM_PER_PAGE,
-  SOMETHING_WRONG,
-  UPDATE_SUCCESS,
+  CREATE_SUCCESS, NUMBER_ITEM_PER_PAGE, SOMETHING_WRONG, UPDATE_SUCCESS,
 } from '@/utils/constants';
 import { CreatePostFormData, EditPostFormData, TourPost } from '@/models/TourPost/TourPost';
 import marketplaceApi from '@/services/marketplaceApi';
@@ -97,13 +90,28 @@ export function usePostsByOrganization(organization: string, enabled: boolean) {
 }
 
 export function usePostsByAuthor(author: string) {
-  return useQuery(
-    ['posts_by_author', author],
-    async ({ signal }) => marketplaceApi.get <PaginationPayload<TourPost>>('/posts', {
+  return useInfiniteQuery({
+    queryKey: ['posts_by_author', author],
+    queryFn: async ({
       signal,
-      queryParams: { author },
-    }),
-  );
+      pageParam,
+    }) => marketplaceApi.get<PaginationPayload<TourPost>>(
+      '/posts',
+      {
+        queryParams: {
+          nextToken: pageParam,
+          limit: NUMBER_ITEM_PER_PAGE,
+          author,
+        },
+        signal,
+      },
+    ),
+    getNextPageParam: (lastPage) => {
+      const nextToken = lastPage.paging.cursors.before;
+      if (nextToken === '') return undefined;
+      return nextToken;
+    },
+  });
 }
 
 export function usePost(id: string) {
@@ -141,20 +149,21 @@ export const useCreatePostMutation = () => {
     {
       mutationFn: async (post: CreatePostFormData) => {
         const {
-          image,
+          thumbnails,
           ...rest
         } = post;
-        const presignedUrl = await uploadImage(image, PresignedUrlType.POST_THUMBNAIL);
-        const {
-          url,
-          cdn,
-        } = presignedUrl;
+        let thumbnailUrl: string | undefined;
+        if (thumbnails && thumbnails.length > 0) {
+          const uploadedUrl = await uploadImage(
+            thumbnails[0],
+            PresignedUrlType.POST_THUMBNAIL,
+          );
+          const { cdn } = uploadedUrl;
+          thumbnailUrl = cdn;
+        }
         return marketplaceApi.post<TourPost>('/posts', {
           ...rest,
-          thumbnail: {
-            url,
-            cdn,
-          },
+          thumbnail: thumbnailUrl,
         });
       },
       onSuccess: (newPost) => {
