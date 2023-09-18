@@ -7,7 +7,7 @@ const leads = Array.from({ length: 3 }, (_, i) => i);
 export default function LeadListCard() {
   const [activeIndex, setActiveIndex] = React.useState(0);
   return (
-    <div className="col-span-1 card shadow-lg rounded relative flex flex-col">
+    <div className="w-1/3 min-h-96 card shadow-lg rounded relative flex flex-col">
       <h3 className="font-bold text-xl">Lead đang chờ</h3>
       <div className="w-full flex-1 relative overflow-hidden">
         {

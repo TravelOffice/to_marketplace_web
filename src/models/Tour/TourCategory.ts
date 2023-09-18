@@ -1,0 +1,7 @@
+enum TourCategory {
+  SHARED_TOUR = 'SHARED_TOUR',
+  GROUP_TOUR = 'GROUP_TOUR',
+  INDIVIDUAL_TOUR = 'INDIVIDUAL_TOUR',
+}
+
+export default TourCategory;

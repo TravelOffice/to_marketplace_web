@@ -286,10 +286,11 @@ export function useUnfollowPostMutation(
 export function useTopCommissionPosts() {
   const queryClient = useQueryClient();
   return useQuery({
+    queryKey: ['topCommissionPosts', 'TOP10'],
     queryFn: () => marketplaceApi.get<TourPost[]>('/trending-posts'),
     onSuccess: (topCommissionPosts) => {
       // Set default top 10 commission posts
-      queryClient.setQueryData(['topCommissionPosts', 10], topCommissionPosts);
+      queryClient.setQueryData(['topCommissionPosts', 'TOP10'], topCommissionPosts);
     },
     onError: () => {
       toast.error(SOMETHING_WRONG);

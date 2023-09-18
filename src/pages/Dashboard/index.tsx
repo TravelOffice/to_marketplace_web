@@ -1,20 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Layout from '@/components/base/Layout';
 import socialUpdate from '@/assets/images/illustrator/social-update.svg';
-import LeadListCard from '@/pages/Dashboard/components/LeadListCard';
-import TourListCard from '@/pages/Dashboard/components/TourListCard';
-import TopCommission from '@/pages/Dashboard/components/TopCommission';
-import { useCurrentOrganizationStatistic } from '@/hooks/statistic';
+import Layout from '@/components/base/Layout';
 import { useCurrentUser } from '@/hooks/auth';
+import { useCurrentOrganizationStatistic } from '@/hooks/statistic';
+import TopCommission from '@/pages/Dashboard/components/TopCommission';
 import MarketplaceStatisticCard from './components/MarketplaceStatisticCard';
+import SharedToursForPosting from './components/SharedToursForPosting';
 
 export default function Dashboard() {
   const orgStatistic = useCurrentOrganizationStatistic();
   const currentUser = useCurrentUser();
   return (
     <Layout>
-      <div className="mx-8 pt-32">
+      <div className="mx-8 pt-32 gap-8">
         <div className="grid grid-cols-4 gap-8">
           <div
             className={`col-span-2 card shadow-lg rounded relative ${orgStatistic ? '' : 'animate-pulse'}`}
@@ -53,11 +52,10 @@ export default function Dashboard() {
           </div>
           <MarketplaceStatisticCard />
         </div>
-        <div className="grid grid-cols-3 gap-8 my-8">
-          <TourListCard />
-          <LeadListCard />
+        <div className="flex flex-col my-8 gap-8">
+          <SharedToursForPosting />
+          <TopCommission />
         </div>
-        <TopCommission />
       </div>
     </Layout>
   );
