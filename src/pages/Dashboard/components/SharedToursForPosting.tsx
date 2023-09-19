@@ -1,14 +1,15 @@
 import React from 'react';
 import Tabs, { Tab } from '@/components/base/Tabs';
 import TourListCard from './TourListCard';
+import LeadListCard from './LeadListCard';
 
 const tabs: Tab[] = [
   {
-    title: 'TÌM KHÁCH',
-    content: <TourListCard />,
+    title: 'ĐĂNG BÀI TÌM TOUR',
+    content: <LeadListCard />,
   },
   {
-    title: 'TÌM TOUR',
+    title: 'ĐĂNG BÀI TÌM KHÁCH',
     // TODO: Add in next PR
     content: <TourListCard />,
   },

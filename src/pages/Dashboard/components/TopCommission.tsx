@@ -55,7 +55,7 @@ export default function TopCommission() {
                     key={`top-commissions-post-${post.code}`}
                     className="py-3 border-b dark:border-b-gray-700"
                   >
-                    <td className="text-left text-sm py-3 ps-5 relative">
+                    <td className="text-left text-sm italic py-3 ps-5 relative">
                       <div className="flex flex-col">
                         <div>{name}</div>
                         <span className="text-blue-800 text-xs font-medium inline-flex items-center py-0.5">
