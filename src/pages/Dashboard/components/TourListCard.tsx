@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
 import { DefaultPagination } from '@/components/base/Pagination';
-import { useAvailableToursStore, useFirstLoadAvailableTours } from '@/hooks/tour';
+import { useAvailableToursStore, useFirstLoadAvailableTours } from '@/hooks/tourOrLead';
 
 export default function TourListCard() {
   const {
-    tourPages,
+    pages,
     pageCount,
     currentPage,
     setCurrentPage,
@@ -22,12 +22,12 @@ export default function TourListCard() {
     if (currentPage === 0) {
       return undefined;
     }
-    return tourPages[currentPage - 1].data;
+    return pages[currentPage - 1].data;
   }, [currentPage]);
 
   const hasMoreData = useMemo(() => {
     if (pageCount === 0) { return false; }
-    const { paging } = tourPages[tourPages.length - 1];
+    const { paging } = pages[pages.length - 1];
     const nextToken = paging.cursors.before;
     return nextToken.length > 0;
   }, [pageCount]);
@@ -44,11 +44,11 @@ export default function TourListCard() {
         </caption>
         <thead className="bg-gray-100 dark:bg-[#343d55] dark:text-white">
           <tr className="text-sm w-full">
-            <th className="text-left font-medium py-3 rounded-t ps-5 uppercase">Mã</th>
+            <th className="text-left w-24 font-medium py-3 rounded-t ps-5 uppercase">Mã</th>
             <th className="text-left font-medium uppercase">Tour</th>
-            <th className="text-left w-1/6 font-medium uppercase">Loại tour</th>
-            <th className="text-left w-1/6 font-medium uppercase">SL Hành khách</th>
-            <th className="text-left w-1/4 font-medium uppercase pe-5">Hành động</th>
+            <th className="text-left w-1/5 font-medium uppercase">Loại tour</th>
+            <th className="text-center w-1/5 font-medium uppercase">SL Hành khách</th>
+            <th className="text-center w-1/6 font-medium uppercase pe-5">Hành động</th>
           </tr>
         </thead>
         <tbody>
@@ -65,9 +65,9 @@ export default function TourListCard() {
                   <td className="text-left text-sm py-3 ps-5">{code}</td>
                   <td className="text-left text-sm">{name}</td>
                   <td className="text-left text-sm">{type}</td>
-                  <td className="text-left text-sm">{visitorCount}</td>
+                  <td className="text-center text-sm">{visitorCount}</td>
                   <td className="pe-5">
-                    <button type="button" className="w-full px-5 py-2 bg-primary my-2 rounded text-white">Tạo bài viết</button>
+                    <button type="button" className="w-full transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 duration-300  px-5 py-2 bg-primary my-2 rounded text-white">Tạo bài viết</button>
                   </td>
                 </tr>
               );
