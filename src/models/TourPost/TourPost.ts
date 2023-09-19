@@ -22,7 +22,7 @@ export interface TourPost {
   // Whether the tour post is automatically closed.
   // The post will be closed when the expiry time is reached
   // Also, all the offers of the post will be accepted
-  autoClose?: boolean,
+  autoClose: boolean,
   // Number of available pax
   // If undefined, the post will be considered as unlimited buy or sell
   maximumPaxToTrade?: number,
