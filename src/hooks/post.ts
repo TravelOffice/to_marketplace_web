@@ -1,10 +1,17 @@
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import {
-  useInfiniteQuery, useMutation, UseMutationOptions, useQuery, useQueryClient,
+  useInfiniteQuery,
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  useQueryClient,
 } from '@tanstack/react-query';
 import {
-  CREATE_SUCCESS, NUMBER_ITEM_PER_PAGE, SOMETHING_WRONG, UPDATE_SUCCESS,
+  CREATE_SUCCESS,
+  NUMBER_ITEM_PER_PAGE,
+  SOMETHING_WRONG,
+  UPDATE_SUCCESS,
 } from '@/utils/constants';
 import { CreatePostFormData, EditPostFormData, TourPost } from '@/models/TourPost/TourPost';
 import marketplaceApi from '@/services/marketplaceApi';
@@ -12,7 +19,8 @@ import { PaginationPayload } from '@/services/BaseApi';
 import { FollowedTourPost } from '@/models/TourPost/FollowedTourPost';
 import { BookmarkedTourPost } from '@/models/TourPost/BookmarkedTourPost';
 import { TourPostType } from '@/models/TourPost/TourPostType';
-import { PresignedUrl, PresignedUrlType } from '@/models/PresignedUrl';
+import { PresignedUrlType } from '@/models/PresignedUrl';
+import { uploadImage } from '@/utils/common.tsx';
 
 export function useMyPosts() {
   return useInfiniteQuery({
@@ -123,26 +131,6 @@ export function usePost(id: string) {
   );
 }
 
-async function uploadImage(file: File, type: PresignedUrlType) {
-  // Get pre-signed url by calling api
-  const response = await marketplaceApi.get<PresignedUrl>('/presigned-url', {
-    queryParams: {
-      type,
-    },
-  });
-  const {
-    url,
-  } = response;
-
-  // Upload to given url
-  await marketplaceApi.put(url, file, {
-    headers: {
-      'Content-Type': file.type,
-    },
-  });
-  return response;
-}
-
 export const useCreatePostMutation = () => {
   const navigate = useNavigate();
   return useMutation(
@@ -156,6 +144,7 @@ export const useCreatePostMutation = () => {
         if (thumbnails && thumbnails.length > 0) {
           const uploadedUrl = await uploadImage(
             thumbnails[0],
+            0.8,
             PresignedUrlType.POST_THUMBNAIL,
           );
           const { cdn } = uploadedUrl;
