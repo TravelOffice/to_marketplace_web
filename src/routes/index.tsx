@@ -4,6 +4,7 @@ import meRoutes from '@/routes/meRoutes';
 import Root from '@/pages/Root';
 import onboardingRoutes from '@/routes/onboardingRoutes';
 import userRoutes from '@/routes/userRoutes';
+import organizationRoutes from '@/routes/organizationRoutes.ts';
 import postRoutes from './postRoutes';
 import rootRoutes from './rootRoutes';
 
@@ -17,6 +18,7 @@ const routes: RouteObject[] = [
       postRoutes,
       meRoutes,
       userRoutes,
+      organizationRoutes,
     ],
   },
   {

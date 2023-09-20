@@ -13,7 +13,7 @@ import { PresignedUrlType } from '@/models/PresignedUrl';
 export function useOrganizations() {
   return useQuery(
     ['organizations'],
-    ({ signal }) => marketplaceApi.get('/organizations', {
+    ({ signal }) => marketplaceApi.get<Organization[]>('/organizations', {
       signal,
     }),
   );

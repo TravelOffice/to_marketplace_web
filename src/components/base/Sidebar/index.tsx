@@ -78,6 +78,16 @@ export default function Sidebar() {
               Connect
             </div>
           </SidebarItem>
+          <SidebarItem path="/organizations">
+            <div className="w-5 h-5">
+              <BsBuildings className="transition w-5 h-5" />
+            </div>
+            <div
+              className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}
+            >
+              Danh sách công ty
+            </div>
+          </SidebarItem>
           <SidebarItem path="/me/profile">
             <div className="w-5 h-5">
               <FiUser className="transition w-5 h-5" />
