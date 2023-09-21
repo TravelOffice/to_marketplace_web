@@ -32,7 +32,7 @@ export default function SentOfferListOfOrganization() {
 
   return (
     <>
-      <div className="px-5 py-5">
+      <div className="px-6 py-5">
         <FilterSentOfferButtons
           filteringOfferStatus={filteringOfferStatus}
           setFilteringOfferStatus={setFilteringOfferStatus}

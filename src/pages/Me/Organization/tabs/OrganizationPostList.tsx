@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PostList from '@/components/custom/PostList';
 import { TourPost } from '@/models/TourPost/TourPost';
 import { usePostsByOrganization } from '@/hooks/post';
 import { useCurrentUser } from '@/hooks/auth';
+import FilterPostButtons from '@/components/custom/FilterPostButtons';
+import { TourPostStatus } from '@/models/TourPost/TourPostStatus';
 
 export default function OrganizationPostList() {
   const currentUser = useCurrentUser();
   const navigate = useNavigate();
+  const [
+    filteringStatus,
+    setFilteringStatus,
+  ] = useState(TourPostStatus.IN_PROCESS);
   const renderAction = (post: TourPost) => (
     <button
       type="button"
@@ -19,9 +25,21 @@ export default function OrganizationPostList() {
   );
 
   return (
-    <PostList
-      queryResult={usePostsByOrganization(currentUser?.organization!, !!currentUser)}
-      renderAction={renderAction}
-    />
+    <>
+      <div className="px-6 py-4">
+        <FilterPostButtons
+          filteringStatus={filteringStatus}
+          setFilteringStatus={setFilteringStatus}
+        />
+      </div>
+      <PostList
+        queryResult={usePostsByOrganization(
+          currentUser?.organization!,
+          !!currentUser,
+          filteringStatus,
+        )}
+        renderAction={renderAction}
+      />
+    </>
   );
 }

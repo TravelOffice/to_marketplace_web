@@ -1,8 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Offer } from '@/models/TourPost/Offer';
 import { formatCurrency, generateUserAvatar, useDateDuration } from '@/utils/common';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
+import { useCurrentUser } from '@/hooks/auth';
 
 export interface OfferCardProps {
   offer: Offer,
@@ -13,6 +14,7 @@ export default function OrganizationOfferCard(props: OfferCardProps) {
   const {
     offer,
   } = props;
+  const currentUser = useCurrentUser();
   const { data: author } = useMarketplaceUser(offer.authorId, !!offer);
   return (
     <div key={offer.code} className="border-b last:border-0 flex px-5 py-5 gap-5">
@@ -23,9 +25,12 @@ export default function OrganizationOfferCard(props: OfferCardProps) {
       />
       <div className="flex-1">
         <div>
-          <h5 className="font-semibold text-lg">
+          <Link
+            to={currentUser?.id === offer.authorId ? '/me/profile' : `/users/${encodeURIComponent(offer.authorId!)}`}
+            className="font-semibold"
+          >
             {author?.name}
-          </h5>
+          </Link>
         </div>
         <div className="text-sm italic">
           {useDateDuration(offer.createdAt)}

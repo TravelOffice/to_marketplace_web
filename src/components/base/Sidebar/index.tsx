@@ -2,7 +2,7 @@ import React from 'react';
 import { FiHome, FiShare2, FiUser } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { BsBuildings } from 'react-icons/bs';
+import { GoOrganization } from 'react-icons/go';
 import logo from '@/assets/images/logo/logo.svg';
 import SidebarItem from '@/components/base/Sidebar/SidebarItem';
 import { useLayoutStore } from '@/hooks/layout';
@@ -90,7 +90,7 @@ export default function Sidebar() {
           </SidebarItem>
           <SidebarItem path="/me/organization">
             <div className="w-5 h-5">
-              <BsBuildings className="transition w-5 h-5" />
+              <GoOrganization className="transition w-5 h-5" />
             </div>
             <div
               className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}

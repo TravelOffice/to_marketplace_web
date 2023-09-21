@@ -5,6 +5,7 @@ import { useCurrentUser } from '@/hooks/auth';
 import PostList from '@/components/custom/PostList';
 import { usePosts } from '@/hooks/post';
 import { TourPostType } from '@/models/TourPost/TourPostType';
+import { TourPostStatus } from '@/models/TourPost/TourPostStatus';
 
 interface TourPostProps {
   postType: TourPostType,
@@ -32,7 +33,7 @@ export default function TourList(props: TourPostProps) {
   return (
     <>
       <PostList
-        queryResult={usePosts(postType)}
+        queryResult={usePosts(postType, TourPostStatus.IN_PROCESS)}
         renderAction={renderAction}
       />
       <MakeOfferModal

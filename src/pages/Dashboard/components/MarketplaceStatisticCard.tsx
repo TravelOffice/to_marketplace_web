@@ -28,7 +28,7 @@ export default function MarketplaceStatisticCard() {
                 {marketplaceStatistic.totalPosts}
                 +
               </p>
-              <p className="text-sm text-gray-500">Bài ghép tour</p>
+              <a className="text-sm text-gray-500" href="/posts">Bài ghép tour</a>
             </div>
           </div>
           <div className="flex items-center">
@@ -38,7 +38,7 @@ export default function MarketplaceStatisticCard() {
                 {marketplaceStatistic.totalOffers}
                 +
               </p>
-              <p className="text-sm text-gray-500">Yêu cầu ghép tour</p>
+              <a className="text-sm text-gray-500" href="/posts">Yêu cầu ghép tour</a>
             </div>
           </div>
         </div>

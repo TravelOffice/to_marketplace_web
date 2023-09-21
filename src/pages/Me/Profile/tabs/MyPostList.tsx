@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PostList from '@/components/custom/PostList';
 import { useMyPosts } from '@/hooks/post';
 import { TourPost } from '@/models/TourPost/TourPost';
+import { TourPostStatus } from '@/models/TourPost/TourPostStatus';
+import FilterPostButtons from '@/components/custom/FilterPostButtons';
 
 export default function MyPostList() {
   const navigate = useNavigate();
+  const [
+    filteringStatus,
+    setFilteringStatus,
+  ] = useState(TourPostStatus.IN_PROCESS);
   const renderAction = (post: TourPost) => (
     <button
       type="button"
@@ -17,9 +23,17 @@ export default function MyPostList() {
   );
 
   return (
-    <PostList
-      queryResult={useMyPosts()}
-      renderAction={renderAction}
-    />
+    <>
+      <div className="px-6 py-4">
+        <FilterPostButtons
+          filteringStatus={filteringStatus}
+          setFilteringStatus={setFilteringStatus}
+        />
+      </div>
+      <PostList
+        queryResult={useMyPosts(filteringStatus)}
+        renderAction={renderAction}
+      />
+    </>
   );
 }
