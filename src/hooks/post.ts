@@ -20,11 +20,12 @@ import { FollowedTourPost } from '@/models/TourPost/FollowedTourPost';
 import { BookmarkedTourPost } from '@/models/TourPost/BookmarkedTourPost';
 import { TourPostType } from '@/models/TourPost/TourPostType';
 import { PresignedUrlType } from '@/models/PresignedUrl';
-import { uploadImage } from '@/utils/common.tsx';
+import { uploadImage } from '@/utils/common';
+import { TourPostStatus } from '@/models/TourPost/TourPostStatus';
 
-export function useMyPosts() {
+export function useMyPosts(status?: TourPostStatus) {
   return useInfiniteQuery({
-    queryKey: ['my_posts'],
+    queryKey: ['my_posts', status],
     queryFn: async ({
       signal,
       pageParam,
@@ -32,6 +33,7 @@ export function useMyPosts() {
       '/me/posts',
       {
         queryParams: {
+          status,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
         },
@@ -46,7 +48,7 @@ export function useMyPosts() {
   });
 }
 
-export function usePosts(postType?: TourPostType) {
+export function usePosts(postType?: TourPostType, status?: TourPostStatus) {
   return useInfiniteQuery({
     queryKey: ['posts', postType],
     queryFn: async ({
@@ -56,6 +58,7 @@ export function usePosts(postType?: TourPostType) {
       '/posts',
       {
         queryParams: {
+          status,
           postType,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
@@ -71,9 +74,13 @@ export function usePosts(postType?: TourPostType) {
   });
 }
 
-export function usePostsByOrganization(organization: string, enabled: boolean) {
+export function usePostsByOrganization(
+  organization: string,
+  enabled: boolean,
+  status?: TourPostStatus,
+) {
   return useInfiniteQuery({
-    queryKey: ['posts_oby_organization', organization],
+    queryKey: ['posts_oby_organization', organization, status],
     queryFn: async ({
       signal,
       pageParam,
@@ -82,6 +89,7 @@ export function usePostsByOrganization(organization: string, enabled: boolean) {
       {
         queryParams: {
           organization,
+          status,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
         },
@@ -97,7 +105,7 @@ export function usePostsByOrganization(organization: string, enabled: boolean) {
   });
 }
 
-export function usePostsByAuthor(author: string) {
+export function usePostsByAuthor(author: string, status?: TourPostStatus) {
   return useInfiniteQuery({
     queryKey: ['posts_by_author', author],
     queryFn: async ({
@@ -107,6 +115,7 @@ export function usePostsByAuthor(author: string) {
       '/posts',
       {
         queryParams: {
+          status,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
           author,
