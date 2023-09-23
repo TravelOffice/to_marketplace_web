@@ -7,6 +7,8 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import {
   CREATE_SUCCESS,
   NUMBER_ITEM_PER_PAGE,
@@ -48,9 +50,22 @@ export function useMyPosts(status?: TourPostStatus) {
   });
 }
 
-export function usePosts(postType?: TourPostType, status?: TourPostStatus) {
+export interface UsePostsParams {
+  postType?: TourPostType,
+  status?: TourPostStatus,
+  endingLocation?: string,
+  departureDate?: string,
+}
+
+export function usePosts(params: UsePostsParams) {
+  const {
+    postType,
+    status,
+    endingLocation,
+    departureDate,
+  } = params;
   return useInfiniteQuery({
-    queryKey: ['posts', postType],
+    queryKey: ['posts', postType, status, endingLocation, departureDate],
     queryFn: async ({
       signal,
       pageParam,
@@ -60,6 +75,8 @@ export function usePosts(postType?: TourPostType, status?: TourPostStatus) {
         queryParams: {
           status,
           postType,
+          endingLocation,
+          departureDate,
           nextToken: pageParam,
           limit: NUMBER_ITEM_PER_PAGE,
         },
@@ -304,3 +321,28 @@ export function useTopCommissionPosts() {
     },
   });
 }
+
+export interface FilteringPostState {
+  filteringEndingLocation?: string,
+  filteringDepartureDate?: string,
+  setFilteringEndingLocation: (endingLocation?: string) => void;
+  setFilteringDepartureDate: (departureDate?: string) => void;
+}
+
+export const useFilteringPostStore = create<FilteringPostState>()(
+  persist(
+    (set) => ({
+      filteringEndingLocation: undefined,
+      filteringDepartureDate: undefined,
+      setFilteringEndingLocation: (
+        endingLocation?,
+      ) => set({ filteringEndingLocation: endingLocation }),
+      setFilteringDepartureDate: (departureDate?) => set({ filteringDepartureDate: departureDate }),
+
+    }),
+    {
+      name: 'filtering-posts-storage',
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
