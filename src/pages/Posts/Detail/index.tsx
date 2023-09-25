@@ -1,115 +1,420 @@
-import React from 'react';
-import { LiaBell, LiaBookmarkSolid, LiaHandshake } from 'react-icons/lia';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
+import { LiaHandshake } from 'react-icons/lia';
+import { Form, useNavigate, useParams } from 'react-router-dom';
+import moment from 'moment';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { ObjectSchema } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  BsBell, BsBookmark, BsFillBellFill, BsFillBookmarkCheckFill,
+} from 'react-icons/bs';
+import { toast } from 'react-toastify';
+import { useQueryClient } from '@tanstack/react-query';
 import Layout from '@/components/base/Layout';
-import RatingBar from '@/components/base/RatingBar';
-import { numberArrayOf } from '@/utils/arrays';
 import Comment from '@/pages/Posts/Detail/components/Comment';
+import {
+  useCreateBookmarkPostMutation,
+  useDeleteBookmarkPostMutation,
+  useFollowPostMutation,
+  usePost,
+  useUnfollowPostMutation,
+  useUpdatePostThumbnailMutation,
+} from '@/hooks/post';
+import { useComments, useCreateCommentMutation } from '@/hooks/comment';
+import { useMarketplaceUser } from '@/hooks/marketplaceUser';
+import {
+  extractFileExtension, formatCurrency, parseHtml, useDateDuration,
+} from '@/utils/common';
+import { CreateCommentFormData } from '@/models/TourPost/PostComment';
 import MakeOfferModal from '@/components/custom/MakeOfferModal';
+import ReceivedOfferListCard from '@/pages/Posts/Detail/components/ReceivedOfferListCard';
+import RatingCard from '@/pages/Posts/Detail/components/RatingCard';
+import { useOffersOfPost } from '@/hooks/offer';
+import { useCurrentUser } from '@/hooks/auth';
+import { usePostRatings } from '@/hooks/rating';
+import { SOMETHING_WRONG, UPDATE_AVATAR_ERROR, UPDATE_AVATAR_SUCCESS } from '@/utils/constants';
+import { OfferStatus } from '@/models/TourPost/Offer';
+import SentOfferListCard from '@/pages/Posts/Detail/components/SentOfferListCard';
+import { TourPost } from '@/models/TourPost/TourPost';
+import { PresignedUrlType } from '@/models/PresignedUrl';
+import EditableImage from '@/components/custom/EditableImage';
+
+const schema: ObjectSchema<CreateCommentFormData> = yup.object()
+  .shape({
+    description: yup.string()
+      .required('Vui lòng nhập bình luận'),
+    tourPostId: yup.string()
+      .required(),
+  });
 
 export default function PostDetail() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [showMakeOfferModal, setShowMakeOfferModal] = React.useState(false);
+  const currentUser = useCurrentUser();
+  const { postId } = useParams();
+  const { data: post } = usePost(postId!);
+  const {
+    data: comments,
+    refetch: refetchComments,
+  } = useComments(postId!, { limit: 100 });
+  const { data: author } = useMarketplaceUser(post?.authorId!, !!post);
+  const {
+    data: offers,
+    refetch: refetchOffers,
+  } = useOffersOfPost(postId!, !!postId);
+  const { data: ratings = [] } = usePostRatings(postId!, post?.organization!, !!post);
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    reset,
+  } = useForm<CreateCommentFormData>(
+    {
+      resolver: yupResolver(schema),
+      defaultValues: {
+        tourPostId: postId,
+        description: '',
+      },
+    },
+  );
+  const createCommentMutation = useCreateCommentMutation(postId!);
+
+  const onSendComment = (data: CreateCommentFormData) => {
+    if (data.description !== '') {
+      createCommentMutation.mutate(data);
+      reset();
+    }
+  };
+
+  const [
+    filteringOfferStatus,
+    setFilteringOfferStatus,
+  ] = useState(OfferStatus.IN_PROCESS);
+  const filteringOffers = useMemo(() => offers?.filter(
+    (offer) => offer.offerStatus === filteringOfferStatus,
+  ), [offers, filteringOfferStatus]);
+
+  const isAuthor = useMemo(() => post && currentUser?.id === post?.authorId, [currentUser, post]);
+  const canOffer = useMemo(() => post
+    && currentUser?.organization !== post?.organization, [currentUser, post]);
+  const [isBookmarked, setBookmark] = useState(false);
+  const [isFollowed, setFollow] = useState(false);
+  useEffect(() => {
+    if (post?.isBookmarked !== undefined) {
+      setBookmark(post.isBookmarked);
+    }
+    if (post?.isFollowed !== undefined) {
+      setFollow(post.isFollowed);
+    }
+  }, [post]);
+  const createBookmarkPostMutation = useCreateBookmarkPostMutation({
+    onSuccess: () => {
+      setBookmark(true);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+  const deleteBookmarkPostMutation = useDeleteBookmarkPostMutation({
+    onSuccess: () => {
+      setBookmark(false);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+  const followPostMutation = useFollowPostMutation({
+    onSuccess: () => {
+      setFollow(true);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+  const unfollowPostMutation = useUnfollowPostMutation({
+    onSuccess: () => {
+      setFollow(false);
+    },
+    onError: () => {
+      toast.error(SOMETHING_WRONG);
+    },
+  });
+  const renderAction = () => {
+    if (currentUser?.id === post?.authorId) {
+      return (
+        <button
+          type="button"
+          className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"
+          onClick={() => navigate(`/posts/${post?.code}/edit`)}
+        >
+          Cập nhật bài đăng
+        </button>
+      );
+    }
+    if (currentUser?.organization === post?.organization) {
+      return null;
+    }
+    return (
+      <button
+        type="button"
+        className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"
+        onClick={() => setShowMakeOfferModal(true)}
+      >
+        Gửi yêu cầu
+      </button>
+    );
+  };
+
+  const canRate = useMemo(() => {
+    // Skip rating if user is the author
+    if (currentUser?.id === post?.authorId) return false;
+
+    // Skip rating if user is not in process offer
+    const myOffer = offers?.find((offer) => offer.authorId === currentUser?.id);
+    if (!myOffer || myOffer.offerStatus !== OfferStatus.ACCEPTED) return false;
+
+    // Skip rating if user already rated
+    return !ratings?.find((rating) => rating.authorId === currentUser?.id);
+  }, [currentUser, post, ratings]);
+
+  // Mutation to update post thumbnail
+  const updateAvatarMutation = useUpdatePostThumbnailMutation(post?.code!, {
+    onSuccess: (updatedPost) => {
+      toast.success(UPDATE_AVATAR_SUCCESS);
+      queryClient.setQueryData(['posts', postId], (input: TourPost | undefined) => ({
+        ...input!,
+        thumbnail: updatedPost.thumbnail,
+      }));
+    },
+    onError: () => {
+      toast.error(UPDATE_AVATAR_ERROR);
+    },
+  });
+
+  // Handle thumbnail changed
+  const onThumbnailChanged = useCallback((avatar: string) => {
+    updateAvatarMutation.mutate(avatar);
+  }, []);
+
   return (
     <Layout>
-      <div className="container mx-auto px-6 mt-10 grid grid-cols-7 gap-6">
+      <div className="mx-8 pt-32 mt-1 grid grid-cols-7 gap-6">
         <div className="col-span-5">
-          <div className="border-[1px] rounded px-5 py-5 mb-10">
-            <h5 className="text-lg font-bold">What is Lorem Ipsum?</h5>
-            <span className="text-sm font-light text-secondary">
-              Posted by
+          <div className="card px-5 py-5 mb-10">
+            <div className="text-lg font-bold">{post?.name}</div>
+            <span className="text-sm font-light text-secondary dark:text-white">
+              <span className="text-primary font-semibold">{author?.name}</span>
               {' '}
-              <span className="text-primary font-semibold">Nguyen Tuan Anh</span>
-              {' '}
-              at
-              {' '}
-              <span className="font-semibold">10:00 Aug 9, 2023</span>
+              <span className="text-gray-400 text-xs italic">
+                {useDateDuration(post?.createdAt!)}
+              </span>
             </span>
-            <h6 className="text-base mt-10 text-black mb-2">Description</h6>
-            <p className="text-sm text-secondary mb-5">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-              Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s,
-              when an unknown printer took a galley of type and scrambled it to make a type
-              specimen book. It has survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was popularised in
-              the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-              and more recently with desktop publishing software like Aldus PageMaker including
-              versions of Lorem Ipsum.
-            </p>
+            <div
+              className="mb-5 mt-5 dark:text-white"
+            >
+              {parseHtml(post?.description ?? '')}
+            </div>
             <div className="flex justify-between items-center mt-4 text-sm text-secondary">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 dark:text-white">
                 <LiaHandshake className="w-6 h-6 text-primary" />
                 <span>
-                  <strong className="font-bold text-black">10</strong>
+                  <strong
+                    className="font-bold text-black dark:text-white"
+                  >
+                    {post?.totalOffers}
+                  </strong>
                   {' '}
-                  offers
+                  Yêu cầu
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <LiaBookmarkSolid className="w-6 h-6 text-sky-500" />
-                <span>
-                  <strong className="font-bold text-black">4</strong>
-                  {' '}
-                  bookmarks
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <LiaBell className="w-6 h-6 text-sky-500" />
-                <span>
-                  <strong className="font-bold text-black">4</strong>
-                  {' '}
-                  followers
-                </span>
-              </div>
+              {isBookmarked ? (
+                <div className="flex items-center gap-2 dark:text-white">
+                  <BsFillBookmarkCheckFill className="w-5 h-5 text-sky-500" />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      deleteBookmarkPostMutation.mutate(postId!);
+                    }}
+                  >
+                    Bỏ đánh dấu
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 dark:text-white">
+                  <BsBookmark className="w-5 h-5 text-sky-500" />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      createBookmarkPostMutation.mutate(postId!);
+                    }}
+                  >
+                    Đánh dấu
+                  </a>
+                </div>
+              )}
+              {isFollowed ? (
+                <div className="flex items-center gap-2 dark:text-white">
+                  <BsFillBellFill className="w-5 h-5 text-sky-500" />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      unfollowPostMutation.mutate(postId!);
+                    }}
+                  >
+                    Bỏ theo dõi
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 dark:text-white">
+                  <BsBell className="w-5 h-5 text-sky-500" />
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      followPostMutation.mutate(postId!);
+                    }}
+                  >
+                    Theo dõi
+                  </a>
+                </div>
+              )}
             </div>
           </div>
-          <div className="border-[1px] rounded px-5 py-5 mb-10">
-            <h5 className="font-bold mb-5">Comments</h5>
-            <div className="flex mb-5">
-              <input
-                className="flex-1 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded-l-lg focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
-                placeholder="Write a comment..."
+          {
+            isAuthor ? (
+              <ReceivedOfferListCard
+                offers={filteringOffers ?? []}
+                filteringOfferStatus={filteringOfferStatus}
+                setFilteringOfferStatus={setFilteringOfferStatus}
+                refetch={() => refetchOffers()}
               />
-              <button type="button" className="bg-primary rounded-r-lg text-white font-medium text-sm px-5 py-2.5">Comment</button>
-            </div>
-            <div className="">
-              {numberArrayOf(3).map((i) => (
-                <Comment key={i} />
-              ))}
+            ) : null
+          }
+          {
+            canOffer ? (
+              <SentOfferListCard
+                offers={filteringOffers ?? []}
+                filteringOfferStatus={filteringOfferStatus}
+                setFilteringOfferStatus={setFilteringOfferStatus}
+                refetch={() => refetchOffers()}
+              />
+            ) : null
+          }
+          <div className="card px-5 py-5 mb-10">
+            <h5 className="font-bold mb-5">
+              Bình luận (
+              {comments?.data.length}
+              )
+              {' '}
+              <button
+                type="button"
+                className="underline text-sm font-normal text-primary"
+                onClick={() => refetchComments()}
+              >
+                Làm mới
+              </button>
+            </h5>
+            <Form onSubmit={handleSubmit(onSendComment)}>
+              <div className="mb-5">
+                <div className="flex">
+                  <input
+                    {...register('description')}
+                    className="flex-1 border-[1px] w-full h-full p-2.5 text-gray-900 text-sm rounded-l-lg focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none dark:bg-[#283046] dark:text-white dark:border-[#404656]"
+                    placeholder="Viết bình luận..."
+                  />
+                  <button
+                    type="submit"
+                    className="bg-primary rounded-r-lg text-white font-medium text-sm px-5 py-2.5"
+                  >
+                    Gửi
+                  </button>
+                </div>
+
+                {errors.description
+                  && <p className="text-red-700 text-xs italic mt-1">{errors.description.message}</p>}
+              </div>
+            </Form>
+            <div className="overflow-auto max-h-96">
+              {
+                comments?.data && comments?.data.map((comment) => (
+                  <Comment key={comment.code} comment={comment} />
+                ))
+              }
             </div>
           </div>
         </div>
         <div className="col-span-2">
-          <div className="border-[1px] rounded px-5 py-5 mb-10">
-            <h5 className="font-bold mb-5">Information</h5>
-            <div className="flex justify-between mb-2">
-              <span className="text-sm">Company</span>
-              <span className="font-semibold">PYSTravel</span>
+          <div className="mb-10">
+            {
+              isAuthor && post ? (
+                <EditableImage
+                  defaultImg={post?.thumbnail}
+                  presignedUrlType={PresignedUrlType.POST_THUMBNAIL}
+                  onImgUploaded={onThumbnailChanged}
+                  generateFilename={(file) => `profile_${post?.code}-${Date.now()}.${extractFileExtension(file)}`}
+                />
+              ) : (
+                <img src={post?.thumbnail} alt="" className="w-full h-full mb-2" />)
+            }
+          </div>
+          <div className="card px-5 py-5 mb-10">
+            <h5 className="font-bold mb-5">Thông tin</h5>
+            <div className="flex justify-between mb-4">
+              <span className="text-sm">Điểm đến</span>
+              <span className="font-semibold">{post?.endingLocation}</span>
             </div>
-            <div className="flex justify-between mb-2">
-              <span className="text-sm">Location</span>
-              <span className="font-semibold">Ha Noi</span>
+            <div className="flex justify-between mb-4">
+              <span className="text-sm">Ngày khởi hành</span>
+              <span className="font-semibold">
+                {moment(post?.departureDate)
+                  .format('DD-MM-YYYY')}
+              </span>
             </div>
             <div className="flex justify-between mb-5">
-              <span className="text-sm">Price</span>
-              <span className="font-semibold">100.000 VND</span>
+              <span className="text-sm">Giá/khách</span>
+              <span className="font-semibold">
+                {formatCurrency(post?.pricePerPax!)}
+                {' '}
+                VND
+              </span>
             </div>
-            <button
-              type="button"
-              className="w-full py-2.5 bg-primary text-white font-medium text-sm rounded-lg"
-              onClick={() => setShowMakeOfferModal(true)}
-            >
-              Make offer
-            </button>
-          </div>
-
-          <div className="border-[1px] rounded px-5 py-5 mb-10">
-            <h5 className="font-bold mb-5">Rating (4.8 out of 5)</h5>
-            <div className="flex justify-center">
-              <RatingBar rating={4.8} showText={false} starClassname="w-10 h-10" />
+            <div className="flex justify-between mb-5">
+              <span className="text-sm">Chiết khấu</span>
+              <span className="font-semibold">
+                {formatCurrency(post?.commission!)}
+                {' '}
+                VND
+              </span>
             </div>
+            <div className="flex justify-between mb-4">
+              <span className="text-sm">Số lượng khách</span>
+              <span className="font-semibold">
+                {post?.maximumPaxToTrade! > -1 ? post?.maximumPaxToTrade : 'Không giới hạn'}
+              </span>
+            </div>
+            {
+              renderAction()
+            }
           </div>
+          <RatingCard
+            ratings={ratings!}
+            ratingAverage={post?.ratingAverage!}
+            canRate={canRate}
+          />
         </div>
       </div>
-      <MakeOfferModal isOpen={showMakeOfferModal} toggle={() => setShowMakeOfferModal(false)} />
+      <MakeOfferModal
+        isOpen={showMakeOfferModal}
+        post={post!}
+        toggle={() => setShowMakeOfferModal(false)}
+      />
     </Layout>
   );
 }

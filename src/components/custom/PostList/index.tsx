@@ -1,19 +1,83 @@
-import React from 'react';
-import { Post } from '@/models/Post';
+import React, { useMemo } from 'react';
+import { UseInfiniteQueryResult } from '@tanstack/react-query';
+import { TourPost } from '@/models/TourPost/TourPost';
+import { PaginationPayload } from '@/services/BaseApi';
+import { numberArrayOf } from '@/utils/arrays';
+import { useCurrentUser } from '@/hooks/auth';
 import PostListItem from './PostListItem';
+import TourPostSkeleton from '../Skeleton/TourPostSkeleton';
 
 export interface PostListProps {
-  posts: Post[],
-  renderAction: (post: Post) => React.ReactNode,
+  queryResult: UseInfiniteQueryResult<PaginationPayload<TourPost>>
+  renderAction: (post: TourPost) => React.ReactNode,
 }
 
 export default function PostList(props: PostListProps) {
-  const { posts, renderAction } = props;
-  return (
-    <div>
-      {posts.map((post) => (
-        <PostListItem post={post} key={post.id} renderAction={renderAction} />
-      ))}
-    </div>
+  const {
+    renderAction,
+    queryResult,
+  } = props;
+
+  const currentUser = useCurrentUser();
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = queryResult;
+
+  const generateLoadMoreButton = () => {
+    if (hasNextPage) return 'Tải thêm';
+    return '';
+  };
+
+  const tourPosts = useMemo(() => {
+    let posts: TourPost[] = [];
+    data?.pages.forEach((page) => {
+      posts = posts.concat(page.data);
+    });
+    const postOfCurrentOrg = posts.filter(
+      (item) => item.organization === currentUser?.organization,
+    );
+    const postOfOtherOrg = posts.filter(
+      (item) => item.organization !== currentUser?.organization,
+    );
+    return postOfOtherOrg.concat(postOfCurrentOrg);
+  }, [data]);
+  return status === 'loading' ? (
+    numberArrayOf(3)
+      .map((index) => (
+        <TourPostSkeleton key={index} />
+      ))
+  ) : (
+    <>
+      <div>
+        {tourPosts.map((post) => (
+          <PostListItem
+            post={post}
+            key={post.code}
+            renderAction={renderAction}
+          />
+        ))}
+      </div>
+      <div className="text-center">
+        <button
+          type="button"
+          className="text-center"
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          {
+            generateLoadMoreButton()
+          }
+        </button>
+      </div>
+      <div>
+        {isFetching ? (<TourPostSkeleton />) : null}
+      </div>
+    </>
   );
 }

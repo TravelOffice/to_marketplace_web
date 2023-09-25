@@ -1,0 +1,53 @@
+export enum OfferStatus {
+  IN_PROCESS = 'IN_PROCESS',
+  CANCELLED = 'CANCELLED',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+}
+
+export const OfferStatusTypes = Object.keys(OfferStatus);
+
+export interface Offer {
+  code: string, // Auto-generated code from DynamoDB
+  description?: string, // Description of the offer
+  totalPax: number, // Total pax of the offer
+  pricePerPax: number, // Price per pax of the offer
+  commission: number, // Commission rate per pax of the offer
+  authorId: string, // Alias id of marketplace user that is auto-generated or set by user
+  sentOrg: string, // The ID of the organization that sent the offer
+  tourPostId: string, // The ID of the tour post
+  offerStatus: OfferStatus, // The status of the offer,
+  cancelReason?: string, // The reason for canceling the offer
+  rejectReason?: string, // The reason for rejecting the offer
+  summitedAt?: number, // The time the offer was submitted
+  canceledAt?: number, // The time the offer was cancelled
+  acceptedAt?: number, // The time the offer was accepted
+  rejectedAt?: number, // The time the offer was rejected
+  receivedOrg: string, // The ID of organization that owner of the post
+  receivedUser: string, // The ID of user that is author of the post
+  createdAt: number,
+  updatedAt: number,
+}
+
+export type CreateOfferFormData = Pick<Offer,
+'description' |
+'totalPax' |
+'pricePerPax' |
+'commission' |
+'tourPostId'
+>;
+
+export type UpdateOfferFormData = Pick<Offer,
+'description' |
+'totalPax' |
+'pricePerPax' |
+'commission'
+>;
+
+export type RejectOfferFormData = Pick<Offer,
+'rejectReason'
+>;
+
+export type CancelOfferFormData = Pick<Offer,
+'cancelReason'
+>;
