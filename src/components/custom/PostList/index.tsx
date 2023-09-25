@@ -3,6 +3,7 @@ import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import { TourPost } from '@/models/TourPost/TourPost';
 import { PaginationPayload } from '@/services/BaseApi';
 import { numberArrayOf } from '@/utils/arrays';
+import { useCurrentUser } from '@/hooks/auth';
 import PostListItem from './PostListItem';
 import TourPostSkeleton from '../Skeleton/TourPostSkeleton';
 
@@ -16,6 +17,8 @@ export default function PostList(props: PostListProps) {
     renderAction,
     queryResult,
   } = props;
+
+  const currentUser = useCurrentUser();
 
   const {
     data,
@@ -36,9 +39,14 @@ export default function PostList(props: PostListProps) {
     data?.pages.forEach((page) => {
       posts = posts.concat(page.data);
     });
-    return posts;
+    const postOfCurrentOrg = posts.filter(
+      (item) => item.organization === currentUser?.organization,
+    );
+    const postOfOtherOrg = posts.filter(
+      (item) => item.organization !== currentUser?.organization,
+    );
+    return postOfOtherOrg.concat(postOfCurrentOrg);
   }, [data]);
-
   return status === 'loading' ? (
     numberArrayOf(3)
       .map((index) => (

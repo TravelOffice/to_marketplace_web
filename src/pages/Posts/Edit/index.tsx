@@ -113,6 +113,7 @@ export default function EditPost() {
     if (limitedPax == null) return post?.maximumPaxToTrade !== -1;
     return limitedPax;
   }, [limitedPax, post]);
+
   return (
     <Layout>
       <div className="container mx-auto px-6 pt-20">
@@ -308,6 +309,8 @@ export default function EditPost() {
                 />
               )}
             />
+            {errors.description
+              && <p className="text-red-700 text-xs italic mt-1">{errors.description.message}</p>}
 
             <div className="mt-5">
               <button

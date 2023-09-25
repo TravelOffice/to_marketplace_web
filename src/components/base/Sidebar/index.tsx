@@ -3,6 +3,7 @@ import { FiHome, FiShare2, FiUser } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { GoOrganization } from 'react-icons/go';
+import { BsBuildings } from 'react-icons/bs';
 import logo from '@/assets/images/logo/logo.svg';
 import SidebarItem from '@/components/base/Sidebar/SidebarItem';
 import { useLayoutStore } from '@/hooks/layout';

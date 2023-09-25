@@ -43,7 +43,8 @@ const schema: ObjectSchema<CreatePostFormData> = yup.object()
   .shape({
     name: yup.string()
       .required('Vui lòng nhập tiêu đề'),
-    description: yup.string(),
+    description: yup.string()
+      .required('Vui lòng nhập mô tả'),
     pricePerPax: yup.number()
       .min(1, 'Giá/khách không hợp lệ')
       .required('Vui lòng nhập giá mỗi khách'),
@@ -133,7 +134,7 @@ export default function CreatePost() {
     <Layout>
       <div className=" mx-auto px-8 pt-20">
         <div className="rounded-lg px-5 py-5 mt-10 mb-10 bg-white">
-          <h5 className="font-bold">Chỉnh sửa bài đăng</h5>
+          <h5 className="font-bold">Tạo bài đăng</h5>
           <Form className="mt-5" onSubmit={handleSubmit(onCreatePost)}>
             <div className="flex flex-wrap -mx-3 mb-5">
               <div className="w-full md:w px-3 mb-6 md:mb-0">
@@ -337,6 +338,8 @@ export default function CreatePost() {
                 />
               )}
             />
+            {errors.description
+              && <p className="text-red-700 text-xs italic mt-1">{errors.description.message}</p>}
 
             <div className="mt-5">
               <button

@@ -3,7 +3,7 @@ import { TourPost } from '@/models/TourPost/TourPost';
 import MakeOfferModal from '@/components/custom/MakeOfferModal';
 import { useCurrentUser } from '@/hooks/auth';
 import PostList from '@/components/custom/PostList';
-import { usePosts } from '@/hooks/post';
+import { useFilteringPostStore, usePosts } from '@/hooks/post';
 import { TourPostType } from '@/models/TourPost/TourPostType';
 import { TourPostStatus } from '@/models/TourPost/TourPostStatus';
 
@@ -15,6 +15,10 @@ export default function TourList(props: TourPostProps) {
   const { postType } = props;
   const currentUser = useCurrentUser();
   const [selectedPost, setSelectedPost] = React.useState<TourPost>();
+  const {
+    filteringEndingLocation,
+    filteringDepartureDate,
+  } = useFilteringPostStore();
   const renderAction = (post: TourPost) => {
     if (currentUser?.organization !== post.organization) {
       return (
@@ -33,7 +37,12 @@ export default function TourList(props: TourPostProps) {
   return (
     <>
       <PostList
-        queryResult={usePosts(postType, TourPostStatus.IN_PROCESS)}
+        queryResult={usePosts({
+          postType,
+          status: TourPostStatus.IN_PROCESS,
+          endingLocation: filteringEndingLocation,
+          departureDate: filteringDepartureDate,
+        })}
         renderAction={renderAction}
       />
       <MakeOfferModal
