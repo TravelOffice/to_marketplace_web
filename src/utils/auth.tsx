@@ -1,7 +1,6 @@
 import { useAuthStore } from '@/hooks/auth';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 
-// eslint-disable-next-line import/prefer-default-export
 export function getAccessToken() {
   return useAuthStore.getState().accessToken;
 }

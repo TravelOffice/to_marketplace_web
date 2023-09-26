@@ -10,6 +10,13 @@ const organizationRoutes: RouteObject = {
         return { Component: OrganizationList.default };
       },
     },
+    {
+      path: ':organizationId',
+      async lazy() {
+        const Component = await import('@/pages/Organization/Profile');
+        return { Component: Component.default };
+      },
+    },
   ],
 };
 

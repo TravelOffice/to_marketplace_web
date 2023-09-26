@@ -46,6 +46,7 @@ export default function LeadListCard() {
       linkedToTargetType: 'LEAD',
       type: 'SELL_PASSENGER',
       description: lead.description,
+      maximumPaxToTrade: lead.numberOfAdultPassengers + lead.numberOfChildrenPassengers,
     } as CreatePostProps,
   });
 
@@ -67,7 +68,8 @@ export default function LeadListCard() {
             <th className="text-left w-1/5 font-medium uppercase">Tên KH</th>
             <th className="text-left w-1/5 font-medium uppercase">Loại tour</th>
             <th className="text-left font-medium uppercase">Tên tour</th>
-            <th className="text-center w-1/6 font-medium uppercase pe-5">Hành động</th>
+            <th className="text-left font-medium uppercase">Nhu cầu</th>
+            <th className="text-left w-1/6 font-medium uppercase pe-5">Hành động</th>
           </tr>
         </thead>
         <tbody>
@@ -77,6 +79,7 @@ export default function LeadListCard() {
               code,
               type,
               name,
+              description,
               tourTemplateName,
             } = lead;
             return (
@@ -85,6 +88,7 @@ export default function LeadListCard() {
                 <td className="text-left text-sm">{name}</td>
                 <td className="text-left text-sm">{type}</td>
                 <td className="text-left text-sm">{tourTemplateName}</td>
+                <td className="text-left text-sm">{description}</td>
                 <td className="pe-5">
                   <button
                     type="button"

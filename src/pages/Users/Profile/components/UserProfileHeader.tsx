@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FiPhone } from 'react-icons/fi';
-import { useOrganizationByCurrentUser } from '@/hooks/organization';
+import { useOrganization } from '@/hooks/organization';
 import { useMarketplaceUser } from '@/hooks/marketplaceUser';
 import { generateUserAvatar } from '@/utils/common';
 
 export default function UserProfileHeader() {
   const { userId } = useParams();
   const { data: currentUser } = useMarketplaceUser(decodeURI(userId!), !!userId);
-  const { data: organization } = useOrganizationByCurrentUser(currentUser);
+  const { data: organization } = useOrganization(currentUser?.organization!, !!currentUser);
 
   return (
     <div
