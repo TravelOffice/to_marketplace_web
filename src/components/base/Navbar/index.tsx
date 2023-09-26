@@ -18,7 +18,7 @@ export default function Navbar() {
       >
         <div className="flex items-center gap-2">
           <NavbarNotification />
-          <FiBookmark className="h-6 w-6 text-gray-400 cursor-pointer dark:text-white" />
+          <FiBookmark className="h-8 w-8 text-gray-400 cursor-pointer dark:text-white" />
         </div>
         <div className="flex items-center">
           <div className="flex flex-col items-end me-5">

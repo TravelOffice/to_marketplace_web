@@ -14,6 +14,8 @@ module.exports = {
     'vite.config.ts',
     'tailwind.config.js',
     'postcss.config.js',
+    'firebase-messaging-sw.js',
+    'firebase-messaging-config.js',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {

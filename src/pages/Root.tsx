@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import moment from 'moment';
+import { toast } from 'react-toastify';
+import { MessagePayload } from 'firebase/messaging';
 import Sidebar from '@/components/base/Sidebar';
 import Navbar from '@/components/base/Navbar';
 import { useAuth } from '@/hooks/auth';
@@ -8,6 +10,11 @@ import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import 'moment/dist/locale/vi';
 import marketplaceApi from '@/services/marketplaceApi';
 import { useOnboardingStatus } from '@/hooks/onboarding';
+import { onNewMessage } from '@/firebase';
+import Notification from '@/components/base/Notification';
+import { useNotificationStore } from '@/hooks/notification';
+
+const channel = new BroadcastChannel('notifications');
 
 export default function Root() {
   const {
@@ -16,6 +23,37 @@ export default function Root() {
   } = useAuth();
 
   const onboardingStatus = useOnboardingStatus();
+
+  const { increaseUnreadCount } = useNotificationStore((state) => ({
+    increaseUnreadCount: state.increaseUnreadCount,
+  }));
+
+  const handleOnNewMessage = useCallback((payload: MessagePayload) => {
+    const { data } = payload;
+    if (!data) return;
+    toast.info(<Notification
+      title={data['pinpoint.notification.title']}
+      message={data['pinpoint.notification.body']}
+    />);
+    increaseUnreadCount();
+  }, []);
+
+  useEffect(() => {
+    onNewMessage((payload) => {
+      handleOnNewMessage(payload);
+    });
+  }, []);
+
+  useEffect(() => {
+    const listener = (event: MessageEvent) => {
+      const payload = event.data;
+      handleOnNewMessage(payload);
+    };
+    channel.addEventListener('message', listener);
+    return () => {
+      channel.removeEventListener('message', listener);
+    };
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
