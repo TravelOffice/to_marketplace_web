@@ -56,7 +56,7 @@ export default function MemberCard(props: MemberCardProps) {
   }, []);
 
   return (
-    <div key={user.username} className="flex items-center gap-4 bg-white shadow-lg rounded px-6 py-4 cursor-pointer group/item hover:shadow">
+    <div key={user.username} className="flex items-center gap-4 bg-white shadow-lg rounded px-6 py-4 cursor-pointer group/item hover:shadow dark:bg-dark">
       <img src={user.avatar || `https://picsum.photos/seed/${user.createdAt}/800/800`} alt="" className="w-12 h-12 rounded-full" />
       <div className="flex-1">
         <h5 className="font-medium">

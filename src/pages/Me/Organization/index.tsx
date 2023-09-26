@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import Tabs from '@/components/base/Tabs';
 import Layout from '@/components/base/Layout';
@@ -15,8 +15,9 @@ import ReceivedOfferListOfOrganization
 import SentOfferListOfOrganization from '@/pages/Me/Organization/tabs/SentOfferListOfOrganization';
 import EditableAvatar from '@/components/custom/EditableAvatar';
 import { extractFileExtension } from '@/utils/common';
-import { SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
+import { ROLES, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
 import { PresignedUrlType } from '@/models/PresignedUrl';
+import { hasAnyRole, hasRole } from '@/utils/auth';
 
 const tabs = [
   {
@@ -34,6 +35,7 @@ const tabs = [
   {
     title: 'Thành viên',
     content: <OrganizationMembers />,
+    requiredRoles: [ROLES.ADMIN],
   },
 ];
 
@@ -42,7 +44,7 @@ export default function MyOrganization() {
   const { data: organization } = useOrganizationByCurrentUser(currentUser);
   const { data: statistic } = useOrganizationStatistic(currentUser?.organization!, !!currentUser);
   // Mutation to update organization profile picture
-  const updateProfileMutaion = useUpdateOrgProfilePictureMutation(organization?.code!, {
+  const updateProfileMutation = useUpdateOrgProfilePictureMutation(organization?.code!, {
     onSuccess: () => {
       toast.success(UPDATE_SUCCESS);
     },
@@ -51,9 +53,15 @@ export default function MyOrganization() {
     },
   });
 
+  const renderedTabs = useMemo(() => tabs.filter((tab) => {
+    if (!tab.requiredRoles) return true;
+    if (!currentUser) return false;
+    return hasAnyRole(currentUser, tab.requiredRoles);
+  }), [currentUser]);
+
   // Handle avatar changed
   const onProfilePictureChange = useCallback((image: string) => {
-    updateProfileMutaion.mutate(image);
+    updateProfileMutation.mutate(image);
   }, []);
 
   return (
@@ -67,6 +75,7 @@ export default function MyOrganization() {
                 presignedUrlType={PresignedUrlType.ORG_PROFILE_PICTURE}
                 onAvatarUploaded={onProfilePictureChange}
                 generateFilename={(file) => `profile_${organization.code}-${Date.now()}.${extractFileExtension(file)}`}
+                editable={currentUser && hasRole(currentUser, ROLES.ADMIN)}
               />
             ) : null
           }
@@ -120,7 +129,7 @@ export default function MyOrganization() {
 
         <div className="mt-10 bg-white rounded dark:bg-[#283046] dark:text-white">
           <Tabs
-            tabs={tabs}
+            tabs={renderedTabs}
             sticky
             divider={false}
             itemClassName="w-fit"

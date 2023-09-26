@@ -9,6 +9,7 @@ import Layout from '@/components/base/Layout';
 import { useOrganizations } from '@/hooks/organization';
 import RatingBar from '@/components/base/RatingBar';
 import instagramLogo from '@/assets/images/icons/instagram.svg';
+import noCompanyLogo from '@/assets/images/illustrator/company-no-logo.png';
 
 const sortEnums = [
   'name-asc',
@@ -112,7 +113,7 @@ export default function OrganizationList() {
               <div key={organization.code} className="p-4 bg-white rounded shadow text-sm dark:bg-dark">
                 <div className="flex items-center gap-3 mb-2">
                   <Link to={`/organization/${organization.code}`}>
-                    <img src="https://picsum.photos/200" alt="Organization" className="w-16 h-16 rounded-full mb-2" />
+                    <img src={organization.profilePicture || noCompanyLogo} alt={organization.name} className="w-16 h-16 rounded-full mb-2" />
                   </Link>
                   <div className="flex-1">
                     <Link to={`/organization/${organization.code}`} className="font-bold text-base">{organization.name}</Link>

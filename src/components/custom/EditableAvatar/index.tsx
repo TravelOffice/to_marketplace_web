@@ -9,6 +9,7 @@ export interface EditableAvatarProps {
   presignedUrlType: PresignedUrlType,
   onAvatarUploaded?: (avatar: string) => void, // Callback when avatar uploaded
   generateFilename?: (file: File) => string, // Default: file.name
+  editable?: boolean,
 }
 
 export default function EditableAvatar(props: EditableAvatarProps) {
@@ -17,6 +18,7 @@ export default function EditableAvatar(props: EditableAvatarProps) {
     presignedUrlType,
     onAvatarUploaded,
     generateFilename,
+    editable = true,
   } = props;
   const [avatar, setAvatar] = useState<string>(defaultAvatar);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -56,7 +58,7 @@ export default function EditableAvatar(props: EditableAvatarProps) {
         className="w-32 h-32 rounded-full mx-auto object-cover"
       />
       {
-        !uploading && (
+        editable && !uploading && (
           <button
             type="button"
             className="absolute inset-0 bg-neutral-700/50 hidden flex-col text-sm text-white items-center justify-center group-hover/avatar:flex"
