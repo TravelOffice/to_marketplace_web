@@ -66,21 +66,21 @@ export default function TourListCard() {
             <th className="text-left w-24 font-medium py-3 rounded-t ps-5 uppercase">Mã</th>
             <th className="text-left font-medium uppercase">Tour</th>
             <th className="text-left w-1/5 font-medium uppercase">Loại tour</th>
-            <th className="text-center w-1/5 font-medium uppercase">SL Hành khách</th>
-            <th className="text-center w-1/6 font-medium uppercase pe-5">Hành động</th>
+            <th className="text-left w-1/5 font-medium uppercase">SL Hành khách</th>
+            <th className="text-left w-1/6 font-medium uppercase pe-5">Hành động</th>
           </tr>
         </thead>
         <tbody>
           {
-          toursToShow && toursToShow.map((lead) => {
+          toursToShow && toursToShow.map((tourTemplate) => {
             const {
               code,
               type,
               name,
               visitorCount,
-            } = lead;
+            } = tourTemplate;
             return (
-              <tr key={`lead-${code}`} className="py-3 border-b dark:border-b-gray-700">
+              <tr key={`tourTemplate-${code}`} className="py-3 border-b dark:border-b-gray-700">
                 <td className="text-left text-sm py-3 ps-5">{code}</td>
                 <td className="text-left text-sm">{name}</td>
                 <td className="text-left text-sm">{type}</td>
@@ -89,7 +89,7 @@ export default function TourListCard() {
                   <button
                     type="button"
                     className="w-full px-5 py-2 bg-primary my-2 rounded text-white"
-                    onClick={() => onCreatePost(lead)}
+                    onClick={() => onCreatePost(tourTemplate)}
                   >
                     Tạo bài viết
                   </button>

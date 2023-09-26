@@ -7,11 +7,6 @@ export interface TourPost {
   type: string, // Type of the tour post, can be 'BUY' or 'SELL'
   pricePerPax: number, // Price per pax of the offer
   commission: number, // Commission rate per pax of the offer
-  // Lead code / tour template code (pk, sk) of the tenant that this tour post is linked to
-  linkedToTargetKeys?: {
-    code: string,
-    type: 'TOUR_TEMPLATE' | 'LEAD',
-  },
   organization: string, // The ID of organization
   authorId: string, // Alias id of marketplace user that is auto-generated or set by user
   status: TourPostStatus, // Status of the tour post
@@ -39,7 +34,6 @@ export interface TourPost {
 }
 
 export type CreatePostFormData = Pick<TourPost,
-'linkedToTargetKeys' |
 'name' |
 'description' |
 'type' |
@@ -51,8 +45,10 @@ export type CreatePostFormData = Pick<TourPost,
 'expiry' |
 'autoClose'
 > & {
-  thumbnails?: FileList,
+  thumbnails: FileList,
   limitedPax: boolean,
+  linkedToTargetCode: string,
+  linkedToTargetType: 'TOUR_TEMPLATE' | 'LEAD',
 };
 
 export type EditPostFormData = Pick<TourPost,

@@ -35,3 +35,5 @@ export type CreateOrganizationPayload = Pick<Organization,
 export type CreateOrganizationFormData = Omit<CreateOrganizationPayload, 'profilePicture'> & {
   profilePictureFiles?: FileList
 };
+
+export type UpdateOrganizationFormData = Omit<CreateOrganizationPayload, 'profilePicture'>;

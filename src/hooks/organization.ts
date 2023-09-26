@@ -1,9 +1,13 @@
 import { toast } from 'react-toastify';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 import marketplaceApi from '@/services/marketplaceApi';
-import { DELETE_SUCCESS, SOMETHING_WRONG, UPDATE_SUCCESS } from '@/utils/constants';
-import { CreateOrganizationFormData, CreateOrganizationPayload, Organization } from '@/models/Organization/Organization';
-import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import { DELETE_SUCCESS, SOMETHING_WRONG } from '@/utils/constants';
+import {
+  CreateOrganizationFormData,
+  CreateOrganizationPayload,
+  Organization,
+  UpdateOrganizationFormData,
+} from '@/models/Organization/Organization';
 import backendApi from '@/services/backendApi';
 import { User } from '@/models/User/User';
 import { OrgStatistic } from '@/models/Organization/OrgStatistic';
@@ -19,21 +23,19 @@ export function useOrganizations() {
   );
 }
 
-export function useOrganization(organizationId: string) {
+export function useOrganization(organizationId: string, enabled: boolean) {
   return useQuery(
-    ['organization', organizationId],
-    ({ signal }) => marketplaceApi.get(`/organizations/${organizationId}`, {
-      signal,
-    }),
+    {
+      queryKey: ['organization', organizationId],
+      queryFn: ({ signal }) => marketplaceApi.get<Organization>(
+        `/organizations/${organizationId}`,
+        {
+          signal,
+        },
+      ),
+      enabled,
+    },
   );
-}
-
-export function useOrganizationByCurrentUser(currentUser: MarketplaceUser | undefined) {
-  return useQuery({
-    queryKey: ['organization', currentUser?.organization],
-    queryFn: ({ signal }) => marketplaceApi.get<Organization>(`/organizations/${currentUser?.organization}`, { signal }),
-    enabled: !!currentUser,
-  });
 }
 
 export function useAllUsers() {
@@ -74,18 +76,13 @@ export function useCreateOrganization(
   );
 }
 
-export function useUpdateOrganization(organization: Organization) {
+export function useUpdateOrganization(
+  code: string,
+  options: UseMutationOptions<Organization, Error, UpdateOrganizationFormData>,
+) {
   return useMutation(
-    () => marketplaceApi.post(`/organizations/${organization.name}`, organization),
-    {
-      onSuccess: () => {
-        // Show success toast
-        toast.success(UPDATE_SUCCESS);
-      },
-      onError: () => {
-        toast.error(SOMETHING_WRONG);
-      },
-    },
+    async (organization: UpdateOrganizationFormData) => marketplaceApi.put<Organization>(`/organizations/${code}`, organization),
+    options,
   );
 }
 
@@ -106,7 +103,7 @@ export function useDeleteOrganization(organizationId: string) {
 
 export function useOrganizationStatistic(organizationId: string, enabled: boolean) {
   return useQuery(
-    ['organizations_statistic'],
+    ['organizations_statistic', organizationId],
     ({ signal }) => marketplaceApi.get<OrgStatistic>(`/organizations/${organizationId}/statistic`, {
       signal,
     }),
