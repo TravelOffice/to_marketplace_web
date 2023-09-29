@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { isTokenExpired } from '@/utils/jwt';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
+import { getDeviceInfo } from '@/utils/deviceInfo';
 
 export interface AuthState {
   currentUser: MarketplaceUser | undefined,
@@ -12,6 +13,8 @@ export interface AuthState {
   accessToken: string | null,
   logIn: (token: string) => void,
   logOut: () => void,
+  deviceToken?: string,
+  setDeviceToken: (token: string) => void,
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -33,6 +36,7 @@ export const useAuthStore = create<AuthState>()(
           },
         };
       }),
+      setDeviceToken: (token: string) => set(() => ({ deviceToken: token })),
     }),
     {
       name: 'auth-storage',
@@ -76,3 +80,28 @@ export function useAuth() {
 export const useCurrentUser = () => useAuthStore((state) => state.currentUser);
 
 export const useUpdateCurrentUser = () => useAuthStore((state) => state.updateCurrentUser);
+
+export const useRegisterDeviceToken = () => {
+  const { accessToken, deviceToken } = useAuthStore();
+  useEffect(() => {
+    if (accessToken && deviceToken) {
+      // Use fetch instead of axios to avoid circular dependency
+      const { os, browser } = getDeviceInfo();
+      fetch(`${import.meta.env.VITE_API_URL}/notifications/sessions`, {
+        method: 'POST',
+        headers: {
+          Authorization: accessToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          appType: 'MARKETPLACE',
+          type: 'BROWSER',
+          token: deviceToken,
+          userAgent: navigator.userAgent,
+          name: browser,
+          os,
+        }),
+      }).catch();
+    }
+  }, [accessToken]);
+};

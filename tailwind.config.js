@@ -15,6 +15,7 @@ export default {
         'secondary': '#5e6282',
         'dark': '#283046',
         'dark-secondary': '#161d31',
+        'dark-gradient': 'linear-gradient(rgb(40, 48, 70) 5%, rgba(40, 48, 70, 0.85) 30%, rgba(40, 48, 70, 0.5) 65%, rgba(40, 48, 70, 0.3) 75%, transparent)',
       }
     },
   },

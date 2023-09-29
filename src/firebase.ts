@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import {
   getMessaging, getToken, onMessage, MessagePayload, NextFn, Observer,
 } from 'firebase/messaging';
+import { useAuthStore } from '@/hooks/auth';
 
 export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -22,10 +23,7 @@ export const requestPermission = () => {
       getToken(messaging, {
         vapidKey: import.meta.env.VITE_VAPIDKEY,
       }).then((currentToken) => {
-        const { userAgent } = navigator;
-        console.log('currentToken', currentToken);
-        console.log('userAgent', userAgent);
-        // TODO: Send token to server
+        useAuthStore.setState({ deviceToken: currentToken });
       }).catch((err) => {
         console.log('An error occurred while retrieving token. ', err);
       });
