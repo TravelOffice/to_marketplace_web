@@ -81,13 +81,14 @@ export default function LeadListCard() {
               name,
               description,
               tourTemplateName,
+              desiredTour,
             } = lead;
             return (
               <tr key={`lead-${code}`} className="py-3 border-b dark:border-b-gray-700">
                 <td className="text-left text-sm py-3 ps-5">{code}</td>
                 <td className="text-left text-sm">{name}</td>
                 <td className="text-left text-sm">{type}</td>
-                <td className="text-left text-sm">{tourTemplateName}</td>
+                <td className="text-left text-sm">{tourTemplateName || desiredTour}</td>
                 <td className="text-left text-sm">{description}</td>
                 <td className="pe-5">
                   <button
