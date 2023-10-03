@@ -24,6 +24,7 @@ import { TourPostType } from '@/models/TourPost/TourPostType';
 import { PresignedUrlType } from '@/models/PresignedUrl';
 import { uploadImage } from '@/utils/common';
 import { TourPostStatus } from '@/models/TourPost/TourPostStatus';
+import { LinkedLeadOrTourInfo } from '@/models/Tour/LinkedLeadOrTourInfo';
 
 export function useMyPosts(status?: TourPostStatus) {
   return useInfiniteQuery({
@@ -319,6 +320,13 @@ export function useTopCommissionPosts() {
     onError: () => {
       toast.error(SOMETHING_WRONG);
     },
+  });
+}
+
+export function useLinkedTargetInfo(targetId: string) {
+  return useQuery({
+    queryKey: ['linked-target-info', targetId],
+    queryFn: () => marketplaceApi.get<LinkedLeadOrTourInfo>(`/posts/linked-target-info/${targetId}`),
   });
 }
 
