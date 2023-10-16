@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Form, useLocation, useNavigate } from 'react-router-dom';
@@ -8,12 +7,14 @@ import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import Select from 'react-select';
 import moment from 'moment';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import Layout from '@/components/base/Layout';
 import '@/styles/extended/ckeditor.css';
 import Label from '@/components/base/Label';
 import '@/styles/extended/react-select.css';
 import { useCreatePostMutation } from '@/hooks/post';
 import { CreatePostFormData } from '@/models/TourPost/TourPost';
+import MyCustomUploadAdapterPlugin from '@/ckeditor/UploadImageAdapter';
 
 const autoCloseOptions = [
   {
@@ -123,6 +124,9 @@ export default function CreatePost() {
       },
     },
   );
+
+  const values = useWatch({ control, name: 'description' });
+  console.log(values);
 
   const { mutate } = useCreatePostMutation();
 
@@ -350,6 +354,12 @@ export default function CreatePost() {
               render={({ field: { onChange } }) => (
                 <CKEditor
                   editor={ClassicEditor}
+                  config={{
+                    extraPlugins: [
+                      // UploadImageAdapterPlugin,
+                      MyCustomUploadAdapterPlugin,
+                    ],
+                  }}
                   data={description}
                   onReady={(editor) => {
                     // You can store the "editor" and use when it is needed.

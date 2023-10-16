@@ -33,6 +33,9 @@
     "yup": "^1.2.0",
     "zustand": "^4.4.1"
   },
+  "peerDependencies": {
+    "@ckeditor/ckeditor5-core": ">=37.0.0"
+  },
   "devDependencies": {
     "@types/node": "^20.4.7",
     "@types/react": "^18.2.15",
