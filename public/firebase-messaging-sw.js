@@ -16,24 +16,16 @@ if (firebase.messaging.isSupported()) {
       payload
     );
 
-    const { data } = payload;
+    const { data, notification } = payload;
 
-    const notificationTitle = data['pinpoint.notification.title'];
+    const notificationTitle = notification.title;
 
     self.registration.showNotification(notificationTitle, {
-      body: data['pinpoint.notification.body'],
+      body: notification.body,
       icon: '/favicon.ico',
-      actions: [
-        {
-          action: 'view',
-          title: 'View details',
-        },
-      ],
       data: {
-        url: data['pinpoint.openApp'] ? 'http://localhost:5173/' : data['pinpoint.url'],
+        url: data['href'],
       },
-    }).then(() => {
-      console.log('Push Notification is sent');
     }).finally(() => {
       channel.postMessage(payload);
     });
@@ -42,6 +34,7 @@ if (firebase.messaging.isSupported()) {
 
 self.addEventListener('notificationclick', (event) => {
   const urlToOpen = event.notification.data.url;
+  self.console.log('urlToOpen', JSON.stringify(event.notification));
   event.notification.close();
   event.waitUntil(
     clients.matchAll({includeUncontrolled: true, type: 'window'}).then((allClients) => {

@@ -1,0 +1,20 @@
+.notifications {
+  @apply fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity;
+}
+
+.notifications-enter {
+  @apply translate-x-full;
+}
+
+.notifications-enter-active {
+  @apply transition duration-300;
+  @apply translate-x-0;
+}
+
+.notifications-exit {
+  @apply translate-x-0;
+}
+
+.notifications-exit-active {
+  @apply translate-x-full transition duration-300;
+}

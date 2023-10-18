@@ -5,14 +5,14 @@ import { toast } from 'react-toastify';
 import { MessagePayload } from 'firebase/messaging';
 import Sidebar from '@/components/base/Sidebar';
 import Navbar from '@/components/base/Navbar';
-import { useAuth } from '@/hooks/auth';
+import { useAuth, useRegisterDeviceToken } from '@/hooks/auth';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import 'moment/dist/locale/vi';
 import marketplaceApi from '@/services/marketplaceApi';
 import { useOnboardingStatus } from '@/hooks/onboarding';
 import { onNewMessage } from '@/firebase';
 import Notification from '@/components/base/Notification';
-import { useNotificationStore } from '@/hooks/notification';
+import { useOnNewNotification } from '@/hooks/notification';
 
 const channel = new BroadcastChannel('notifications');
 
@@ -22,20 +22,18 @@ export default function Root() {
     setCurrentUser,
   } = useAuth();
 
+  const onNewNotification = useOnNewNotification();
+
   const onboardingStatus = useOnboardingStatus();
 
-  const { increaseUnreadCount } = useNotificationStore((state) => ({
-    increaseUnreadCount: state.increaseUnreadCount,
-  }));
-
   const handleOnNewMessage = useCallback((payload: MessagePayload) => {
-    const { data } = payload;
+    const { data, notification } = payload;
     if (!data) return;
     toast.info(<Notification
-      title={data['pinpoint.notification.title']}
-      message={data['pinpoint.notification.body']}
+      title={notification?.title || 'Bạn nhận được thông báo mới'}
+      message={notification?.body || 'Kiểm tra ngay'}
     />);
-    increaseUnreadCount();
+    onNewNotification(payload);
   }, []);
 
   useEffect(() => {
@@ -67,6 +65,8 @@ export default function Root() {
 
     };
   }, [isLoggedIn, setCurrentUser]);
+
+  useRegisterDeviceToken();
 
   // Render nothing if not logged in
   if (!isLoggedIn) {

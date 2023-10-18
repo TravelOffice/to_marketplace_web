@@ -60,7 +60,7 @@ export default function LeadListCard() {
         <tbody>
           {
           leadsToShow && leadsToShow.map((lead) => (
-            <LeadListItem lead={lead} />
+            <LeadListItem key={lead.code} lead={lead} />
           ))
         }
         </tbody>

@@ -21,8 +21,8 @@ export default function Notification(props: NotificationProps) {
 
   return (
     <div onClick={handleClick}>
-      <div className="notification-title">{title}</div>
-      <div className="notification-message">{message}</div>
+      <div className="text-base font-semibold">{title}</div>
+      <div className="text-sm">{message}</div>
     </div>
   );
 }

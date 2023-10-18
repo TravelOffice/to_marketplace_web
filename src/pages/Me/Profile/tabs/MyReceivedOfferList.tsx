@@ -52,6 +52,7 @@ export default function MyReceivedOfferList() {
               {
                 receivedOffers?.map((offer) => (
                   <MyOfferCard
+                    key={offer.code}
                     offer={offer}
                   />
                 ))
