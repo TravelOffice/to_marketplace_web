@@ -33,7 +33,7 @@ export default function Root() {
       title={notification?.title || 'Bạn nhận được thông báo mới'}
       message={notification?.body || 'Kiểm tra ngay'}
     />);
-    onNewNotification(payload);
+    onNewNotification();
   }, []);
 
   useEffect(() => {

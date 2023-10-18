@@ -23,6 +23,7 @@ export const requestPermission = () => {
       getToken(messaging, {
         vapidKey: import.meta.env.VITE_VAPIDKEY,
       }).then((currentToken) => {
+        console.log('device token: ', currentToken);
         useAuthStore.setState({ deviceToken: currentToken });
       }).catch((err) => {
         console.log('An error occurred while retrieving token. ', err);

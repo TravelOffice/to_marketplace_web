@@ -38,9 +38,7 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
     clients.matchAll({includeUncontrolled: true, type: 'window'}).then((allClients) => {
-      let matchingClient = allClients.find((client) => {
-        return client.url === urlToOpen;
-      });
+      const matchingClient = allClients[0];
       if (matchingClient) {
         return matchingClient.focus();
       } else {
