@@ -1,11 +1,15 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 import { useOnClickOutside } from 'usehooks-ts';
 import '@/styles/extended/notifications.css';
 import { useNavigate } from 'react-router-dom';
 import ReactPortal from '@/components/base/ReactPortal';
-import { useNotifications } from '@/hooks/notification';
+import {
+  useMarkAllNotificationsAsRead,
+  useMarkNotificationAsRead,
+  useNotifications,
+} from '@/hooks/notification';
 import NoNotifications from '@/components/custom/Notifications/NoNotifications';
 import NotificationsError from '@/components/custom/Notifications/NotificationsError';
 import NotificationList from '@/components/custom/Notifications/NotificationList';
@@ -21,7 +25,22 @@ export default function Notifications(props: NotificationsProps) {
   const nodeRef = useRef(null);
   const navigate = useNavigate();
 
-  const { data: notifications = [], isError, refetch } = useNotifications();
+  const {
+    data, isError, refetch, fetchNextPage,
+    isFetched, isFetchingNextPage, hasNextPage,
+  } = useNotifications();
+
+  const notifications = useMemo(() => {
+    if (!data) return [];
+    const { pages } = data;
+    const notificationPages = pages.map((page) => page.data);
+    return notificationPages.flat();
+  }, [data]);
+
+  const unreadCount = useMemo(() => notifications.filter((notification) => notification.data.read === 'unread').length, [notifications]);
+
+  const markAllAsReadMutation = useMarkAllNotificationsAsRead();
+  const markAsReadMutation = useMarkNotificationAsRead();
 
   useOnClickOutside(nodeRef, () => {
     if (isOpen) {
@@ -31,8 +50,17 @@ export default function Notifications(props: NotificationsProps) {
 
   const onNotificationClick = useCallback((notification: Notification) => {
     toggle();
+    markAsReadMutation.mutate(notification.data.id);
     navigate(notification.data.href);
   }, [toggle]);
+
+  const onMarkAllAsRead = useCallback(() => {
+    toggle();
+    const newestNotification = notifications[0];
+    if (!newestNotification) return;
+    const { createdAt } = newestNotification;
+    markAllAsReadMutation.mutate(createdAt);
+  }, [notifications, toggle]);
 
   const renderContent = useCallback(() => {
     if (isError) return <NotificationsError onRetry={refetch} />;
@@ -41,9 +69,16 @@ export default function Notifications(props: NotificationsProps) {
       <NotificationList
         notifications={notifications}
         onNotificationClick={onNotificationClick}
+        canLoadMore={!!hasNextPage && !isFetchingNextPage && isFetched && notifications.length > 0}
+        onLoadMore={fetchNextPage}
+        loadingMore={isFetchingNextPage}
       />
     );
-  }, [notifications]);
+  }, [
+    notifications, hasNextPage, isFetchingNextPage,
+    isFetched, isError, onNotificationClick,
+    fetchNextPage, refetch,
+  ]);
 
   return (
     <ReactPortal wrapperId="notifications">
@@ -69,6 +104,24 @@ export default function Notifications(props: NotificationsProps) {
               <div className="w-full h-4" />
               {renderContent()}
             </div>
+            <div className="relative">
+              <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent dark:from-dark dark:to-transparent z-[51] flex justify-center items-center" />
+            </div>
+            {
+              unreadCount > 0 && (
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent dark:from-dark dark:to-transparent z-[51] flex justify-center items-center"
+                >
+                  <button
+                    onClick={onMarkAllAsRead}
+                    type="button"
+                    className="text-sm text-right text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary-dark mx-4"
+                  >
+                    Đánh dấu tất cả là đã đọc
+                  </button>
+                </div>
+              )
+            }
           </div>
         </div>
       </CSSTransition>
