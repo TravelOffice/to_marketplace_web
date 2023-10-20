@@ -16,6 +16,7 @@ export interface Notification {
     href: string,
     read: 'read' | 'unread',
     type: NotificationModel,
+    image: string,
   },
   createdAt: number,
   updatedAt: number,

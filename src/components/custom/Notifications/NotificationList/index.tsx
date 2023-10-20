@@ -44,15 +44,27 @@ export default function NotificationList(props: NotificationListProps) {
             key={notification.data.id}
             className={classNames('flex items-center p-4 border-b border-b-gray-100 cursor-pointer gap-4', { 'bg-sky-50': notification.data.read === 'unread' })}
           >
-            <div className="w-12 h-12 flex items-center justify-center">
-              {notificationIcons[notification.data.type] || notificationIcons.OTHER}
+            <div className="w-12 h-12 aspect-square flex items-center justify-center">
+              {
+                notification.data.image ? (
+                  <img
+                    src={notification.data.image}
+                    alt="notification"
+                    className="w-full h-full aspect-square rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full aspect-square rounded-full flex items-center justify-center">
+                    {notificationIcons[notification.data.type] || notificationIcons.OTHER}
+                  </div>
+                )
+              }
             </div>
             <div className="w-full" onClick={() => onNotificationClick(notification)}>
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-medium">{notification.notification.title}</h3>
+                  <h3 className="font-medium line-clamp-2">{notification.notification.title}</h3>
                 </div>
-                <span className="text-xs text-gray-400 ml-2">{moment(notification.createdAt).fromNow()}</span>
+                <span className="text-xs text-gray-400 ml-2 block">{moment(notification.createdAt).fromNow()}</span>
               </div>
               <p className="text-sm text-gray-500">{notification.notification.body}</p>
             </div>

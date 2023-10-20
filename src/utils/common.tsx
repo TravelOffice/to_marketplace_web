@@ -33,6 +33,12 @@ export const generateUserAvatar = (user?: MarketplaceUser) => {
   return `https://ui-avatars.com/api/?name=${user.username}&background=random&length=1&rounded=true`;
 };
 
+export const generateAvatar = (options: { avatar?: string, name: string }) => {
+  const { avatar, name } = options;
+  if (avatar) return avatar;
+  return `https://ui-avatars.com/api/?name=${name}&background=random&length=1&rounded=true`;
+};
+
 /**
  * Remove empty fields from object
  * @param obj

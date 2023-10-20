@@ -1,19 +1,50 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { IoNotificationsOutline } from 'react-icons/io5';
 import socialUpdate from '@/assets/images/illustrator/social-update.svg';
 import Layout from '@/components/base/Layout';
 import { useCurrentUser } from '@/hooks/auth';
 import { useCurrentOrganizationStatistic } from '@/hooks/statistic';
 import TopCommission from '@/pages/Dashboard/components/TopCommission';
+import { requestPermission } from '@/firebase';
 import MarketplaceStatisticCard from './components/MarketplaceStatisticCard';
 import SharedToursForPosting from './components/SharedToursForPosting';
 
 export default function Dashboard() {
   const orgStatistic = useCurrentOrganizationStatistic();
   const currentUser = useCurrentUser();
+  const [
+    showAlertNotificationPermission,
+    setShowAlertNotificationPermission,
+  ] = React.useState(Notification.permission === 'default');
+
+  const handleOnCloseAlertNotificationPermission = React.useCallback(() => {
+    setShowAlertNotificationPermission(false);
+    requestPermission();
+  }, [setShowAlertNotificationPermission]);
+
   return (
     <Layout>
       <div className="mx-8 pt-32 gap-8">
+        {
+          showAlertNotificationPermission && (
+            <div className="flex items-center px-6 py-3 bg-primary rounded mb-4 text-white text-sm">
+              <IoNotificationsOutline className="h-6 w-6 me-4" />
+              <span className="flex-1">
+                Để nhận thông báo về các bài viết mới nhất, hãy bật thông báo
+                trên trình duyệt của bạn
+              </span>
+              <button
+                type="button"
+                className="me-3 hover:underline"
+                onClick={handleOnCloseAlertNotificationPermission}
+              >
+                Đồng ý
+              </button>
+            </div>
+          )
+        }
+
         <div className="grid grid-cols-4 gap-8">
           <div
             className={`col-span-2 card shadow-lg rounded relative ${orgStatistic ? '' : 'animate-pulse'}`}

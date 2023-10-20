@@ -1,9 +1,12 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, {
+  useCallback, useMemo, useRef,
+} from 'react';
 import { CSSTransition } from 'react-transition-group';
 import classNames from 'classnames';
 import { useOnClickOutside } from 'usehooks-ts';
 import '@/styles/extended/notifications.css';
 import { useNavigate } from 'react-router-dom';
+import { FiMoreVertical, FiX } from 'react-icons/fi';
 import ReactPortal from '@/components/base/ReactPortal';
 import {
   useMarkAllNotificationsAsRead,
@@ -23,7 +26,9 @@ export interface NotificationsProps {
 export default function Notifications(props: NotificationsProps) {
   const { isOpen, toggle } = props;
   const nodeRef = useRef(null);
+  const optionsRef = useRef(null);
   const navigate = useNavigate();
+  const [openOptions, setOpenOptions] = React.useState(false);
 
   const {
     data, isError, refetch, fetchNextPage,
@@ -37,14 +42,18 @@ export default function Notifications(props: NotificationsProps) {
     return notificationPages.flat();
   }, [data]);
 
-  const unreadCount = useMemo(() => notifications.filter((notification) => notification.data.read === 'unread').length, [notifications]);
-
   const markAllAsReadMutation = useMarkAllNotificationsAsRead();
   const markAsReadMutation = useMarkNotificationAsRead();
 
   useOnClickOutside(nodeRef, () => {
     if (isOpen) {
       toggle();
+    }
+  });
+
+  useOnClickOutside(optionsRef, () => {
+    if (openOptions) {
+      setOpenOptions(false);
     }
   });
 
@@ -91,11 +100,34 @@ export default function Notifications(props: NotificationsProps) {
       >
         <div className={classNames('fixed inset-0 z-50', { 'bg-gray-500 bg-opacity-75': isOpen })}>
           <div className="w-[30rem] flex flex-col absolute top-0 right-0 bottom-0 z-50 bg-white dark:bg-dark dark:text-white py-6" ref={nodeRef} onClick={() => {}}>
-            <button type="button" onClick={toggle}>
-              <svg className="w-6 h-6 text-gray-400 hover:text-gray-500 dark:text-white dark:hover:text-gray-300 absolute top-6 right-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <div className="absolute top-6 right-6 flex gap-2">
+              <button type="button" className="relative" onClick={() => setOpenOptions(!openOptions)}>
+                <FiMoreVertical className="w-5 h-5 text-gray-400 hover:text-gray-500 dark:text-white dark:hover:text-gray-300" />
+                {
+                  openOptions && (
+                    <div ref={optionsRef} className="absolute top-full border right-0 w-48 py-2 mt-1 bg-white rounded-md shadow-xl dark:bg-dark z-[52] text-left">
+                      <button
+                        type="button"
+                        className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-dark-100 dark:hover:text-white"
+                        onClick={onMarkAllAsRead}
+                      >
+                        Đánh dấu tất cả là đã đọc
+                      </button>
+                      <button
+                        type="button"
+                        className="block text-left w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-dark-100 dark:hover:text-white"
+                      >
+                        Cài đặt thông báo
+                      </button>
+                    </div>
+                  )
+                }
+              </button>
+
+              <button type="button" onClick={toggle}>
+                <FiX className="w-6 h-6 text-gray-400 hover:text-gray-500 dark:text-white dark:hover:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" />
+              </button>
+            </div>
             <h6 className="mx-4 font-semibold text-lg">Thông báo</h6>
             <div className="relative">
               <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-white to-transparent dark:from-dark dark:to-transparent z-[51]" />
@@ -107,21 +139,6 @@ export default function Notifications(props: NotificationsProps) {
             <div className="relative">
               <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent dark:from-dark dark:to-transparent z-[51] flex justify-center items-center" />
             </div>
-            {
-              unreadCount > 0 && (
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent dark:from-dark dark:to-transparent z-[51] flex justify-center items-center"
-                >
-                  <button
-                    onClick={onMarkAllAsRead}
-                    type="button"
-                    className="text-sm text-right text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary-dark mx-4"
-                  >
-                    Đánh dấu tất cả là đã đọc
-                  </button>
-                </div>
-              )
-            }
           </div>
         </div>
       </CSSTransition>
