@@ -31,13 +31,20 @@ export default function Dashboard() {
                 <div>
                   <div className="mt-5">
                     <p>
-                      <span className="text-primary font-semibold text-2xl">{orgStatistic.totalPosts}</span>
+                      <span
+                        className="text-primary font-semibold text-2xl"
+                      >
+                        {orgStatistic.totalPosts}
+                      </span>
                       {' '}
                       bài viết đã đăng
                     </p>
                   </div>
                   <Link to="/posts">
-                    <button type="button" className="mt-3 px-5 py-2 bg-primary text-white font-semibold rounded">
+                    <button
+                      type="button"
+                      className="mt-3 px-5 py-2 bg-primary text-white font-semibold rounded"
+                    >
                       Khám phá ngay
                     </button>
                   </Link>

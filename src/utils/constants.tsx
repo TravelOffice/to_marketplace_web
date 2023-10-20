@@ -27,3 +27,8 @@ export const VALIDATION_MESSAGE = {
   invalidPhoneNumber: () => 'Số điện thoại không hợp lệ',
   maxLength: (field: string, length: number) => `${field} không được vượt quá ${length} ký tự`,
 };
+
+export const ROLES = {
+  ADMIN: 'ADMIN',
+  SALE: 'SALE',
+};

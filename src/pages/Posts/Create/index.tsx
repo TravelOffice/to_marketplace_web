@@ -3,9 +3,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import {
-  Form, useLocation, useNavigate, useParams,
-} from 'react-router-dom';
+import { Form, useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import Select from 'react-select';
@@ -14,7 +12,7 @@ import Layout from '@/components/base/Layout';
 import '@/styles/extended/ckeditor.css';
 import Label from '@/components/base/Label';
 import '@/styles/extended/react-select.css';
-import { useCreatePostMutation, usePost } from '@/hooks/post';
+import { useCreatePostMutation } from '@/hooks/post';
 import { CreatePostFormData } from '@/models/TourPost/TourPost';
 
 const autoCloseOptions = [
@@ -47,23 +45,31 @@ const schema: ObjectSchema<CreatePostFormData> = yup.object()
       .required('Vui lòng nhập mô tả'),
     pricePerPax: yup.number()
       .min(1, 'Giá/khách không hợp lệ')
-      .required('Vui lòng nhập giá mỗi khách'),
+      .typeError('Vui lòng nhập giá mỗi khách')
+      .required(),
     commission: yup.number()
       .min(1, 'Chiết khấu không hợp lệ')
-      .required('Vui lòng nhập chiết khấu'),
+      .typeError('Vui lòng nhập chiết khấu')
+      .required(),
     departureDate: yup.string()
       .required('Vui lòng nhập thời gian khởi hành'),
     endingLocation: yup.string()
       .required('Vui lòng nhập điểm đến'),
     maximumPaxToTrade: yup.number()
-      .min(-1, 'Số lượng khách không hợp lệ'),
+      .min(-1, 'Số lượng khách không hợp lệ')
+      .typeError('vui lòng nhập số lượng khách'),
     expiry: yup.string(),
     autoClose: yup.boolean()
       .required(),
     limitedPax: yup.boolean()
       .required(),
-    thumbnails: yup.mixed(),
-    linkedToTargetKeys: yup.mixed(),
+    thumbnails: yup.mixed<FileList>()
+      .test('thumbnails', 'Vui lòng chọn ảnh', (value) => value && value.length > 0)
+      .required(),
+    linkedToTargetCode: yup.string()
+      .required(),
+    linkedToTargetType: yup.mixed<'TOUR_TEMPLATE' | 'LEAD'>()
+      .required(),
     type: yup.string()
       .required(),
   });
@@ -80,9 +86,14 @@ export interface CreatePostProps {
 export default function CreatePost() {
   const navigate = useNavigate();
   const location = useLocation();
-  const props = location.state as CreatePostProps;
-  const { postId } = useParams();
-  const { data: post } = usePost(postId!);
+  const {
+    name,
+    description,
+    type,
+    linkedToTargetCode,
+    linkedToTargetType,
+    maximumPaxToTrade,
+  } = location.state as CreatePostProps;
   const {
     control,
     handleSubmit,
@@ -92,7 +103,12 @@ export default function CreatePost() {
     {
       resolver: yupResolver(schema),
       defaultValues: {
-        ...props,
+        name,
+        description,
+        type,
+        linkedToTargetCode,
+        linkedToTargetType,
+        maximumPaxToTrade,
         pricePerPax: 0,
         commission: 0,
         departureDate: moment()
@@ -101,13 +117,13 @@ export default function CreatePost() {
         expiry: moment()
           .add(1, 'days')
           .format('YYYY-MM-DD'),
-        maximumPaxToTrade: 1,
         autoClose: false,
         limitedPax: true,
         thumbnails: undefined,
       },
     },
   );
+
   const { mutate } = useCreatePostMutation();
 
   const onCreatePost = (data: CreatePostFormData) => {
@@ -127,9 +143,9 @@ export default function CreatePost() {
   });
 
   const isEdiableMaximumPaxToTrade = useMemo(() => {
-    if (limitedPax == null) return post?.maximumPaxToTrade !== -1;
+    if (limitedPax == null) return maximumPaxToTrade !== -1;
     return limitedPax;
-  }, [limitedPax, post]);
+  }, [limitedPax, maximumPaxToTrade]);
   return (
     <Layout>
       <div className=" mx-auto px-8 pt-20">
@@ -228,9 +244,12 @@ export default function CreatePost() {
                       }}
                       options={limitedPaxOptions}
                       value={limitedPaxOptions.find((option) => option.value === value)}
-                      defaultValue={limitedPaxOptions.find(
-                        (option) => option.value === (post?.maximumPaxToTrade === -1),
-                      )}
+                      defaultValue={
+                        {
+                          value: false,
+                          label: 'Không giới hạn',
+                        }
+                      }
                       theme={(theme) => ({
                         ...theme,
                         colors: {
@@ -287,9 +306,12 @@ export default function CreatePost() {
                         }
                       }}
                       value={autoCloseOptions.find((option) => option.value === value)}
-                      defaultValue={autoCloseOptions.find(
-                        (option) => option.value === post?.autoClose,
-                      )}
+                      defaultValue={
+                        {
+                          value: false,
+                          label: 'Đóng giới hạn',
+                        }
+                      }
                       theme={(theme) => ({
                         ...theme,
                         colors: {
@@ -328,7 +350,7 @@ export default function CreatePost() {
               render={({ field: { onChange } }) => (
                 <CKEditor
                   editor={ClassicEditor}
-                  data={post?.description}
+                  data={description}
                   onReady={(editor) => {
                     // You can store the "editor" and use when it is needed.
                     // eslint-disable-next-line no-console

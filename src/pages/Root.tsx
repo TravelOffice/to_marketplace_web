@@ -1,13 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import moment from 'moment';
+import { toast } from 'react-toastify';
+import { MessagePayload } from 'firebase/messaging';
 import Sidebar from '@/components/base/Sidebar';
 import Navbar from '@/components/base/Navbar';
-import { useAuth } from '@/hooks/auth';
+import { useAuth, useRegisterDeviceToken } from '@/hooks/auth';
 import { MarketplaceUser } from '@/models/MarketplaceUser/MarketplaceUser';
 import 'moment/dist/locale/vi';
 import marketplaceApi from '@/services/marketplaceApi';
 import { useOnboardingStatus } from '@/hooks/onboarding';
+import { onNewMessage } from '@/firebase';
+import Notification from '@/components/base/Notification';
+import { useOnNewNotification } from '@/hooks/notification';
+
+const channel = new BroadcastChannel('notifications');
 
 export default function Root() {
   const {
@@ -15,7 +22,36 @@ export default function Root() {
     setCurrentUser,
   } = useAuth();
 
+  const onNewNotification = useOnNewNotification();
+
   const onboardingStatus = useOnboardingStatus();
+
+  const handleOnNewMessage = useCallback((payload: MessagePayload) => {
+    const { data, notification } = payload;
+    if (!data) return;
+    toast.info(<Notification
+      title={notification?.title || 'Bạn nhận được thông báo mới'}
+      message={notification?.body || 'Kiểm tra ngay'}
+    />);
+    onNewNotification();
+  }, []);
+
+  useEffect(() => {
+    onNewMessage((payload) => {
+      handleOnNewMessage(payload);
+    });
+  }, []);
+
+  useEffect(() => {
+    const listener = (event: MessageEvent) => {
+      const payload = event.data;
+      handleOnNewMessage(payload);
+    };
+    channel.addEventListener('message', listener);
+    return () => {
+      channel.removeEventListener('message', listener);
+    };
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -29,6 +65,8 @@ export default function Root() {
 
     };
   }, [isLoggedIn, setCurrentUser]);
+
+  useRegisterDeviceToken();
 
   // Render nothing if not logged in
   if (!isLoggedIn) {

@@ -12,20 +12,20 @@ export function useStatistic() {
   );
 }
 
-export function useOrganizationStatistic(organization: string) {
+export function useOrganizationStatistic(organization?: string) {
   const { data } = useQuery(
     ['statistic', organization],
     ({ signal }) => marketplaceApi.get<MarketplaceStatistic>(`/organizations/${organization}/statistic`, {
       signal,
     }),
+    {
+      enabled: !!organization,
+    },
   );
   return data;
 }
 
 export function useCurrentOrganizationStatistic() {
   const currentUser = useCurrentUser();
-  if (currentUser) {
-    return useOrganizationStatistic(currentUser.organization);
-  }
-  return undefined;
+  return useOrganizationStatistic(currentUser?.organization);
 }

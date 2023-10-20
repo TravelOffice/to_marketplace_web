@@ -41,6 +41,7 @@ import SentOfferListCard from '@/pages/Posts/Detail/components/SentOfferListCard
 import { TourPost } from '@/models/TourPost/TourPost';
 import { PresignedUrlType } from '@/models/PresignedUrl';
 import EditableImage from '@/components/custom/EditableImage';
+import { TourPostStatus } from '@/models/TourPost/TourPostStatus';
 
 const schema: ObjectSchema<CreateCommentFormData> = yup.object()
   .shape({
@@ -156,6 +157,9 @@ export default function PostDetail() {
       );
     }
     if (currentUser?.organization === post?.organization) {
+      return null;
+    }
+    if (post?.status !== TourPostStatus.IN_PROCESS) {
       return null;
     }
     return (

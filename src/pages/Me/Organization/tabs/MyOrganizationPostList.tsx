@@ -7,7 +7,7 @@ import { useCurrentUser } from '@/hooks/auth';
 import FilterPostButtons from '@/components/custom/FilterPostButtons';
 import { TourPostStatus } from '@/models/TourPost/TourPostStatus';
 
-export default function OrganizationPostList() {
+export default function MyOrganizationPostList() {
   const currentUser = useCurrentUser();
   const navigate = useNavigate();
   const [

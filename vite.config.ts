@@ -1,18 +1,26 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
-// import * as fs from 'fs';
+import * as fs from 'fs';
 import * as path from 'path';
-//
-// function resolvePaths() {
-//   const config = fs.readFileSync(path.resolve(__dirname, 'tsconfig.node.json'), 'utf-8');
-//   const paths = JSON.parse(config).compilerOptions.paths;
-//   const alias = Object.entries(paths).reduce((acc, [key, value]) => {
-//     acc[key] = path.resolve(__dirname, value[0]);
-//     return acc;
-//   }, {});
-//   console.log(alias);
-//   return alias;
-// }
+
+const configFirebaseMessaging = () => ({
+  name: 'config-firebase-messaging',
+  configResolved(config) {
+    const publicPath = `${__dirname}/public`;
+    const script = [
+      `var firebaseMessagingConfig = {`,
+      `  apiKey: '${config.env['VITE_FIREBASE_API_KEY'] || ''}',`,
+      `  authDomain: '${config.env['VITE_FIREBASE_AUTH_DOMAIN'] || ''}',`,
+      `  projectId: '${config.env['VITE_FIREBASE_PROJECT_ID'] || ''}',`,
+      `  storageBucket: '${config.env['VITE_FIREBASE_STORAGE_BUCKET'] || ''}',`,
+      `  messagingSenderId: '${config.env['VITE_FIREBASE_MESSAGING_SENDER_ID'] || ''}',`,
+      `  appId: '${config.env['VITE_FIREBASE_APP_ID'] || ''}',`,
+      `  measurementId: '${config.env['VITE_FIREBASE_MEASUREMENT_ID'] || ''}',`,
+      `};`,
+    ].join('\n');
+    fs.writeFileSync(`${publicPath}/firebase-messaging-config.js`, script);
+  }
+});
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -21,5 +29,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     }
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    configFirebaseMessaging(),
+  ],
 })

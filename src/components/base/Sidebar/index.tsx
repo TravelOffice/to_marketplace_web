@@ -96,7 +96,7 @@ export default function Sidebar() {
             <div
               className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}
             >
-              Thông tin cá nhân
+              Quản lý cá nhân
             </div>
           </SidebarItem>
           <SidebarItem path="/me/organization">
@@ -106,7 +106,7 @@ export default function Sidebar() {
             <div
               className={classNames('flex-1 text-sm ms-5 group-hover/sidebar:block', isSidebarOpen ? 'block' : 'hidden')}
             >
-              Thông tin công ty
+              Quản lý công ty
             </div>
           </SidebarItem>
         </ul>
