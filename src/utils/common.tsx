@@ -120,7 +120,7 @@ export async function uploadImage(
 ) {
   const compressedImage = await compressImage(file, quality);
   const presignedUrl = await generatePreSignedUrl(compressedImage, presignedUrlType);
-  await axios.put(presignedUrl.url, compressedImage, {
+  await axios.put(presignedUrl.cdn, compressedImage, {
     headers: {
       'Content-Type': file.type,
     },
